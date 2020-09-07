@@ -13,5 +13,20 @@
   "parent": "",
   "screenshots": [],
   "dependencies": []
+},
+{
+  "modid": "FMPE",
+  "name": "FMProjectE",
+  "description": "Entry for distinction",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "logoFile": "",
+  "url": "https://www.curseforge.com/minecraft/mc-mods/fmprojecte-fmpe",
+  "updateUrl": "",
+  "authorList": [ "sousuke0422", "yupix" ],
+  "credits": "",
+  "parent": "",
+  "screenshots": [],
+  "dependencies": []
 }
 ]
