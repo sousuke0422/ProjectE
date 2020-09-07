@@ -170,20 +170,20 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 									continue;
 								}
 
-								int emc = EMCHelper.getEmcValue(new ItemStack(oldBlock, 1, oldMeta));
+								long emc = EMCHelper.getEmcValue(new ItemStack(oldBlock, 1, oldMeta));
 
 								if (emc > reqEmc)
 								{
 									if (PlayerHelper.checkedReplaceBlock(((EntityPlayerMP) player), x, y, z, newBlock, newMeta))
 									{
-										int difference = emc - reqEmc;
+										long difference = emc - reqEmc;
 										kleinEmc += MathHelper.clamp_double(kleinEmc, 0, EMCHelper.getKleinStarMaxEmc(inventory[0]));
 										addKleinEMC(stack, difference);
 									}
 								}
 								else if (emc < reqEmc)
 								{
-									int difference = reqEmc - emc;
+									long difference = reqEmc - emc;
 
 									if (kleinEmc >= difference)
 									{
@@ -209,7 +209,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 		return stack;
 	}
 
-	private void addKleinEMC(ItemStack eye, int amount)
+	private void addKleinEMC(ItemStack eye, long amount)
 	{
 		NBTTagList list = eye.stackTagCompound.getTagList("Items", NBT.TAG_COMPOUND);
 
@@ -231,7 +231,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 		}
 	}
 
-	private void removeKleinEMC(ItemStack eye, int amount)
+	private void removeKleinEMC(ItemStack eye, long amount)
 	{
 		NBTTagList list = eye.stackTagCompound.getTagList("Items", NBT.TAG_COMPOUND);
 

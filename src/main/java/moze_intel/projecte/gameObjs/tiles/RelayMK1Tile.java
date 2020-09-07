@@ -231,7 +231,7 @@ public class RelayMK1Tile extends TileEmc implements IInventory, ISidedInventory
 			return (int) Math.round(displayRawEmc * i / ((IItemEmc) inventory[0].getItem()).getMaximumEmc(inventory[0]));
 		}
 		
-		int emc = EMCHelper.getEmcValue(inventory[0]);
+		long emc = EMCHelper.getEmcValue(inventory[0]);
 		
 		return MathHelper.floor_double(displayRawEmc * i / (emc * inventory[0].getMaxStackSize()));
 	}

@@ -40,7 +40,7 @@ public class SetEmcCMD extends ProjectEBaseCMD
 
 		String name;
 		int meta;
-		int emc;
+		long emc;
 
 		if (params.length == 1)
 		{

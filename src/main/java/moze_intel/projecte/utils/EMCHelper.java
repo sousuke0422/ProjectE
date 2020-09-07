@@ -36,7 +36,7 @@ public final class EMCHelper
 		IInventory inv = player.inventory;
 		LinkedHashMap<Integer, Integer> map = Maps.newLinkedHashMap();
 		boolean metRequirement = false;
-		int emcConsumed = 0;
+		long emcConsumed = 0;
 
 		for (int i = 0; i < inv.getSizeInventory(); i++)
 		{
@@ -60,8 +60,8 @@ public final class EMCHelper
 			{
 				if(FuelMapper.isStackFuel(stack))
 				{
-					int emc = getEmcValue(stack);
-					int toRemove = ((int) Math.ceil((minFuel - emcConsumed) / (float) emc));
+					long emc = getEmcValue(stack);
+					int toRemove = (int)Math.ceil((double) (minFuel - emcConsumed) / emc);
 
 					if (stack.stackSize >= toRemove)
 					{

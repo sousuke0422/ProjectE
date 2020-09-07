@@ -3,6 +3,7 @@ package moze_intel.projecte.gameObjs.gui;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.container.CondenserContainer;
 import moze_intel.projecte.gameObjs.tiles.CondenserTile;
+import moze_intel.projecte.utils.TransmutationEMCFormatter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -40,7 +41,8 @@ public class GUICondenser extends GuiContainer
 	@Override
 	protected void drawGuiContainerForegroundLayer(int var1, int var2) 
 	{
-		int toDisplay = tile.displayEmc > tile.requiredEmc ? tile.requiredEmc : tile.displayEmc;
-		this.fontRendererObj.drawString(Integer.toString(toDisplay), 140, 10, 4210752);
+		long toDisplay = tile.displayEmc > tile.requiredEmc ? tile.requiredEmc : tile.displayEmc;
+		String emc = TransmutationEMCFormatter.EMCFormat(toDisplay);
+		this.fontRendererObj.drawString(emc, 140, 10, 4210752);
 	}
 }

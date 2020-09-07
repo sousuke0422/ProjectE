@@ -9,7 +9,8 @@ import java.text.DecimalFormat;
 
 public final class Constants 
 {
-	public static final DecimalFormat EMC_FORMATTER = new DecimalFormat("##.##");
+	public static final DecimalFormat EMC_FORMATTER = new DecimalFormat("#,###.##");
+	public static final DecimalFormat SINGLE_DP_EMC_FORMATTER = new DecimalFormat("#,###.#");
 	public static final float PLAYER_WALK_SPEED = 0.1F;
 	
 	public static final int[] MAX_KLEIN_EMC = new int[] {50000, 200000, 800000, 3200000, 12800000, 51200000};
@@ -19,7 +20,7 @@ public final class Constants
 	public static final float[] EXPLOSIVE_LENS_RADIUS = new float[] {4.0F, 8.0F, 12.0F, 16.0F, 16.0F, 16.0F, 16.0F, 16.0F};
 	public static final int[] EXPLOSIVE_LENS_COST = new int[] {384, 768, 1536, 2304, 2304, 2304, 2304, 2304};
 	
-	public static final int TILE_MAX_EMC = Integer.MAX_VALUE;
+	public static final long TILE_MAX_EMC = Long.MAX_VALUE;
 	
 	public static final int COLLECTOR_MK1_MAX = 10000;
 	public static final int COLLECTOR_MK2_MAX = 30000;

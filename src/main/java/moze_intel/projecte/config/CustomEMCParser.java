@@ -116,7 +116,7 @@ public final class CustomEMCParser
 					{
 						PELogger.logInfo("Registered custom EMC for: " + entry.name + "(" + entry.emc + ")");
 					}
-					userValues.put(NormalizedSimpleStack.getFor(stack), entry.emc > 0 ? entry.emc  : 0);
+					userValues.put(NormalizedSimpleStack.getFor(stack), entry.emc > 0 ? (int) entry.emc : 0);
 				}
 				else
 				{
@@ -137,7 +137,7 @@ public final class CustomEMCParser
 					}
 					for (ItemStack stack : ItemHelper.getODItems(entry.name))
 					{
-						userValues.put(NormalizedSimpleStack.getFor(stack), entry.emc > 0 ? entry.emc  : 0);
+						userValues.put(NormalizedSimpleStack.getFor(stack), entry.emc > 0 ? (int) entry.emc : 0);
 					}
 				}
 			}
@@ -152,7 +152,7 @@ public final class CustomEMCParser
 		}
 	}
 
-	public static boolean addToFile(String toAdd, int meta, int emc)
+	public static boolean addToFile(String toAdd, int meta, long emc)
 	{
 		if (!loaded)
 		{
@@ -178,7 +178,7 @@ public final class CustomEMCParser
 					continue;
 				}
 
-				file.set(e.emcIndex - 1, "E:" + emc);
+				file.set((int) (e.emcIndex - 1), "E:" + emc);
 				hasFound = true;
 				break;
 			}
@@ -387,8 +387,8 @@ public final class CustomEMCParser
 					continue;
 				}
 
-				int emc = 0;
-				int emcIndex = reader.getLineNumber();
+				long emc = 0;
+				long emcIndex = reader.getLineNumber();
 
 				try
 				{
@@ -453,12 +453,12 @@ public final class CustomEMCParser
 	{
 		public String name;
 		public int meta;
-		public int emc;
+		public long emc;
 		public int nameIndex;
 		public int metaIndex;
-		public int emcIndex;
+		public long emcIndex;
 
-		public Entry(String name, int meta, int emc, int nameIndex, int metaIndex, int emcIndex)
+		public Entry(String name, int meta, long emc, int nameIndex, int metaIndex, long emcIndex)
 		{
 			this.name = name;
 			this.meta = meta;
