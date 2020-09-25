@@ -342,7 +342,7 @@ pe.transmutation.transmute=转化桌
 # pe.transmutation.unlearned7=e
 # pe.transmutation.unlearned8=d
 
-pe.update.available=现有新版ProjectE可用！版本号：%s
+pe.update.available=现有新版FMProjectE可用！版本号：%s
 pe.update.changelog=使用指令/projecte changelog可查看更新日志。
 pe.update.getit=下载地址在这里！
 

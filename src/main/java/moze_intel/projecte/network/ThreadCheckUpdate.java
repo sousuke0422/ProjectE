@@ -6,6 +6,7 @@ import moze_intel.projecte.utils.PELogger;
 import net.minecraft.client.Minecraft;
 import net.minecraft.event.ClickEvent;
 import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.util.StatCollector;
 import xyz.akirin.fmpe.FMPEMain;
@@ -24,7 +25,7 @@ public class ThreadCheckUpdate extends Thread
 	private final String changelogURL = "https://raw.githubusercontent.com/TeamBlackCrystal/FMProjectE/MC17/Changelog.txt";
 	private final String changelogDevURL = "https://raw.githubusercontent.com/TeamBlackCrystal/FMProjectE/MC17/ChangelogDev.txt";
 	private final String githubURL = "https://github.com/TeamBlackCrystal/FMProjectE";
-	private final String curseURL = "http://minecraft.curseforge.com/mc-mods/226410-projecte/files";
+	private final String curseURL = "https://bit.ly/2G4KC4j";
 	private boolean isServerSide;
 	
 	public ThreadCheckUpdate(boolean isServer) 
@@ -90,14 +91,14 @@ public class ThreadCheckUpdate extends Thread
 				}
 				else
 				{
-					Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText(String.format(StatCollector.translateToLocal("pe.update.available"), latestVersion)));
-					Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText(StatCollector.translateToLocal("pe.update.getit")));
+					Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText(String.format(EnumChatFormatting.GOLD + StatCollector.translateToLocal("pe.update.available"), latestVersion)));
+					Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText(EnumChatFormatting.GREEN + StatCollector.translateToLocal( "pe.update.getit")));
 
-					IChatComponent link = new ChatComponentText(curseURL);
+					IChatComponent link = new ChatComponentText(EnumChatFormatting.AQUA + curseURL);
 					link.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, curseURL));
 					Minecraft.getMinecraft().thePlayer.addChatMessage(link);
 
-					Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText(StatCollector.translateToLocal("pe.update.changelog")));
+					Minecraft.getMinecraft().thePlayer.addChatMessage(new ChatComponentText(EnumChatFormatting.GREEN + StatCollector.translateToLocal("pe.update.changelog")));
 				}
 			}
 			else

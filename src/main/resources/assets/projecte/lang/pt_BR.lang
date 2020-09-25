@@ -342,7 +342,7 @@ pe.transmutation.unlearned6=en
 pe.transmutation.unlearned7=di
 pe.transmutation.unlearned8=do
 
-pe.update.available=Nova atualização do ProjectE disponível! Versão: %s
+pe.update.available=Nova atualização do FMProjectE disponível! Versão: %s
 pe.update.changelog=Use /projecte changelog para o log de mudanças!
 pe.update.getit=Pegue aqui!
 
