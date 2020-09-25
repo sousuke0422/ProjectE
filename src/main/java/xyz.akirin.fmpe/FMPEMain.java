@@ -9,6 +9,9 @@ public class FMPEMain {
     static final String Name = "FMProjectE";
     static final String Version = "core:1.1.0, codename:none";
 
+    //public static final String RVersion = "@VERSION@";
+    public static final String RVersion = "2.0.0";
+
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
@@ -16,6 +19,7 @@ public class FMPEMain {
         FMPELogger.logInfo("Mod ID: " + ID);
         FMPELogger.logInfo("Mod Name: " + Name);
         FMPELogger.logInfo("Version: " + Version );
+        FMPELogger.logInfo("ReleaseVersion: " + RVersion );
         FMPELogger.logInfo("##########################################");
         FMPELogger.logDebug("##########FMProjectE SystemCheck##########");
         FMPELogger.logDebug("Integer: " + Integer.MAX_VALUE);

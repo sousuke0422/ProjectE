@@ -1,3 +1,10 @@
+###Version 2.0.0
+* NOTICE: This build is in no way affiliated with the official version.
+* NOTICE: Due to the effect of Long, we have observed incompatibilities with add-ons that handle EMC.
+* NEW: Backport some api present in 1.12.2. (Those with a @Deprecated mark are not recommended for use as they have not been tested.)
+* NEW: Long support in almost every situation.
+* FIXED: Unusual activity if the value is higher than "Integer.MAX_VALUE" on the config.
+
 ###Version 1.7.10-PE1.10.1
 * NOTICE: 1.7 is now a legacy build and will no longer be officially supported. Minor fixes may come in the future but are not guaranteed. Development and support will continue for 1.10 and above
 * NOTICE: As of PE1.9.3 legacy save conversion code has been removed. If you are upgrading from PE1.7.1 or below you will need to run PE1.9.2 once before upgrading further

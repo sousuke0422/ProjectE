@@ -1,7 +1,6 @@
 package moze_intel.projecte.network;
 
 import com.google.common.collect.Lists;
-import moze_intel.projecte.PECore;
 import moze_intel.projecte.network.commands.ChangelogCMD;
 import moze_intel.projecte.utils.PELogger;
 import net.minecraft.client.Minecraft;
@@ -9,6 +8,7 @@ import net.minecraft.event.ClickEvent;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.util.StatCollector;
+import xyz.akirin.fmpe.FMPEMain;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -21,9 +21,9 @@ public class ThreadCheckUpdate extends Thread
 {
 	private static boolean hasRunServer = false;
 	private static boolean hasRunClient = false;
-	private final String changelogURL = "https://raw.githubusercontent.com/sinkillerj/ProjectE/master/Changelog.txt";
-	private final String changelogDevURL = "https://raw.githubusercontent.com/sinkillerj/ProjectE/master/ChangelogDev.txt";
-	private final String githubURL = "https://github.com/sinkillerj/ProjectE";
+	private final String changelogURL = "https://raw.githubusercontent.com/TeamBlackCrystal/FMProjectE/MC17/Changelog.txt";
+	private final String changelogDevURL = "https://raw.githubusercontent.com/TeamBlackCrystal/FMProjectE/MC17/ChangelogDev.txt";
+	private final String githubURL = "https://github.com/TeamBlackCrystal/FMProjectE";
 	private final String curseURL = "http://minecraft.curseforge.com/mc-mods/226410-projecte/files";
 	private boolean isServerSide;
 	
@@ -75,7 +75,7 @@ public class ThreadCheckUpdate extends Thread
 				}
 			}
 			
-			if (!PECore.VERSION.equals(latestVersion))
+			if (!FMPEMain.RVersion.equals(latestVersion))
 			{
 				PELogger.logInfo("Mod is outdated! Check " + curseURL + " to get the latest version (" + latestVersion + ").");
 				
