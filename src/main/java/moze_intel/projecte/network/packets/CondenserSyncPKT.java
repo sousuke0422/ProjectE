@@ -11,15 +11,15 @@ import net.minecraft.tileentity.TileEntity;
 
 public class CondenserSyncPKT implements IMessage
 {
-	private int displayEmc;
-	private int requiredEmc;
+	private long displayEmc;
+	private long requiredEmc;
 	private int x;
 	private int y;
 	private int z;
 	
 	public CondenserSyncPKT() {}
 	
-	public CondenserSyncPKT(int displayEmc, int requiredEmc, int x, int y, int z) 
+	public CondenserSyncPKT(long displayEmc, long requiredEmc, int x, int y, int z)
 	{
 		this.displayEmc = displayEmc;
 		this.requiredEmc = requiredEmc;
@@ -31,8 +31,8 @@ public class CondenserSyncPKT implements IMessage
 	@Override
 	public void fromBytes(ByteBuf buf) 
 	{
-		displayEmc = buf.readInt();
-		requiredEmc = buf.readInt();
+		displayEmc = buf.readLong();
+		requiredEmc = buf.readLong();
 		x = buf.readInt();
 		y = buf.readInt();
 		z = buf.readInt();
@@ -41,8 +41,8 @@ public class CondenserSyncPKT implements IMessage
 	@Override
 	public void toBytes(ByteBuf buf) 
 	{
-		buf.writeInt(displayEmc);
-		buf.writeInt(requiredEmc);
+		buf.writeLong(displayEmc);
+		buf.writeLong(requiredEmc);
 		buf.writeInt(x);
 		buf.writeInt(y);
 		buf.writeInt(z);

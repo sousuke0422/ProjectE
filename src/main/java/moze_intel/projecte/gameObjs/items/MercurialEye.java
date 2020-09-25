@@ -65,7 +65,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction
 			int newMeta = inventory[1].getItemDamage();
 
 			double kleinEmc = ItemPE.getEmc(inventory[0]);
-			int reqEmc = EMCHelper.getEmcValue(inventory[1]);
+			long reqEmc = EMCHelper.getEmcValue(inventory[1]);
 
 			byte charge = getCharge(stack);
 			byte mode = this.getMode(stack);

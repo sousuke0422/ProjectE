@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class APICustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Integer> {
+public class APICustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 	public static APICustomEMCMapper instance = new APICustomEMCMapper();
 	public static final int PRIORITY_MIN_VALUE = 0;
 	public static final int PRIORITY_MAX_VALUE = 512;
@@ -29,15 +29,15 @@ public class APICustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Int
 	private APICustomEMCMapper() {}
 
 	//Need a special Map for Items and Blocks because the ItemID-mapping might change, so we need to store modid:unlocalizedName instead of the NormalizedSimpleStack which only holds itemid and metadata
-	Map<String, Map<NormalizedSimpleStack, Integer>> customEMCforMod = Maps.newHashMap();
-	Map<String, Map<NormalizedSimpleStack, Integer>> customNonItemEMCforMod = Maps.newHashMap();
+	Map<String, Map<NormalizedSimpleStack, Long>> customEMCforMod = Maps.newHashMap();
+	Map<String, Map<NormalizedSimpleStack, Long>> customNonItemEMCforMod = Maps.newHashMap();
 
-	public void registerCustomEMC(ItemStack stack, int emcValue) {
+	public void registerCustomEMC(ItemStack stack, long emcValue) {
 		if (stack == null || stack.getItem() == null) return;
 		if (emcValue < 0) emcValue = 0;
 		ModContainer activeMod = Loader.instance().activeModContainer();
 		String modId = activeMod == null ? null : activeMod.getModId();
-		Map<NormalizedSimpleStack, Integer> modMap;
+		Map<NormalizedSimpleStack, Long> modMap;
 		if (customEMCforMod.containsKey(modId)) {
 			modMap = customEMCforMod.get(modId);
 		} else {
@@ -47,13 +47,13 @@ public class APICustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Int
 		modMap.put(NormalizedSimpleStack.getFor(stack), emcValue);
 	}
 
-	public void registerCustomEMC(Object o, int emcValue) {
+	public void registerCustomEMC(Object o, long emcValue) {
 		NormalizedSimpleStack stack = ConversionProxyImpl.instance.objectToNSS(o);
 		if (stack == null) return;
 		if (emcValue < 0) emcValue = 0;
 		ModContainer activeMod = Loader.instance().activeModContainer();
 		String modId = activeMod == null ? null : activeMod.getModId();
-		Map<NormalizedSimpleStack, Integer> modMap;
+		Map<NormalizedSimpleStack, Long> modMap;
 		if (customNonItemEMCforMod.containsKey(modId)) {
 			modMap = customNonItemEMCforMod.get(modId);
 		} else {
@@ -79,7 +79,7 @@ public class APICustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Int
 	}
 
 	@Override
-	public void addMappings(IMappingCollector<NormalizedSimpleStack, Integer> mapper, Configuration config) {
+	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, Configuration config) {
 		final Map<String, Integer> priorityMap = new HashMap<>();
 		Set<String> modIdSet = Sets.newHashSet();
 		modIdSet.addAll(customEMCforMod.keySet());
@@ -130,7 +130,7 @@ public class APICustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Int
 			String modIdOrUnknown = modId == null ? "unknown mod" : modId;
 			if (customEMCforMod.containsKey(modId))
 			{
-				for (Map.Entry<NormalizedSimpleStack, Integer> entry : customEMCforMod.get(modId).entrySet())
+				for (Map.Entry<NormalizedSimpleStack, Long> entry : customEMCforMod.get(modId).entrySet())
 				{
 					NormalizedSimpleStack normStack = entry.getKey();
 					if (isAllowedToSet(modId, normStack, entry.getValue(), config))
@@ -146,7 +146,7 @@ public class APICustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Int
 			}
 			if (customNonItemEMCforMod.containsKey(modId))
 			{
-				for(Map.Entry<NormalizedSimpleStack, Integer> entry: customNonItemEMCforMod.get(modId).entrySet()) {
+				for(Map.Entry<NormalizedSimpleStack, Long> entry: customNonItemEMCforMod.get(modId).entrySet()) {
 					NormalizedSimpleStack normStack = entry.getKey();
 					if (isAllowedToSet(modId, normStack, entry.getValue(), config))
 					{
@@ -162,7 +162,7 @@ public class APICustomEMCMapper implements IEMCMapper<NormalizedSimpleStack, Int
 		}
 	}
 
-	protected boolean isAllowedToSet(String modId, NormalizedSimpleStack stack, Integer value, Configuration config) {
+	protected boolean isAllowedToSet(String modId, NormalizedSimpleStack stack, Long value, Configuration config) {
 		String itemName;
 		if (stack instanceof NormalizedSimpleStack.NSSItem)
 		{

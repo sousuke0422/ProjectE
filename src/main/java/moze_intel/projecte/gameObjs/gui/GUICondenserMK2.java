@@ -34,7 +34,7 @@ public class GUICondenserMK2 extends GuiContainer
 
 		this.drawTexturedModalRect(x, y, 0, 0, xSize, ySize);
 
-		int progress = tile.getProgressScaled();
+		int progress = (int) tile.getProgressScaled();
 		this.drawTexturedModalRect(x + 33, y + 10, 0, 235, progress, 10);
 	}
 

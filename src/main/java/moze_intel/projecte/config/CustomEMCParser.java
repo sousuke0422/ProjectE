@@ -78,7 +78,7 @@ public final class CustomEMCParser
 		}
 	}
 
-	public static Map<NormalizedSimpleStack, Integer> userValues = Maps.newHashMap();
+	public static Map<NormalizedSimpleStack, Long> userValues = Maps.newHashMap();
 
 	public static void readUserData()
 	{
@@ -116,7 +116,7 @@ public final class CustomEMCParser
 					{
 						PELogger.logInfo("Registered custom EMC for: " + entry.name + "(" + entry.emc + ")");
 					}
-					userValues.put(NormalizedSimpleStack.getFor(stack), entry.emc > 0 ? (int) entry.emc : 0);
+					userValues.put(NormalizedSimpleStack.getFor(stack), (entry.emc > 0 ? entry.emc : 0));
 				}
 				else
 				{
@@ -137,7 +137,7 @@ public final class CustomEMCParser
 					}
 					for (ItemStack stack : ItemHelper.getODItems(entry.name))
 					{
-						userValues.put(NormalizedSimpleStack.getFor(stack), entry.emc > 0 ? (int) entry.emc : 0);
+						userValues.put(NormalizedSimpleStack.getFor(stack), entry.emc > 0 ? entry.emc : 0);
 					}
 				}
 			}
@@ -392,7 +392,7 @@ public final class CustomEMCParser
 
 				try
 				{
-					emc = Integer.valueOf(line.substring(2));
+					emc = Long.valueOf(line.substring(2));
 				}
 				catch (NumberFormatException e)
 				{

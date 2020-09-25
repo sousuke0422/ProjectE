@@ -77,7 +77,7 @@ public class RelayMK1Tile extends TileEmc implements IInventory, ISidedInventory
 			}
 			else
 			{
-				int emcVal = EMCHelper.getEmcValue(stack);
+				long emcVal = EMCHelper.getEmcValue(stack);
 				
 				if (emcVal > 0 && (this.getStoredEmc() + emcVal) <= this.getMaximumEmc())
 				{

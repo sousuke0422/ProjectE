@@ -11,7 +11,7 @@ import net.minecraft.tileentity.TileEntity;
 
 public class CollectorSyncPKT implements IMessage
 {
-	private int displayEmc;
+	private long displayEmc;
 	private double displayKleinCharge;
 	private int x;
 	private int y;
@@ -19,7 +19,7 @@ public class CollectorSyncPKT implements IMessage
 	
 	public CollectorSyncPKT() {}
 	
-	public CollectorSyncPKT(int displayEmc, double displayKleinCharge, int x, int y, int z)
+	public CollectorSyncPKT(long displayEmc, double displayKleinCharge, int x, int y, int z)
 	{
 		this.displayEmc = displayEmc;
 		this.displayKleinCharge = displayKleinCharge;
@@ -41,7 +41,7 @@ public class CollectorSyncPKT implements IMessage
 	@Override
 	public void toBytes(ByteBuf buf) 
 	{
-		buf.writeInt(displayEmc);
+		buf.writeLong(displayEmc);
 		buf.writeDouble(displayKleinCharge);
 		buf.writeInt(x);
 		buf.writeInt(y);

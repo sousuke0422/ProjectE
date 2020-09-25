@@ -1,10 +1,27 @@
 package xyz.akirin.fmpe;
 
 import cpw.mods.fml.common.Mod;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 
 @Mod(modid = FMPEMain.ID, name = FMPEMain.Name, version = FMPEMain.Version)
 public class FMPEMain {
     static final String ID = "FMPE";
     static final String Name = "FMProjectE";
-    static final String Version = "core:1.0.0, codename:none";
+    static final String Version = "core:1.1.0, codename:none";
+
+    @Mod.EventHandler
+    public void preInit(FMLPreInitializationEvent event)
+    {
+        FMPELogger.logInfo("##########FMProjectE Information##########");
+        FMPELogger.logInfo("Mod ID: " + ID);
+        FMPELogger.logInfo("Mod Name: " + Name);
+        FMPELogger.logInfo("Version: " + Version );
+        FMPELogger.logInfo("##########################################");
+        FMPELogger.logDebug("##########FMProjectE SystemCheck##########");
+        FMPELogger.logDebug("Integer: " + Integer.MAX_VALUE);
+        FMPELogger.logDebug("Long: " + Long.MAX_VALUE);
+        FMPELogger.logDebug("Float: " + Float.MAX_VALUE);
+        FMPELogger.logDebug("Double: " + Double.MAX_VALUE);
+        FMPELogger.logDebug("##########################################");
+    }
 }

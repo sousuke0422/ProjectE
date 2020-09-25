@@ -38,7 +38,7 @@ public class SlotLock extends Slot
 		if (stack.getItem() instanceof IItemEmc)
 		{
 			IItemEmc itemEmc = ((IItemEmc) stack.getItem());
-			long remainEmc = Constants.TILE_MAX_EMC - (long) Math.ceil(inv.emc);
+			double  remainEmc = Constants.TILE_MAX_EMC - (int) Math.ceil(inv.emc);
 			
 			if (itemEmc.getStoredEmc(stack) >= remainEmc)
 			{

@@ -10,12 +10,12 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
 
-public class LazyMapper implements IEMCMapper<NormalizedSimpleStack, Integer> {
+public class LazyMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 
-	IMappingCollector<NormalizedSimpleStack, Integer> mapper;
+	IMappingCollector<NormalizedSimpleStack, Long> mapper;
 
 	@Override
-	public void addMappings(IMappingCollector<NormalizedSimpleStack, Integer> mapper, Configuration config) {
+	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, Configuration config) {
 		this.mapper = mapper;
 		addMapping(new ItemStack(Blocks.cobblestone), 1);
 		addMapping(new ItemStack(Blocks.stone), 1);
@@ -148,7 +148,7 @@ public class LazyMapper implements IEMCMapper<NormalizedSimpleStack, Integer> {
 		addMapping("appliedenergistics2:item.ItemMultiMaterial", 1, 256);
 	}
 
-	protected void addMapping(ItemStack itemStack, int value) {
+	protected void addMapping(ItemStack itemStack, long value) {
 		this.mapper.setValueBefore(NormalizedSimpleStack.getFor(itemStack), value);
 	}
 

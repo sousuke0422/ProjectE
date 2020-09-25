@@ -10,7 +10,7 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
-public class CondenserContainer extends Container
+public class CondenserContainer extends LongContainer
 {	
 	public CondenserTile tile;
 	

@@ -120,10 +120,10 @@ public class TransmutationInventory implements IInventory
 	
 	public void checkForUpdates()
 	{
-		int matterEmc = EMCHelper.getEmcValue(inventory[MATTER_INDEXES[0]]);
-		int fuelEmc = EMCHelper.getEmcValue(inventory[FUEL_INDEXES[0]]);
+		long matterEmc = EMCHelper.getEmcValue(inventory[MATTER_INDEXES[0]]);
+		long fuelEmc = EMCHelper.getEmcValue(inventory[FUEL_INDEXES[0]]);
 		
-		int maxEmc = matterEmc > fuelEmc ? matterEmc : fuelEmc;
+		long maxEmc = matterEmc > fuelEmc ? matterEmc : fuelEmc;
 		
 		if (maxEmc > emc)
 		{
@@ -158,7 +158,7 @@ public class TransmutationInventory implements IInventory
 		ItemSearchHelper searchHelper = ItemSearchHelper.create(filter);
 		if (inventory[LOCK_INDEX] != null)
 		{
-			int reqEmc = EMCHelper.getEmcValue(inventory[LOCK_INDEX]);
+			long reqEmc = EMCHelper.getEmcValue(inventory[LOCK_INDEX]);
 			
 			if (this.emc < reqEmc)
 			{

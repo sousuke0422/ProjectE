@@ -1,23 +1,16 @@
 package moze_intel.projecte.emc;
 
 import moze_intel.projecte.PECore;
+import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.emc.arithmetics.IValueArithmetic;
 import moze_intel.projecte.emc.collector.DumpToFileCollector;
 import moze_intel.projecte.api.event.EMCRemapEvent;
 import moze_intel.projecte.emc.collector.IExtendedMappingCollector;
-import moze_intel.projecte.emc.collector.IntToFractionCollector;
-import moze_intel.projecte.emc.generators.FractionToIntGenerator;
+import moze_intel.projecte.emc.collector.LongToDoubleCollector;
+import moze_intel.projecte.emc.generators.DoubleToLongGenerator;
 import moze_intel.projecte.emc.generators.IValueGenerator;
-import moze_intel.projecte.emc.mappers.APICustomConversionMapper;
-import moze_intel.projecte.emc.mappers.Chisel2Mapper;
-import moze_intel.projecte.emc.arithmetics.HiddenFractionArithmetic;
-import moze_intel.projecte.emc.mappers.APICustomEMCMapper;
-import moze_intel.projecte.emc.mappers.CraftingMapper;
-import moze_intel.projecte.emc.mappers.CustomEMCMapper;
-import moze_intel.projecte.emc.mappers.IEMCMapper;
-import moze_intel.projecte.emc.mappers.LazyMapper;
-import moze_intel.projecte.emc.mappers.OreDictionaryMapper;
-import moze_intel.projecte.emc.mappers.SmeltingMapper;
+import moze_intel.projecte.emc.mappers.*;
+import moze_intel.projecte.emc.arithmetics.HiddenDoubleArithmetic;
 import moze_intel.projecte.emc.mappers.customConversions.CustomConversionMapper;
 import moze_intel.projecte.emc.pregenerated.PregeneratedEMC;
 import moze_intel.projecte.playerData.Transmutation;
@@ -25,7 +18,6 @@ import moze_intel.projecte.utils.PELogger;
 import moze_intel.projecte.utils.PrefixConfiguration;
 
 import com.google.common.collect.Maps;
-import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.item.Item;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
@@ -42,12 +34,14 @@ import java.util.Map;
 
 public final class EMCMapper 
 {
-	public static Map<SimpleStack, Integer> emc = new LinkedHashMap<>();
-	public static Map<NormalizedSimpleStack, Integer> graphMapperValues;
+	public static Map<SimpleStack, Long> emc = new LinkedHashMap<>();
+	public static Map<NormalizedSimpleStack, Long> graphMapperValues;
+
+	public static double covalenceLoss = ProjectEConfig.covalenceLoss;
 
 	public static void map()
 	{
-		List<IEMCMapper<NormalizedSimpleStack, Integer>> emcMappers = Arrays.asList(
+		List<IEMCMapper<NormalizedSimpleStack, Long>> emcMappers = Arrays.asList(
 				new OreDictionaryMapper(),
 				new LazyMapper(),
 				new Chisel2Mapper(),
@@ -55,13 +49,13 @@ public final class EMCMapper
 				new CustomConversionMapper(),
 				new CustomEMCMapper(),
 				new CraftingMapper(),
-				new moze_intel.projecte.emc.mappers.FluidMapper(),
+				new FluidMapper(),
 				new SmeltingMapper(),
 				new APICustomConversionMapper()
 		);
-		SimpleGraphMapper<NormalizedSimpleStack, Fraction, IValueArithmetic<Fraction>> mapper = new SimpleGraphMapper(new HiddenFractionArithmetic());
-		IValueGenerator<NormalizedSimpleStack, Integer> valueGenerator = new FractionToIntGenerator(mapper);
-		IExtendedMappingCollector<NormalizedSimpleStack, Integer, IValueArithmetic<Fraction>> mappingCollector = new IntToFractionCollector(mapper);
+		SimpleGraphMapper<NormalizedSimpleStack, Double, IValueArithmetic<Double>> mapper = new SimpleGraphMapper(new HiddenDoubleArithmetic());
+		IValueGenerator<NormalizedSimpleStack, Long> valueGenerator = new DoubleToLongGenerator(mapper);
+		IExtendedMappingCollector<NormalizedSimpleStack, Long, IValueArithmetic<Fraction>> mappingCollector = new LongToDoubleCollector(mapper);
 
 		Configuration config = new Configuration(new File(PECore.CONFIG_DIR, "mapping.cfg"));
 		config.load();
@@ -88,7 +82,7 @@ public final class EMCMapper
 			));
 
 			PELogger.logInfo("Starting to collect Mappings...");
-			for (IEMCMapper<NormalizedSimpleStack, Integer> emcMapper : emcMappers)
+			for (IEMCMapper<NormalizedSimpleStack, Long> emcMapper : emcMappers)
 			{
 				try
 				{
@@ -133,7 +127,7 @@ public final class EMCMapper
 		}
 
 
-		for (Map.Entry<NormalizedSimpleStack, Integer> entry: graphMapperValues.entrySet()) {
+		for (Map.Entry<NormalizedSimpleStack, Long> entry: graphMapperValues.entrySet()) {
 			if (entry.getKey() instanceof NormalizedSimpleStack.NSSItem)
 			{
 				NormalizedSimpleStack.NSSItem normStackItem = (NormalizedSimpleStack.NSSItem)entry.getKey();
@@ -141,7 +135,7 @@ public final class EMCMapper
 				if (obj != null)
 				{
 					int id = Item.itemRegistry.getIDForObject(obj);
-					emc.put(new SimpleStack(id, 1, normStackItem.damage), entry.getValue());
+					emc.put(new SimpleStack(id, 1, (int) normStackItem.damage), entry.getValue());
 				} else {
 					PELogger.logWarn("Could not add EMC value for %s|%s. Can not get ItemID!", normStackItem.itemName, normStackItem.damage);
 				}
@@ -157,9 +151,9 @@ public final class EMCMapper
 	 * Remove all entrys from the map, that are not {@link moze_intel.projecte.emc.NormalizedSimpleStack.NSSItem}s, have a value < 0 or WILDCARD_VALUE as metadata.
 	 * @param map
 	 */
-	static void filterEMCMap(Map<NormalizedSimpleStack, Integer> map) {
-		for(Iterator<Map.Entry<NormalizedSimpleStack, Integer>> iter = graphMapperValues.entrySet().iterator(); iter.hasNext();) {
-			Map.Entry<NormalizedSimpleStack, Integer> entry = iter.next();
+	static void filterEMCMap(Map<NormalizedSimpleStack, Long> map) {
+		for(Iterator<Map.Entry<NormalizedSimpleStack, Long>> iter = graphMapperValues.entrySet().iterator(); iter.hasNext();) {
+			Map.Entry<NormalizedSimpleStack, Long> entry = iter.next();
 			NormalizedSimpleStack normStack = entry.getKey();
 			if (normStack instanceof NormalizedSimpleStack.NSSItem && entry.getValue() > 0) {
 				NormalizedSimpleStack.NSSItem normStackItem = (NormalizedSimpleStack.NSSItem)normStack;
@@ -179,7 +173,7 @@ public final class EMCMapper
 		return emc.containsKey(copy);
 	}
 
-	public static int getEmcValue(SimpleStack stack)
+	public static long getEmcValue(SimpleStack stack)
 	{
 		SimpleStack copy = stack.copy();
 		copy.qnty = 1;

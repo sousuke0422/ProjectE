@@ -13,10 +13,17 @@ import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
-public class CollectorMK1Container extends Container
+import javax.annotation.Nonnull;
+
+public class CollectorMK1Container extends LongContainer
 {
-	private CollectorMK1Tile tile;
-	private int sunLevel;
+	final CollectorMK1Tile tile;
+	public int sunLevel = 0;
+	public long emc = 0;
+	public double kleinChargeProgress = 0;
+	public double fuelProgress = 0;
+	public int kleinEmc = 0;
+
 
 
 	public CollectorMK1Container(InventoryPlayer invPlayer, CollectorMK1Tile collector)
@@ -72,11 +79,19 @@ public class CollectorMK1Container extends Container
 		
 		sunLevel = tile.getSunLevel();
 	}
-	
+
+	@Override
 	@SideOnly(Side.CLIENT)
-	public void updateProgressBar(int par1, int par2)
+	public void updateProgressBar(int id, int data)
 	{
-		tile.displaySunLevel = par2;
+		switch (id)
+		{
+			case 0: sunLevel = data; break;
+			case 1: emc = data; break;
+			case 2: kleinChargeProgress = data / 8000.0; break;
+			case 3: fuelProgress = data / 8000.0; break;
+			case 4: kleinEmc = data; break;
+		}
 	}
 	
 	@Override
@@ -85,7 +100,19 @@ public class CollectorMK1Container extends Container
 		super.onContainerClosed(player);
 		tile.closeInventory();
 	}
-	
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void updateProgressBarLong(int id, long data)
+	{
+		switch (id)
+		{
+			case 1: emc = data; break;
+			default: updateProgressBar(id, (int) data);
+		}
+	}
+
+	@Nonnull
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int slotIndex)
 	{

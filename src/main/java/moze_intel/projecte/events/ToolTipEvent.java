@@ -13,6 +13,7 @@ import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
@@ -106,7 +107,7 @@ public class ToolTipEvent
 		{
 			if (EMCHelper.doesItemHaveEmc(current))
 			{
-				int value = EMCHelper.getEmcValue(current);
+				long value = EMCHelper.getEmcValue(current);
 
 				event.toolTip.add(EnumChatFormatting.YELLOW +
 						StatCollector.translateToLocal("pe.emc.emc_tooltip_prefix") + " " + EnumChatFormatting.WHITE + String.format("%,d", value));
@@ -117,17 +118,25 @@ public class ToolTipEvent
 					try
 					{
 						total = LongMath.checkedMultiply(value, current.stackSize);
+						if (total < 0 || total <= value)
+						{
+							event.toolTip.add(EnumChatFormatting.YELLOW + I18n.format("pe.emc.stackemc_tooltip_prefix") + " " + EnumChatFormatting.OBFUSCATED + I18n.format("pe.emc.too_much"));
+						}
+						else
+						{
+							event.toolTip.add(EnumChatFormatting.YELLOW + I18n.format("pe.emc.stackemc_tooltip_prefix") + " " + EnumChatFormatting.WHITE + Constants.EMC_FORMATTER.format(value * current.stackSize) + EnumChatFormatting.BLUE + EMCHelper.getEmcSellString(current, current.stackSize));
+						}
 					} catch (ArithmeticException e) {
-						total = Long.MAX_VALUE;
-					}
-					if (total < 0 || total <= value || total > Integer.MAX_VALUE)
-					{
+					//	total = Long.MAX_VALUE;
+					//}
+					//if (total < 0 || total <= value || total > Constants.TILE_MAX_EMC)
+					//{
 						event.toolTip.add(EnumChatFormatting.YELLOW + StatCollector.translateToLocal("pe.emc.stackemc_tooltip_prefix") + " " + EnumChatFormatting.OBFUSCATED + StatCollector.translateToLocal("pe.emc.too_much"));
-					}
+					}/*
 					else
 					{
 						event.toolTip.add(EnumChatFormatting.YELLOW + StatCollector.translateToLocal("pe.emc.stackemc_tooltip_prefix") + " " + EnumChatFormatting.WHITE + String.format("%,d", value * current.stackSize));
-					}
+					}*/
 
 				}
 			}

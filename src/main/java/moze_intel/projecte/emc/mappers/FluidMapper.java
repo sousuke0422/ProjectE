@@ -1,7 +1,7 @@
 package moze_intel.projecte.emc.mappers;
 
 import moze_intel.projecte.emc.NormalizedSimpleStack;
-import moze_intel.projecte.emc.arithmetics.FullFractionArithmetic;
+import moze_intel.projecte.emc.arithmetics.DoubleArithmetic;
 import moze_intel.projecte.emc.collector.IExtendedMappingCollector;
 import moze_intel.projecte.emc.collector.IMappingCollector;
 import moze_intel.projecte.utils.PELogger;
@@ -22,7 +22,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import java.util.Arrays;
 import java.util.List;
 
-public class FluidMapper implements IEMCMapper<NormalizedSimpleStack, Integer> {
+public class FluidMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 	private static List<Pair<NormalizedSimpleStack, FluidStack>> melting = Lists.newArrayList();
 
 	public static void addMelting(String odName, String fluidName, int amount) {
@@ -81,14 +81,14 @@ public class FluidMapper implements IEMCMapper<NormalizedSimpleStack, Integer> {
 	}
 
 	@Override
-	public void addMappings(IMappingCollector<NormalizedSimpleStack, Integer> mapper, Configuration config) {
-		mapper.setValueBefore(NormalizedSimpleStack.getFor(FluidRegistry.WATER), Integer.MIN_VALUE/*=Free. TODO: Use IntArithmetic*/);
+	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, Configuration config) {
+		mapper.setValueBefore(NormalizedSimpleStack.getFor(FluidRegistry.WATER), Long.MIN_VALUE/*=Free. TODO: Use IntArithmetic*/);
 		//1 Bucket of Lava = 1 Block of Obsidian
 		mapper.addConversion(1000, NormalizedSimpleStack.getFor(FluidRegistry.LAVA), Arrays.asList(NormalizedSimpleStack.getFor(Blocks.obsidian)));
 
 		//Add Conversion in case MFR is not present and milk is not an actual fluid
 		NormalizedSimpleStack fakeMilkFluid = NormalizedSimpleStack.createFake("fakeMilkFluid");
-		mapper.setValueBefore(fakeMilkFluid, 16);
+		mapper.setValueBefore(fakeMilkFluid, 16L);
 		mapper.addConversion(1, NormalizedSimpleStack.getFor(Items.milk_bucket), Arrays.asList(NormalizedSimpleStack.getFor(Items.bucket), fakeMilkFluid));
 
 		Fluid milkFluid = FluidRegistry.getFluid("milk");
@@ -98,7 +98,7 @@ public class FluidMapper implements IEMCMapper<NormalizedSimpleStack, Integer> {
 
 		if (!(mapper instanceof IExtendedMappingCollector)) throw new RuntimeException("Cannot add Extended Fluid Mappings to mapper!");
 		IExtendedMappingCollector emapper = (IExtendedMappingCollector) mapper;
-		FullFractionArithmetic fluidArithmetic = new FullFractionArithmetic();
+		DoubleArithmetic fluidArithmetic = new DoubleArithmetic();
 
 		for (Pair<NormalizedSimpleStack, FluidStack> pair: melting) {
 			emapper.addConversion(pair.getValue().amount, NormalizedSimpleStack.getFor(pair.getValue().getFluid()), Arrays.asList(pair.getKey()), fluidArithmetic);

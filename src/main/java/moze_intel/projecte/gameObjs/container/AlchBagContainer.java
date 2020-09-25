@@ -1,7 +1,6 @@
 package moze_intel.projecte.gameObjs.container;
 
 import invtweaks.api.container.ChestContainer;
-import moze_intel.projecte.gameObjs.container.inventory.AlchBagInventory;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;

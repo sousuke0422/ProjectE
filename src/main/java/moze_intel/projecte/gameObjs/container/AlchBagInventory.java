@@ -1,4 +1,4 @@
-package moze_intel.projecte.gameObjs.container.inventory;
+package moze_intel.projecte.gameObjs.container;
 
 import moze_intel.projecte.playerData.AlchemicalBags;
 import net.minecraft.entity.player.EntityPlayer;

@@ -3,7 +3,7 @@ package moze_intel.projecte.gameObjs.gui;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.gameObjs.container.AlchBagContainer;
 import moze_intel.projecte.gameObjs.container.AlchChestContainer;
-import moze_intel.projecte.gameObjs.container.inventory.AlchBagInventory;
+import moze_intel.projecte.gameObjs.container.AlchBagInventory;
 import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;

@@ -26,7 +26,7 @@ public class GUICollectorMK3 extends GuiContainer
 	@Override
 	protected void drawGuiContainerForegroundLayer(int var1, int var2)
 	{
-		this.fontRendererObj.drawString(Integer.toString(tile.displayEmc), 91, 32, 4210752);
+		this.fontRendererObj.drawString(Long.toString(tile.displayEmc), 91, 32, 4210752);
 		
 		double kleinCharge = tile.displayItemCharge;
 		if (kleinCharge != -1)
@@ -58,7 +58,7 @@ public class GUICollectorMK3 extends GuiContainer
 		this.drawTexturedModalRect(x + 98, y + 58, 0, 166, progress, 10);
 		
 		//Fuel Progress. Max is 24.
-		progress = tile.getFuelProgressScaled(24);
+		progress = (int) tile.getFuelProgressScaled(24);
 		this.drawTexturedModalRect(x + 172, y + 55 - progress, 219, 38 - progress, 10, progress + 1);
 	}
 }

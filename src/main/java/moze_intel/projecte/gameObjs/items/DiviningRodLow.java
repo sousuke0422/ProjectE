@@ -26,6 +26,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -69,7 +70,7 @@ public class DiviningRodLow extends ItemPE implements IModeChanger
 		if (mop != null && mop.typeOfHit.equals(MovingObjectType.BLOCK))
 		{
 			PlayerHelper.swingItem(player);
-			List<Integer> emcValues = Lists.newArrayList();
+			List<Long> emcValues = Lists.newArrayList();
 			long totalEmc = 0;
 			int numBlocks = 0;
 
@@ -96,7 +97,7 @@ public class DiviningRodLow extends ItemPE implements IModeChanger
 						}
 
 						ItemStack blockStack = drops.get(0);
-						int blockEmc = EMCHelper.getEmcValue(blockStack);
+						long blockEmc = EMCHelper.getEmcValue(blockStack);
 
 						if (blockEmc == 0)
 						{
@@ -111,7 +112,7 @@ public class DiviningRodLow extends ItemPE implements IModeChanger
 
 								if (ItemHelper.areItemStacksEqualIgnoreNBT(entry.getKey(), blockStack))
 								{
-									int currentValue = EMCHelper.getEmcValue(entry.getValue());
+									long currentValue = EMCHelper.getEmcValue(entry.getValue());
 
 									if (currentValue != 0)
 									{
@@ -144,14 +145,14 @@ public class DiviningRodLow extends ItemPE implements IModeChanger
 				return stack;
 			}
 			
-			int[] maxValues = new int[3];
+			long[] maxValues = new long[3];
 
 			for (int i = 0; i < 3; i++)
 			{
 				maxValues[i] = 1;
 			}
 
-			Collections.sort(emcValues, Comparators.INT_DESCENDING);
+			Collections.sort(emcValues, Comparators.LONG_DESCENDING);
 
 			int num = emcValues.size() >= 3 ? 3 : emcValues.size();
 

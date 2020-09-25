@@ -25,11 +25,11 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
 	protected boolean loadChecks;
 	protected boolean isAcceptingEmc;
 	private int ticksSinceSync;
-	public int displayEmc;
+	public long displayEmc;
 	public float lidAngle;
 	public float prevLidAngle;
 	public int numPlayersUsing;
-	public int requiredEmc;
+	public long requiredEmc;
 
 	public CondenserTile()
 	{
@@ -82,7 +82,7 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
 
 		if (EMCHelper.doesItemHaveEmc(lock))
 		{
-			int lockEmc = EMCHelper.getEmcValue(lock);
+			long lockEmc = EMCHelper.getEmcValue(lock);
 
 			if (requiredEmc != lockEmc)
 			{
@@ -104,6 +104,7 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
 	protected void condense()
 	{
 		for (int i = 1; i < 92; i++)
+		//for (int i = 0; i < ItemStack.getSlots(); i++)
 		{
 			ItemStack stack = getStackInSlot(i);
 			
@@ -118,7 +119,7 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
 				continue;
 			}
 			decrStackSize(i, 1);
-			this.addEMC(EMCHelper.getEmcValue(stack));
+			this.addEMC(EMCHelper.getEmcSellValue(stack));
 			break;
 		}
 		
@@ -210,7 +211,7 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
 		return ItemHelper.areItemStacksEqualIgnoreNBT(lock, stack);
 	}
 	
-	public int getProgressScaled()
+	public long getProgressScaled()
 	{
 		if (requiredEmc == 0) 
 		{

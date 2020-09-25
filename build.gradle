@@ -61,6 +61,8 @@ dependencies {
     compile "codechicken:NotEnoughItems:1.7.10-1.0.4.83:dev"
 
     compile name: 'MineTweaker3', version: 'Dev-1.7.10-3.0.9C', ext: 'jar'
+
+    dependencies { compile fileTree(dir: 'lib', include: '*.jar') }
 }
 
 processResources

@@ -86,7 +86,7 @@ public class KleinStar
 		@Override
 		public void apply()
 		{
-			recipe = shaped ? new RecipeShapedKleinStar(3, 3, inputs, output) : new RecipeShapelessHidden(output, inputs);
+			recipe = shaped ? new RecipeShapedKleinStar(3, 3, inputs, output) : new RecipeShapelessHidden(output, (Object) inputs);
 			GameRegistry.addRecipe(recipe);
 		}
 

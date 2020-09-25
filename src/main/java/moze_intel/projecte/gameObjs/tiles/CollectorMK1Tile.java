@@ -33,7 +33,7 @@ public class CollectorMK1Tile extends TileEmc implements IInventory, ISidedInven
 	private boolean hasChargeableItem;
 	private boolean hasFuel;
 	public double storedFuelEmc;
-	public int displayEmc;
+	public long displayEmc;
 	public int displaySunLevel;
 	public double displayItemCharge;
 	private int numUsing;
@@ -101,7 +101,7 @@ public class CollectorMK1Tile extends TileEmc implements IInventory, ISidedInven
 		
 		updateEmc();
 		
-		displayEmc = (int) this.getStoredEmc();
+		displayEmc = (long) this.getStoredEmc();
 		displaySunLevel = getSunLevel();
 		displayItemCharge = getItemCharge();
 		
@@ -239,7 +239,7 @@ public class CollectorMK1Tile extends TileEmc implements IInventory, ISidedInven
 
 			ItemStack result = inventory[lockSlot] == null ? FuelMapper.getFuelUpgrade(inventory[0]) : inventory[lockSlot].copy();
 			
-			int upgradeCost = EMCHelper.getEmcValue(result) - EMCHelper.getEmcValue(inventory[0]);
+			long upgradeCost = EMCHelper.getEmcValue(result) - EMCHelper.getEmcValue(inventory[0]);
 			
 			if (upgradeCost > 0 && this.getStoredEmc() >= upgradeCost)
 			{
@@ -332,14 +332,14 @@ public class CollectorMK1Tile extends TileEmc implements IInventory, ISidedInven
 		return displaySunLevel * i / 16;
 	}
 	
-	public int getFuelProgressScaled(int i)
+	public long getFuelProgressScaled(int i)
 	{
 		if (inventory[0] == null || !FuelMapper.isStackFuel(inventory[0]))
 		{
 			return 0;
 		}
 		
-		int reqEmc = 0;
+		long reqEmc = 0;
 		
 		if (inventory[lockSlot] != null)
 		{

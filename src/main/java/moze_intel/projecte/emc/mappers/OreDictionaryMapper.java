@@ -16,7 +16,7 @@ public class OreDictionaryMapper extends LazyMapper {
 	);
 
 	@Override
-	public void addMappings(IMappingCollector<NormalizedSimpleStack, Integer> mapper, Configuration config) {
+	public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, Configuration config) {
 		this.mapper = mapper;
 		if (config.getBoolean("blacklistOresAndDusts", "", true, "Set EMC=0 for everything that has an OD Name that starts with `ore`, `dust` or `crushed` besides `dustPlastic`")) {
 			//Black-list all ores/dusts
@@ -37,8 +37,8 @@ public class OreDictionaryMapper extends LazyMapper {
 							continue;
 						}
 
-						mapper.setValueBefore(NormalizedSimpleStack.getFor(stack), 0);
-						mapper.setValueAfter(NormalizedSimpleStack.getFor(stack), 0);
+						mapper.setValueBefore(NormalizedSimpleStack.getFor(stack), 1L);
+						mapper.setValueAfter(NormalizedSimpleStack.getFor(stack), 1L);
 					}
 				}
 			}

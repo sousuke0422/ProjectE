@@ -11,6 +11,8 @@ import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
+import javax.annotation.Nonnull;
+
 public class EMCProxyImpl implements IEMCProxy
 {
     public static final IEMCProxy instance = new EMCProxyImpl();
@@ -59,21 +61,21 @@ public class EMCProxyImpl implements IEMCProxy
     }
 
     @Override
-    public int getValue(Block block)
+    public long getValue(@Nonnull Block block)
     {
         Preconditions.checkNotNull(block);
         return EMCHelper.getEmcValue(block);
     }
 
     @Override
-    public int getValue(Item item)
+    public long getValue(@Nonnull Item item)
     {
         Preconditions.checkNotNull(item);        
         return EMCHelper.getEmcValue(item);
     }
 
     @Override
-    public int getValue(ItemStack stack)
+    public long getValue(@Nonnull ItemStack stack)
     {
         Preconditions.checkNotNull(stack);
         return EMCHelper.getEmcValue(stack);
