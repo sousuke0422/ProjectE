@@ -85,6 +85,12 @@ processResources
     }
 }
 
+// This task creates a .jar file containing the source code of this mod.
+task sourcesJar(type: Jar) {
+    classifier = "sources"
+    from sourceSets.main.allSource
+}
+
 // Dev jar (deobfuscated)
 task devJar(type: Jar) {
     from sourceSets.main.output
