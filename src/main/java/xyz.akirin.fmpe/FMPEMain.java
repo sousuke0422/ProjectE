@@ -7,7 +7,7 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 public class FMPEMain {
     static final String ID = "FMPE";
     static final String Name = "FMProjectE";
-    static final String Version = "core:1.1.0, codename:none";
+    static final String Version = "core:1.2.0, codename:none";
 
     //public static final String RVersion = "@VERSION@";
     public static final String RVersion = "2.0.0";
