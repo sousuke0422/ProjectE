@@ -37,8 +37,8 @@ public class OreDictionaryMapper extends LazyMapper {
 							continue;
 						}
 
-						mapper.setValueBefore(NormalizedSimpleStack.getFor(stack), 1L);
-						mapper.setValueAfter(NormalizedSimpleStack.getFor(stack), 1L);
+						mapper.setValueBefore(NormalizedSimpleStack.getFor(stack), 0L);
+						mapper.setValueAfter(NormalizedSimpleStack.getFor(stack), 0L);
 					}
 				}
 			}
