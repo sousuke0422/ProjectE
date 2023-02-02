@@ -1,10 +1,13 @@
 package moze_intel.projecte.utils;
 
-import com.google.common.collect.Maps;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import moze_intel.projecte.api.item.IItemEmc;
 import moze_intel.projecte.emc.EMCMapper;
 import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.emc.SimpleStack;
+
 import net.minecraft.block.Block;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -13,301 +16,251 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
+import com.google.common.collect.Maps;
 
 /**
- * Helper class for EMC.
- * Notice: Please try to keep methods tidy and alphabetically ordered. Thanks!
+ * Helper class for EMC. Notice: Please try to keep methods tidy and alphabetically ordered. Thanks!
  */
-public final class EMCHelper
-{
-	/**
-	 * Consumes EMC from fuel items or Klein Stars
-	 * Any extra EMC is discarded !!! To retain remainder EMC use ItemPE.consumeFuel()
-	 */
-	public static double consumePlayerFuel(EntityPlayer player, double minFuel)
-	{
-		if (player.capabilities.isCreativeMode)
-		{
-			return minFuel;
-		}
+public final class EMCHelper {
 
-		IInventory inv = player.inventory;
-		LinkedHashMap<Integer, Integer> map = Maps.newLinkedHashMap();
-		boolean metRequirement = false;
-		long emcConsumed = 0;
+    /**
+     * Consumes EMC from fuel items or Klein Stars Any extra EMC is discarded !!! To retain remainder EMC use
+     * ItemPE.consumeFuel()
+     */
+    public static double consumePlayerFuel(EntityPlayer player, double minFuel) {
+        if (player.capabilities.isCreativeMode) {
+            return minFuel;
+        }
 
-		for (int i = 0; i < inv.getSizeInventory(); i++)
-		{
-			ItemStack stack = inv.getStackInSlot(i);
+        IInventory inv = player.inventory;
+        LinkedHashMap<Integer, Integer> map = Maps.newLinkedHashMap();
+        boolean metRequirement = false;
+        long emcConsumed = 0;
 
-			if (stack == null)
-			{
-				continue;
-			}
-			else if (stack.getItem() instanceof IItemEmc)
-			{
-				IItemEmc itemEmc = ((IItemEmc) stack.getItem());
-				if (itemEmc.getStoredEmc(stack) >= minFuel)
-				{
-					itemEmc.extractEmc(stack, minFuel);
-					player.inventoryContainer.detectAndSendChanges();
-					return minFuel;
-				}
-			}
-			else if (!metRequirement)
-			{
-				if(FuelMapper.isStackFuel(stack))
-				{
-					long emc = getEmcValue(stack);
-					int toRemove = (int)Math.ceil((minFuel - emcConsumed) / emc);
+        for (int i = 0; i < inv.getSizeInventory(); i++) {
+            ItemStack stack = inv.getStackInSlot(i);
 
-					if (stack.stackSize >= toRemove)
-					{
-						map.put(i, toRemove);
-						emcConsumed += emc * toRemove;
-						metRequirement = true;
-					}
-					else
-					{
-						map.put(i, stack.stackSize);
-						emcConsumed += emc * stack.stackSize;
+            if (stack == null) {
+                continue;
+            } else if (stack.getItem() instanceof IItemEmc) {
+                IItemEmc itemEmc = ((IItemEmc) stack.getItem());
+                if (itemEmc.getStoredEmc(stack) >= minFuel) {
+                    itemEmc.extractEmc(stack, minFuel);
+                    player.inventoryContainer.detectAndSendChanges();
+                    return minFuel;
+                }
+            } else if (!metRequirement) {
+                if (FuelMapper.isStackFuel(stack)) {
+                    long emc = getEmcValue(stack);
+                    int toRemove = (int) Math.ceil((minFuel - emcConsumed) / emc);
 
-						if (emcConsumed >= minFuel)
-						{
-							metRequirement = true;
-						}
-					}
+                    if (stack.stackSize >= toRemove) {
+                        map.put(i, toRemove);
+                        emcConsumed += emc * toRemove;
+                        metRequirement = true;
+                    } else {
+                        map.put(i, stack.stackSize);
+                        emcConsumed += emc * stack.stackSize;
 
-				}
-			}
-		}
+                        if (emcConsumed >= minFuel) {
+                            metRequirement = true;
+                        }
+                    }
 
-		if (metRequirement)
-		{
-			for (Map.Entry<Integer, Integer> entry : map.entrySet())
-			{
-				inv.decrStackSize(entry.getKey(), entry.getValue());
-			}
+                }
+            }
+        }
 
-			player.inventoryContainer.detectAndSendChanges();
-			return emcConsumed;
-		}
+        if (metRequirement) {
+            for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
+                inv.decrStackSize(entry.getKey(), entry.getValue());
+            }
 
-		return -1;
-	}
+            player.inventoryContainer.detectAndSendChanges();
+            return emcConsumed;
+        }
 
-	public static boolean doesBlockHaveEmc(Block block)
-	{
-		if (block == null)
-		{
-			return false;
-		}
+        return -1;
+    }
 
-		return doesItemHaveEmc(new ItemStack(block));
-	}
+    public static boolean doesBlockHaveEmc(Block block) {
+        if (block == null) {
+            return false;
+        }
 
-	public static boolean doesItemHaveEmc(ItemStack stack)
-	{
-		if (stack == null)
-		{
-			return false;
-		}
+        return doesItemHaveEmc(new ItemStack(block));
+    }
 
-		SimpleStack iStack = new SimpleStack(stack);
+    public static boolean doesItemHaveEmc(ItemStack stack) {
+        if (stack == null) {
+            return false;
+        }
 
-		if (!iStack.isValid())
-		{
-			return false;
-		}
+        SimpleStack iStack = new SimpleStack(stack);
 
-		if (!stack.getHasSubtypes() && stack.getMaxDamage() != 0)
-		{
-			iStack.damage = 0;
-		}
+        if (!iStack.isValid()) {
+            return false;
+        }
 
-		return EMCMapper.mapContains(iStack);
-	}
+        if (!stack.getHasSubtypes() && stack.getMaxDamage() != 0) {
+            iStack.damage = 0;
+        }
 
-	public static boolean doesItemHaveEmc(Item item)
-	{
-		if (item == null)
-		{
-			return false;
-		}
+        return EMCMapper.mapContains(iStack);
+    }
 
-		return doesItemHaveEmc(new ItemStack(item));
-	}
+    public static boolean doesItemHaveEmc(Item item) {
+        if (item == null) {
+            return false;
+        }
 
-	public static long getEmcValue(Block Block)
-	{
-		SimpleStack stack = new SimpleStack(new ItemStack(Block));
+        return doesItemHaveEmc(new ItemStack(item));
+    }
 
-		if (stack.isValid() && EMCMapper.mapContains(stack))
-		{
-			return EMCMapper.getEmcValue(stack);
-		}
+    public static long getEmcValue(Block Block) {
+        SimpleStack stack = new SimpleStack(new ItemStack(Block));
 
-		return 0;
-	}
+        if (stack.isValid() && EMCMapper.mapContains(stack)) {
+            return EMCMapper.getEmcValue(stack);
+        }
 
-	public static long getEmcValue(Item item)
-	{
-		SimpleStack stack = new SimpleStack(new ItemStack(item));
+        return 0;
+    }
 
-		if (stack.isValid() && EMCMapper.mapContains(stack))
-		{
-			return EMCMapper.getEmcValue(stack);
-		}
+    public static long getEmcValue(Item item) {
+        SimpleStack stack = new SimpleStack(new ItemStack(item));
 
-		return 0;
-	}
+        if (stack.isValid() && EMCMapper.mapContains(stack)) {
+            return EMCMapper.getEmcValue(stack);
+        }
 
-	/**
-	 * Does not consider stack size
-	 */
-	public static long getEmcValue(ItemStack stack)
-	{
-		if (stack == null)
-		{
-			return 0;
-		}
+        return 0;
+    }
 
-		SimpleStack iStack = new SimpleStack(stack);
+    /**
+     * Does not consider stack size
+     */
+    public static long getEmcValue(ItemStack stack) {
+        if (stack == null) {
+            return 0;
+        }
 
-		if (!iStack.isValid())
-		{
-			return 0;
-		}
+        SimpleStack iStack = new SimpleStack(stack);
 
-		if (!EMCMapper.mapContains(iStack) && !stack.getHasSubtypes() && stack.getMaxDamage() != 0)
-		{
-			//We don't have an emc value for id:metadata, so lets check if we have a value for id:0 and apply a damage multiplier based on that emc value.
-			iStack.damage = 0;
+        if (!iStack.isValid()) {
+            return 0;
+        }
 
-			if (EMCMapper.mapContains(iStack))
-			{
-				long emc = EMCMapper.getEmcValue(iStack);
+        if (!EMCMapper.mapContains(iStack) && !stack.getHasSubtypes() && stack.getMaxDamage() != 0) {
+            // We don't have an emc value for id:metadata, so lets check if we have a value for id:0 and apply a damage
+            // multiplier based on that emc value.
+            iStack.damage = 0;
 
-				int relDamage = (stack.getMaxDamage() - stack.getItemDamage());
+            if (EMCMapper.mapContains(iStack)) {
+                long emc = EMCMapper.getEmcValue(iStack);
 
-				if (relDamage <= 0)
-				{
-					//Not Impossible. Don't use durability or enchants for emc calculation if this happens.
-					return emc;
-				}
+                int relDamage = (stack.getMaxDamage() - stack.getItemDamage());
 
-				long result = emc * relDamage;
+                if (relDamage <= 0) {
+                    // Not Impossible. Don't use durability or enchants for emc calculation if this happens.
+                    return emc;
+                }
 
-				if (result <= 0)
-				{
-					//Congratulations, big number is big.
-					return emc;
-				}
+                long result = emc * relDamage;
 
-				result /= stack.getMaxDamage();
-				boolean positive = result > 0;
-				result += getEnchantEmcBonus(stack);
+                if (result <= 0) {
+                    // Congratulations, big number is big.
+                    return emc;
+                }
 
-				//If it was positive and then became negative that means it overflowed
-				if (positive && result < 0) {
-					return emc;
-				}
+                result /= stack.getMaxDamage();
+                boolean positive = result > 0;
+                result += getEnchantEmcBonus(stack);
 
-				positive = result > 0;
+                // If it was positive and then became negative that means it overflowed
+                if (positive && result < 0) {
+                    return emc;
+                }
 
-				result += getStoredEMCBonus(stack);
+                positive = result > 0;
 
-				//if (result > Constants.TILE_MAX_EMC) {
-				if (positive && result < 0) {
+                result += getStoredEMCBonus(stack);
 
-					return emc;
-				}
+                // if (result > Constants.TILE_MAX_EMC) {
+                if (positive && result < 0) {
 
-				if (result <= 0)
-				{
-					return 1;
-				}
+                    return emc;
+                }
 
-				return result;
-			}
-		}
-		else
-		{
-			if (EMCMapper.mapContains(iStack))
-			{
-				return EMCMapper.getEmcValue(iStack) + getEnchantEmcBonus(stack) + (long)getStoredEMCBonus(stack);
-			}
-		}
+                if (result <= 0) {
+                    return 1;
+                }
 
-		return 0;
-	}
+                return result;
+            }
+        } else {
+            if (EMCMapper.mapContains(iStack)) {
+                return EMCMapper.getEmcValue(iStack) + getEnchantEmcBonus(stack) + (long) getStoredEMCBonus(stack);
+            }
+        }
 
-	public static int getEnchantEmcBonus(ItemStack stack)
-	{
-		int result = 0;
+        return 0;
+    }
 
-		Map<Integer, Integer> enchants = EnchantmentHelper.getEnchantments(stack);
+    public static int getEnchantEmcBonus(ItemStack stack) {
+        int result = 0;
 
-		if (!enchants.isEmpty())
-		{
-			for (Map.Entry<Integer, Integer> entry : enchants.entrySet())
-			{
-				Enchantment ench = Enchantment.enchantmentsList[entry.getKey()];
+        Map<Integer, Integer> enchants = EnchantmentHelper.getEnchantments(stack);
 
-				if (ench.getWeight() == 0)
-				{
-					continue;
-				}
+        if (!enchants.isEmpty()) {
+            for (Map.Entry<Integer, Integer> entry : enchants.entrySet()) {
+                Enchantment ench = Enchantment.enchantmentsList[entry.getKey()];
 
-				result += Constants.ENCH_EMC_BONUS / ench.getWeight() * entry.getValue();
-			}
-		}
+                if (ench.getWeight() == 0) {
+                    continue;
+                }
 
-		return result;
-	}
+                result += Constants.ENCH_EMC_BONUS / ench.getWeight() * entry.getValue();
+            }
+        }
 
-	public static int getKleinStarMaxEmc(ItemStack stack)
-	{
-		return Constants.MAX_KLEIN_EMC[stack.getItemDamage()];
-	}
+        return result;
+    }
 
-	public static double getStoredEMCBonus(ItemStack stack) {
-		if (stack.stackTagCompound != null && stack.stackTagCompound.hasKey("StoredEMC")) {
-			return stack.stackTagCompound.getDouble("StoredEMC");
-		}
-		return 0;
-	}
+    public static int getKleinStarMaxEmc(ItemStack stack) {
+        return Constants.MAX_KLEIN_EMC[stack.getItemDamage()];
+    }
 
-	public static long getEmcSellValue(ItemStack stack)
-	{
-		double originalValue = EMCHelper.getEmcValue(stack);
+    public static double getStoredEMCBonus(ItemStack stack) {
+        if (stack.stackTagCompound != null && stack.stackTagCompound.hasKey("StoredEMC")) {
+            return stack.stackTagCompound.getDouble("StoredEMC");
+        }
+        return 0;
+    }
 
-		if (originalValue == 0)
-		{
-			return 0;
-		}
+    public static long getEmcSellValue(ItemStack stack) {
+        double originalValue = EMCHelper.getEmcValue(stack);
 
-		long emc = (long) Math.floor(originalValue * EMCMapper.covalenceLoss);
+        if (originalValue == 0) {
+            return 0;
+        }
 
-		if (emc < 1)
-		{
-			emc = 1;
-		}
+        long emc = (long) Math.floor(originalValue * EMCMapper.covalenceLoss);
 
-		return emc;
-	}
+        if (emc < 1) {
+            emc = 1;
+        }
 
-	public static String getEmcSellString(ItemStack stack, int stackSize)
-	{
-		if (EMCMapper.covalenceLoss == 1.0)
-		{
-			return " ";
-		}
+        return emc;
+    }
 
-		long emc = EMCHelper.getEmcSellValue(stack);
+    public static String getEmcSellString(ItemStack stack, int stackSize) {
+        if (EMCMapper.covalenceLoss == 1.0) {
+            return " ";
+        }
 
-		return " (" + Constants.EMC_FORMATTER.format((emc * stackSize)) + ")";
-	}
+        long emc = EMCHelper.getEmcSellValue(stack);
+
+        return " (" + Constants.EMC_FORMATTER.format((emc * stackSize)) + ")";
+    }
 }

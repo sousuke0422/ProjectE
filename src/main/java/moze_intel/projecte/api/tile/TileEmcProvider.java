@@ -7,13 +7,12 @@ import net.minecraftforge.common.util.ForgeDirection;
  *
  * @author williewillus
  */
-public class TileEmcProvider extends TileEmcBase implements IEmcProvider
-{
-	@Override
-	public double provideEMC(ForgeDirection side, double toExtract)
-	{
-		double toRemove = Math.min(currentEMC, toExtract);
-		removeEMC(toRemove);
-		return toRemove;
-	}
+public class TileEmcProvider extends TileEmcBase implements IEmcProvider {
+
+    @Override
+    public double provideEMC(ForgeDirection side, double toExtract) {
+        double toRemove = Math.min(currentEMC, toExtract);
+        removeEMC(toRemove);
+        return toRemove;
+    }
 }

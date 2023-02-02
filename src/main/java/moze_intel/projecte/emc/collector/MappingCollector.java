@@ -1,199 +1,214 @@
 package moze_intel.projecte.emc.collector;
 
-
-import com.google.common.collect.Maps;
-
-import moze_intel.projecte.emc.arithmetics.IValueArithmetic;
-import moze_intel.projecte.utils.PELogger;
-
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public abstract class MappingCollector<T, V extends Comparable<V>,  A extends IValueArithmetic<V>> extends AbstractMappingCollector<T,V, A>  {
-	protected static final boolean DEBUG_GRAPHMAPPER = false;
+import moze_intel.projecte.emc.arithmetics.IValueArithmetic;
+import moze_intel.projecte.utils.PELogger;
 
-	protected A arithmetic;
-	public MappingCollector(A arithmetic) {
-		super(arithmetic);
-		this.arithmetic = arithmetic;
-	}
+import com.google.common.collect.Maps;
 
-	protected static void debugFormat(String format, Object... args) {
-		if (DEBUG_GRAPHMAPPER)
-			PELogger.logInfo(String.format(format, args));
-	}
+public abstract class MappingCollector<T, V extends Comparable<V>, A extends IValueArithmetic<V>>
+        extends AbstractMappingCollector<T, V, A> {
 
-	protected static void debugPrintln(String s) {
-		debugFormat("%s", s);
-	}
+    protected static final boolean DEBUG_GRAPHMAPPER = false;
 
-	protected Map<T, Conversion> overwriteConversion = Maps.newHashMap();
-	protected Map<T, List<Conversion>> conversionsFor = Maps.newHashMap();
-	protected Map<T, List<Conversion>> usedIn = Maps.newHashMap();
-	protected Map<T, V> fixValueBeforeInherit = Maps.newHashMap();
-	protected Map<T, V> fixValueAfterInherit = Maps.newHashMap();
-	protected Map<T, Integer> noDependencyConversionCount = Maps.newHashMap();
+    protected A arithmetic;
 
-	public static <K, V> List<V> getOrCreateList(Map<K, List<V>> map, K key) {
-		List<V> list;
-		if (map.containsKey(key)) {
-			list = map.get(key);
-		} else {
-			list = new LinkedList<>();
-			map.put(key, list);
-		}
-		return list;
-	}
+    public MappingCollector(A arithmetic) {
+        super(arithmetic);
+        this.arithmetic = arithmetic;
+    }
 
-	protected List<Conversion> getConversionsFor(T something) {
-		return getOrCreateList(conversionsFor, something);
-	}
+    protected static void debugFormat(String format, Object... args) {
+        if (DEBUG_GRAPHMAPPER) PELogger.logInfo(String.format(format, args));
+    }
 
-	protected List<Conversion> getUsesFor(T something) {
-		return getOrCreateList(usedIn, something);
-	}
+    protected static void debugPrintln(String s) {
+        debugFormat("%s", s);
+    }
 
-	protected int getNoDependencyConversionCountFor(T something) {
-		Integer count = noDependencyConversionCount.get(something);
-		if (count == null) return 0;
-		else return count;
-	}
+    protected Map<T, Conversion> overwriteConversion = Maps.newHashMap();
+    protected Map<T, List<Conversion>> conversionsFor = Maps.newHashMap();
+    protected Map<T, List<Conversion>> usedIn = Maps.newHashMap();
+    protected Map<T, V> fixValueBeforeInherit = Maps.newHashMap();
+    protected Map<T, V> fixValueAfterInherit = Maps.newHashMap();
+    protected Map<T, Integer> noDependencyConversionCount = Maps.newHashMap();
 
-	protected void increaseNoDependencyConversionCountFor(T something) {
-		noDependencyConversionCount.put(something, getNoDependencyConversionCountFor(something) + 1);
-	}
+    public static <K, V> List<V> getOrCreateList(Map<K, List<V>> map, K key) {
+        List<V> list;
+        if (map.containsKey(key)) {
+            list = map.get(key);
+        } else {
+            list = new LinkedList<>();
+            map.put(key, list);
+        }
+        return list;
+    }
 
-	protected void addConversionToIngredientUsages(Conversion conversion) {
-		for (Map.Entry<T, Integer> ingredient : conversion.ingredientsWithAmount.entrySet()) {
-			List<Conversion> usesForIngredient = getUsesFor(ingredient.getKey());
-			if (ingredient.getValue() == null)
-				throw new IllegalArgumentException("ingredient amount value has to be != null");
-			usesForIngredient.add(conversion);
-		}
-	}
+    protected List<Conversion> getConversionsFor(T something) {
+        return getOrCreateList(conversionsFor, something);
+    }
 
-	public void addConversion(int outnumber, T output, Map<T, Integer> ingredientsWithAmount, A arithmeticForConversion) {
-		ingredientsWithAmount = Maps.newHashMap(ingredientsWithAmount);
-		if (output == null || ingredientsWithAmount.containsKey(null)) {
-			PELogger.logWarn(String.format("Ignoring Recipe because of invalid ingredient or output: %s -> %dx%s", ingredientsWithAmount, outnumber, output));
-			return;
-		}
-		if (outnumber <= 0)
-			throw new IllegalArgumentException("outnumber has to be > 0!");
-		//Add the Conversions to the conversionsFor and usedIn Maps:
-		Conversion conversion = new Conversion(output, outnumber, ingredientsWithAmount);
-		conversion.value = arithmetic.getZero();
-		conversion.arithmeticForConversion = arithmeticForConversion;
-		if (getConversionsFor(output).contains(conversion)) return;
-		getConversionsFor(output).add(conversion);
-		if (ingredientsWithAmount.size() == 0) increaseNoDependencyConversionCountFor(output);
-		addConversionToIngredientUsages(conversion);
-	}
+    protected List<Conversion> getUsesFor(T something) {
+        return getOrCreateList(usedIn, something);
+    }
 
-	@Override
-	public void setValueBefore(T something, V value) {
-		if (something == null) return;
-		if (fixValueBeforeInherit.containsKey(something))
-			PELogger.logWarn("Overwriting fixValueBeforeInherit for " + something + ":" + fixValueBeforeInherit.get(something) + " to " + value);
-		fixValueBeforeInherit.put(something, value);
-		fixValueAfterInherit.remove(something);
-	}
+    protected int getNoDependencyConversionCountFor(T something) {
+        Integer count = noDependencyConversionCount.get(something);
+        if (count == null) return 0;
+        else return count;
+    }
 
-	@Override
-	public void setValueAfter(T something, V value) {
-		if (something == null) return;
-		if (fixValueAfterInherit.containsKey(something))
-			PELogger.logWarn("Overwriting fixValueAfterInherit for " + something + ":" + fixValueAfterInherit.get(something) + " to " + value);
-		fixValueAfterInherit.put(something, value);
-	}
+    protected void increaseNoDependencyConversionCountFor(T something) {
+        noDependencyConversionCount.put(something, getNoDependencyConversionCountFor(something) + 1);
+    }
 
+    protected void addConversionToIngredientUsages(Conversion conversion) {
+        for (Map.Entry<T, Integer> ingredient : conversion.ingredientsWithAmount.entrySet()) {
+            List<Conversion> usesForIngredient = getUsesFor(ingredient.getKey());
+            if (ingredient.getValue() == null)
+                throw new IllegalArgumentException("ingredient amount value has to be != null");
+            usesForIngredient.add(conversion);
+        }
+    }
 
+    public void addConversion(int outnumber, T output, Map<T, Integer> ingredientsWithAmount,
+            A arithmeticForConversion) {
+        ingredientsWithAmount = Maps.newHashMap(ingredientsWithAmount);
+        if (output == null || ingredientsWithAmount.containsKey(null)) {
+            PELogger.logWarn(
+                    String.format(
+                            "Ignoring Recipe because of invalid ingredient or output: %s -> %dx%s",
+                            ingredientsWithAmount,
+                            outnumber,
+                            output));
+            return;
+        }
+        if (outnumber <= 0) throw new IllegalArgumentException("outnumber has to be > 0!");
+        // Add the Conversions to the conversionsFor and usedIn Maps:
+        Conversion conversion = new Conversion(output, outnumber, ingredientsWithAmount);
+        conversion.value = arithmetic.getZero();
+        conversion.arithmeticForConversion = arithmeticForConversion;
+        if (getConversionsFor(output).contains(conversion)) return;
+        getConversionsFor(output).add(conversion);
+        if (ingredientsWithAmount.size() == 0) increaseNoDependencyConversionCountFor(output);
+        addConversionToIngredientUsages(conversion);
+    }
 
-	@Override
-	public void setValueFromConversion(int outnumber, T something, Map<T, Integer> ingredientsWithAmount)
-	{
-		if (something == null || ingredientsWithAmount.containsKey(null)) {
-			PELogger.logWarn(String.format("Ignoring setValueFromConversion because of invalid ingredient or output: %s -> %dx%s", ingredientsWithAmount, outnumber, something));
-			return;
-		}
-		if (outnumber <= 0)
-			throw new IllegalArgumentException("outnumber has to be > 0!");
-		Conversion conversion = new Conversion(something, outnumber, ingredientsWithAmount);
-		conversion.arithmeticForConversion = this.arithmetic;
-		if (overwriteConversion.containsKey(something)) {
-			Conversion oldConversion = overwriteConversion.get(something);
-			PELogger.logWarn("Overwriting setValueFromConversion " + overwriteConversion.get(something) + " with " + conversion);
-			for (T ingredient: ingredientsWithAmount.keySet()) {
-				getUsesFor(ingredient).remove(oldConversion);
-			}
-		}
-		addConversionToIngredientUsages(conversion);
-		overwriteConversion.put(something, conversion);
-	}
+    @Override
+    public void setValueBefore(T something, V value) {
+        if (something == null) return;
+        if (fixValueBeforeInherit.containsKey(something)) PELogger.logWarn(
+                "Overwriting fixValueBeforeInherit for " + something
+                        + ":"
+                        + fixValueBeforeInherit.get(something)
+                        + " to "
+                        + value);
+        fixValueBeforeInherit.put(something, value);
+        fixValueAfterInherit.remove(something);
+    }
 
+    @Override
+    public void setValueAfter(T something, V value) {
+        if (something == null) return;
+        if (fixValueAfterInherit.containsKey(something)) PELogger.logWarn(
+                "Overwriting fixValueAfterInherit for " + something
+                        + ":"
+                        + fixValueAfterInherit.get(something)
+                        + " to "
+                        + value);
+        fixValueAfterInherit.put(something, value);
+    }
 
-	abstract public Map<T, V> generateValues();
+    @Override
+    public void setValueFromConversion(int outnumber, T something, Map<T, Integer> ingredientsWithAmount) {
+        if (something == null || ingredientsWithAmount.containsKey(null)) {
+            PELogger.logWarn(
+                    String.format(
+                            "Ignoring setValueFromConversion because of invalid ingredient or output: %s -> %dx%s",
+                            ingredientsWithAmount,
+                            outnumber,
+                            something));
+            return;
+        }
+        if (outnumber <= 0) throw new IllegalArgumentException("outnumber has to be > 0!");
+        Conversion conversion = new Conversion(something, outnumber, ingredientsWithAmount);
+        conversion.arithmeticForConversion = this.arithmetic;
+        if (overwriteConversion.containsKey(something)) {
+            Conversion oldConversion = overwriteConversion.get(something);
+            PELogger.logWarn(
+                    "Overwriting setValueFromConversion " + overwriteConversion.get(something) + " with " + conversion);
+            for (T ingredient : ingredientsWithAmount.keySet()) {
+                getUsesFor(ingredient).remove(oldConversion);
+            }
+        }
+        addConversionToIngredientUsages(conversion);
+        overwriteConversion.put(something, conversion);
+    }
 
-	protected class Conversion {
-		public T output;
+    abstract public Map<T, V> generateValues();
 
-		public int outnumber = 1;
-		public V value = arithmetic.getZero();
-		public Map<T, Integer> ingredientsWithAmount;
-		public A arithmeticForConversion;
+    protected class Conversion {
 
-		protected Conversion(T output) {
-			this.output = output;
-		}
+        public T output;
 
-		protected Conversion(T output, int outnumber, Map<T, Integer> ingredientsWithAmount) {
-			this(output);
-			this.outnumber = outnumber;
-			this.ingredientsWithAmount = ingredientsWithAmount;
-		}
+        public int outnumber = 1;
+        public V value = arithmetic.getZero();
+        public Map<T, Integer> ingredientsWithAmount;
+        public A arithmeticForConversion;
 
-		public void markInvalid() {
-			if (this.ingredientsWithAmount != null) {
-				this.ingredientsWithAmount.clear();
-				this.ingredientsWithAmount = null;
-			}
-			this.value = arithmetic.getZero();
-		}
+        protected Conversion(T output) {
+            this.output = output;
+        }
 
-		public String toString() {
-			return "" + value + " + " + ingredientsToString() + " => " + outnumber + "*" + output;
-		}
+        protected Conversion(T output, int outnumber, Map<T, Integer> ingredientsWithAmount) {
+            this(output);
+            this.outnumber = outnumber;
+            this.ingredientsWithAmount = ingredientsWithAmount;
+        }
 
-		public String ingredientsToString() {
-			if (ingredientsWithAmount == null || ingredientsWithAmount.size() == 0) return "nothing";
-			StringBuilder sb = new StringBuilder();
-			boolean first = true;
-			Iterator<Map.Entry<T,Integer>> iter = ingredientsWithAmount.entrySet().iterator();
-			if (iter.hasNext()) {
-				Map.Entry<T, Integer> entry = iter.next();
-				sb.append(entry.getValue()).append("*").append(entry.getKey().toString());
-				while(iter.hasNext()) {
-					entry = iter.next();
-					sb.append(" + ").append(entry.getValue()).append("*").append(entry.getKey().toString());
-				}
-			}
+        public void markInvalid() {
+            if (this.ingredientsWithAmount != null) {
+                this.ingredientsWithAmount.clear();
+                this.ingredientsWithAmount = null;
+            }
+            this.value = arithmetic.getZero();
+        }
 
+        public String toString() {
+            return "" + value + " + " + ingredientsToString() + " => " + outnumber + "*" + output;
+        }
 
-			return sb.toString();
-		}
+        public String ingredientsToString() {
+            if (ingredientsWithAmount == null || ingredientsWithAmount.size() == 0) return "nothing";
+            StringBuilder sb = new StringBuilder();
+            boolean first = true;
+            Iterator<Map.Entry<T, Integer>> iter = ingredientsWithAmount.entrySet().iterator();
+            if (iter.hasNext()) {
+                Map.Entry<T, Integer> entry = iter.next();
+                sb.append(entry.getValue()).append("*").append(entry.getKey().toString());
+                while (iter.hasNext()) {
+                    entry = iter.next();
+                    sb.append(" + ").append(entry.getValue()).append("*").append(entry.getKey().toString());
+                }
+            }
 
-		public boolean equals(Conversion other) {
-			if (output.equals(other.output) && value.equals(other.value)) {
-				if (ingredientsWithAmount == null || ingredientsWithAmount.size() == 0) {
-					return other.ingredientsWithAmount == null || other.ingredientsWithAmount.size() == 0;
-				} else {
-					return ingredientsWithAmount.equals(other.ingredientsWithAmount);
-				}
-			}
-			return false;
-		}
-	}
+            return sb.toString();
+        }
+
+        public boolean equals(Conversion other) {
+            if (output.equals(other.output) && value.equals(other.value)) {
+                if (ingredientsWithAmount == null || ingredientsWithAmount.size() == 0) {
+                    return other.ingredientsWithAmount == null || other.ingredientsWithAmount.size() == 0;
+                } else {
+                    return ingredientsWithAmount.equals(other.ingredientsWithAmount);
+                }
+            }
+            return false;
+        }
+    }
 
 }

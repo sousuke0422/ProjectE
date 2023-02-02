@@ -1,106 +1,89 @@
 package moze_intel.projecte.gameObjs.customRecipes;
 
 import moze_intel.projecte.gameObjs.ObjHandler;
+
 import net.minecraft.init.Items;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
 
-public class RecipeAlchemyBag implements IRecipe
-{
-	private ItemStack output;
-	private ItemStack inputBag;
-	private ItemStack inputDye;
+public class RecipeAlchemyBag implements IRecipe {
 
-	public RecipeAlchemyBag(ItemStack output, ItemStack inputBag, ItemStack inputDye)
-	{
-		this.output = output;
-		this.inputBag = inputBag;
-		this.inputDye = inputDye;
+    private ItemStack output;
+    private ItemStack inputBag;
+    private ItemStack inputDye;
 
-		if (inputBag.hasTagCompound())
-		{
-			output.stackTagCompound = inputBag.stackTagCompound;
-		}
-	}
+    public RecipeAlchemyBag(ItemStack output, ItemStack inputBag, ItemStack inputDye) {
+        this.output = output;
+        this.inputBag = inputBag;
+        this.inputDye = inputDye;
 
-	@Override
-	public boolean matches(InventoryCrafting inv, World world)
-	{
-		boolean foundBag = false;
-		boolean foundDye = false;
+        if (inputBag.hasTagCompound()) {
+            output.stackTagCompound = inputBag.stackTagCompound;
+        }
+    }
 
-		for (int i = 0; i < inv.getSizeInventory(); i++)
-		{
-			ItemStack isInSlot = inv.getStackInSlot(i);
+    @Override
+    public boolean matches(InventoryCrafting inv, World world) {
+        boolean foundBag = false;
+        boolean foundDye = false;
 
-			if (isInSlot == null)
-			{
-				continue;
-			}
+        for (int i = 0; i < inv.getSizeInventory(); i++) {
+            ItemStack isInSlot = inv.getStackInSlot(i);
 
-			if (isInSlot.getItem() == ObjHandler.alchBag)
-			{
-				if (foundBag || isInSlot.getItemDamage() != inputBag.getItemDamage())
-				{
-					return false;
-				}
+            if (isInSlot == null) {
+                continue;
+            }
 
-				foundBag = true;
-			}
-			if (isInSlot.getItem() == Items.dye)
-			{
-				if (foundDye || isInSlot.getItemDamage() != inputDye.getItemDamage())
-				{
-					return false;
-				}
+            if (isInSlot.getItem() == ObjHandler.alchBag) {
+                if (foundBag || isInSlot.getItemDamage() != inputBag.getItemDamage()) {
+                    return false;
+                }
 
-				foundDye = true;
-			}
-		}
+                foundBag = true;
+            }
+            if (isInSlot.getItem() == Items.dye) {
+                if (foundDye || isInSlot.getItemDamage() != inputDye.getItemDamage()) {
+                    return false;
+                }
 
-		if (foundBag && foundDye)
-		{
-			if (inputBag.getItemDamage() != 0 && inputDye.getItemDamage() == 15)
-			{
-				return true;
-			} else if (inputBag.getItemDamage() == 0 && inputDye.getItemDamage() != 15)
-			{
-				return true;
-			} else
-			{
-				return false;
-			}
-		}
-		return false;
-	}
+                foundDye = true;
+            }
+        }
 
-	@Override
-	public ItemStack getCraftingResult(InventoryCrafting inv)
-	{
-		return output.copy();
-	}
+        if (foundBag && foundDye) {
+            if (inputBag.getItemDamage() != 0 && inputDye.getItemDamage() == 15) {
+                return true;
+            } else if (inputBag.getItemDamage() == 0 && inputDye.getItemDamage() != 15) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+        return false;
+    }
 
-	@Override
-	public int getRecipeSize()
-	{
-		return 10;
-	}
+    @Override
+    public ItemStack getCraftingResult(InventoryCrafting inv) {
+        return output.copy();
+    }
 
-	@Override
-	public ItemStack getRecipeOutput()
-	{
-		return output;
-	}
+    @Override
+    public int getRecipeSize() {
+        return 10;
+    }
 
-	public ItemStack getRecipeInputBag()
-	{
-		return inputBag;
-	}
+    @Override
+    public ItemStack getRecipeOutput() {
+        return output;
+    }
 
-	public ItemStack getRecipeInputDye()
-	{
-		return inputDye;
-	}
+    public ItemStack getRecipeInputBag() {
+        return inputBag;
+    }
+
+    public ItemStack getRecipeInputDye() {
+        return inputDye;
+    }
 }

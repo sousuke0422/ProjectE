@@ -1,146 +1,125 @@
 package moze_intel.projecte.handlers;
 
-import com.google.common.collect.Maps;
-import net.minecraft.entity.player.EntityPlayer;
-
 import java.util.LinkedHashMap;
 
-public final class PlayerTimers
-{
-	private static final LinkedHashMap<String, TimerSet> MAP = Maps.newLinkedHashMap();
+import net.minecraft.entity.player.EntityPlayer;
 
-	public static void update()
-	{
-		for (TimerSet timers : MAP.values())
-		{
-			if (timers.repair.shouldUpdate)
-			{
-				if (timers.repair.tickCount < 19)
-				{
-					timers.repair.tickCount++;
-				}
+import com.google.common.collect.Maps;
 
-				timers.repair.shouldUpdate = false;
-			}
+public final class PlayerTimers {
 
-			if (timers.heal.shouldUpdate)
-			{
-				if (timers.heal.tickCount < 19)
-				{
-					timers.heal.tickCount++;
-				}
+    private static final LinkedHashMap<String, TimerSet> MAP = Maps.newLinkedHashMap();
 
-				timers.heal.shouldUpdate = false;
-			}
+    public static void update() {
+        for (TimerSet timers : MAP.values()) {
+            if (timers.repair.shouldUpdate) {
+                if (timers.repair.tickCount < 19) {
+                    timers.repair.tickCount++;
+                }
 
-			if (timers.feed.shouldUpdate)
-			{
-				if (timers.feed.tickCount < 19)
-				{
-					timers.feed.tickCount++;
-				}
+                timers.repair.shouldUpdate = false;
+            }
 
-				timers.feed.shouldUpdate = false;
-			}
-		}
-	}
+            if (timers.heal.shouldUpdate) {
+                if (timers.heal.tickCount < 19) {
+                    timers.heal.tickCount++;
+                }
 
-	public static void registerPlayer(EntityPlayer player)
-	{
-		MAP.put(player.getCommandSenderName(), new TimerSet());
-	}
+                timers.heal.shouldUpdate = false;
+            }
 
-	public static void removePlayer(EntityPlayer player)
-	{
-		MAP.remove(player.getCommandSenderName());
-	}
+            if (timers.feed.shouldUpdate) {
+                if (timers.feed.tickCount < 19) {
+                    timers.feed.tickCount++;
+                }
 
-	public static void activateRepair(EntityPlayer player)
-	{
-		MAP.get(player.getCommandSenderName()).repair.shouldUpdate = true;
-	}
+                timers.feed.shouldUpdate = false;
+            }
+        }
+    }
 
-	public static void activateHeal(EntityPlayer player)
-	{
-		MAP.get(player.getCommandSenderName()).heal.shouldUpdate = true;
-	}
+    public static void registerPlayer(EntityPlayer player) {
+        MAP.put(player.getCommandSenderName(), new TimerSet());
+    }
 
-	public static void activateFeed(EntityPlayer player)
-	{
-		MAP.get(player.getCommandSenderName()).feed.shouldUpdate = true;
-	}
+    public static void removePlayer(EntityPlayer player) {
+        MAP.remove(player.getCommandSenderName());
+    }
 
-	public static boolean canRepair(EntityPlayer player)
-	{
-		Timer timer = MAP.get(player.getCommandSenderName()).repair;
+    public static void activateRepair(EntityPlayer player) {
+        MAP.get(player.getCommandSenderName()).repair.shouldUpdate = true;
+    }
 
-		if (timer.tickCount >= 19)
-		{
-			timer.tickCount = 0;
-			timer.shouldUpdate = false;
-			return true;
-		}
+    public static void activateHeal(EntityPlayer player) {
+        MAP.get(player.getCommandSenderName()).heal.shouldUpdate = true;
+    }
 
-		return false;
-	}
+    public static void activateFeed(EntityPlayer player) {
+        MAP.get(player.getCommandSenderName()).feed.shouldUpdate = true;
+    }
 
-	public static boolean canHeal(EntityPlayer player)
-	{
-		Timer timer = MAP.get(player.getCommandSenderName()).heal;
+    public static boolean canRepair(EntityPlayer player) {
+        Timer timer = MAP.get(player.getCommandSenderName()).repair;
 
-		if (timer.tickCount >= 19)
-		{
-			timer.tickCount = 0;
-			timer.shouldUpdate = false;
-			return true;
-		}
+        if (timer.tickCount >= 19) {
+            timer.tickCount = 0;
+            timer.shouldUpdate = false;
+            return true;
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	public static boolean canFeed(EntityPlayer player)
-	{
-		Timer timer = MAP.get(player.getCommandSenderName()).feed;
+    public static boolean canHeal(EntityPlayer player) {
+        Timer timer = MAP.get(player.getCommandSenderName()).heal;
 
-		if (timer.tickCount >= 19)
-		{
-			timer.tickCount = 0;
-			timer.shouldUpdate = false;
-			return true;
-		}
+        if (timer.tickCount >= 19) {
+            timer.tickCount = 0;
+            timer.shouldUpdate = false;
+            return true;
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	private static class TimerSet
-	{
-		public Timer repair;
-		public Timer heal;
-		public Timer feed;
+    public static boolean canFeed(EntityPlayer player) {
+        Timer timer = MAP.get(player.getCommandSenderName()).feed;
 
-		public TimerSet()
-		{
-			repair = new Timer();
-			heal = new Timer();
-			feed = new Timer();
-		}
-	}
+        if (timer.tickCount >= 19) {
+            timer.tickCount = 0;
+            timer.shouldUpdate = false;
+            return true;
+        }
 
-	private static class Timer
-	{
-		public short tickCount;
-		public boolean shouldUpdate;
+        return false;
+    }
 
-		public Timer()
-		{
-			tickCount = 0;
-			shouldUpdate = false;
-		}
+    private static class TimerSet {
 
-		@Override
-		public String toString()
-		{
-			return "TICKS: " + tickCount + "\n" + "ACTIVE: " + shouldUpdate;
-		}
-	}
+        public Timer repair;
+        public Timer heal;
+        public Timer feed;
+
+        public TimerSet() {
+            repair = new Timer();
+            heal = new Timer();
+            feed = new Timer();
+        }
+    }
+
+    private static class Timer {
+
+        public short tickCount;
+        public boolean shouldUpdate;
+
+        public Timer() {
+            tickCount = 0;
+            shouldUpdate = false;
+        }
+
+        @Override
+        public String toString() {
+            return "TICKS: " + tickCount + "\n" + "ACTIVE: " + shouldUpdate;
+        }
+    }
 }

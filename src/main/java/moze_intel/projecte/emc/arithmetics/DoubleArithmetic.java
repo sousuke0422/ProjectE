@@ -4,6 +4,7 @@ package moze_intel.projecte.emc.arithmetics;
  * Created by Voyager on 04.05.2018.
  */
 public class DoubleArithmetic implements IValueArithmetic<Double> {
+
     @Override
     public boolean isZero(Double value) {
         return value == 0;

@@ -1,132 +1,123 @@
 package moze_intel.projecte.network.packets;
 
-import com.google.common.collect.Maps;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
-import cpw.mods.fml.common.network.simpleimpl.MessageContext;
-import io.netty.buffer.ByteBuf;
+import java.util.List;
+
 import moze_intel.projecte.emc.EMCMapper;
 import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.emc.SimpleStack;
 import moze_intel.projecte.playerData.Transmutation;
 import moze_intel.projecte.utils.PELogger;
 
-import java.util.List;
+import com.google.common.collect.Maps;
 
-public class SyncEmcPKT implements IMessage
-{
-	private int packetNum;
-	private Object[] data;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
+import io.netty.buffer.ByteBuf;
 
-	public SyncEmcPKT() {}
+public class SyncEmcPKT implements IMessage {
 
-	public SyncEmcPKT(int packetNum, List<Long[]> arrayList)
-	{
-		this.packetNum = packetNum;
-		data = arrayList.toArray();
-	}
+    private int packetNum;
+    private Object[] data;
 
-	@Override
-	public void fromBytes(ByteBuf buf)
-	{
-		packetNum = buf.readInt();
-		int size = buf.readInt();
-		data = new Object[size];
+    public SyncEmcPKT() {}
 
-		for (int i = 0; i < size; i++)
-		{
-			Long[] array = new Long[4];
+    public SyncEmcPKT(int packetNum, List<Long[]> arrayList) {
+        this.packetNum = packetNum;
+        data = arrayList.toArray();
+    }
 
-			for (int j = 0; j < 4; j++)
-			{
-				array[j] = buf.readLong();
-			}
+    @Override
+    public void fromBytes(ByteBuf buf) {
+        packetNum = buf.readInt();
+        int size = buf.readInt();
+        data = new Object[size];
 
-			data[i] = array;
-		}
-	}
+        for (int i = 0; i < size; i++) {
+            Long[] array = new Long[4];
 
-	@Override
-	public void toBytes(ByteBuf buf)
-	{
-		buf.writeInt(packetNum);
-		buf.writeInt(data.length);
+            for (int j = 0; j < 4; j++) {
+                array[j] = buf.readLong();
+            }
 
-		for (Object obj : data)
-		{
-			Long[] array = (Long[]) obj;
+            data[i] = array;
+        }
+    }
 
-			for (int i = 0; i < 4; i++)
-			{
-				buf.writeLong(array[i]);
-			}
-		}
-	}
+    @Override
+    public void toBytes(ByteBuf buf) {
+        buf.writeInt(packetNum);
+        buf.writeInt(data.length);
 
-	public static class Handler implements IMessageHandler<SyncEmcPKT, IMessage>
-	{
-		@Override
-		public IMessage onMessage(final SyncEmcPKT pkt, MessageContext ctx)
-		{
-			if (pkt.packetNum == 0)
-			{
-				PELogger.logInfo("Receiving EMC data from server.");
+        for (Object obj : data) {
+            Long[] array = (Long[]) obj;
 
-				EMCMapper.emc.clear();
-				EMCMapper.emc = Maps.newLinkedHashMap();
-			}
+            for (int i = 0; i < 4; i++) {
+                buf.writeLong(array[i]);
+            }
+        }
+    }
 
-			for (Object obj : pkt.data)
-			{
-				Long[] array = (Long[]) obj;
-				int id = Math.toIntExact(array[0]);
-				int size = Math.toIntExact(array[1]);
-				int damage = Math.toIntExact(array[2]);
-				long emc;
+    public static class Handler implements IMessageHandler<SyncEmcPKT, IMessage> {
 
-				SimpleStack stack = new SimpleStack(id, size, damage);
+        @Override
+        public IMessage onMessage(final SyncEmcPKT pkt, MessageContext ctx) {
+            if (pkt.packetNum == 0) {
+                PELogger.logInfo("Receiving EMC data from server.");
 
-				if (stack.isValid())
-				{
-					EMCMapper.emc.put(stack, Long.valueOf(array[3]));
-				}
-			}
+                EMCMapper.emc.clear();
+                EMCMapper.emc = Maps.newLinkedHashMap();
+            }
 
-			if (pkt.packetNum == -1)
-			{
-				PELogger.logInfo("Received all packets!");
+            for (Object obj : pkt.data) {
+                Long[] array = (Long[]) obj;
+                int id = Math.toIntExact(array[0]);
+                int size = Math.toIntExact(array[1]);
+                int damage = Math.toIntExact(array[2]);
+                long emc;
 
-				Transmutation.cacheFullKnowledge();
-				FuelMapper.loadMap();
-			}
-			return null;
-		}
-	}
+                SimpleStack stack = new SimpleStack(id, size, damage);
 
-	public static class EmcPKTInfo {
-		private int id, damage;
-		private long emc;
+                if (stack.isValid()) {
+                    EMCMapper.emc.put(stack, Long.valueOf(array[3]));
+                }
+            }
 
-		@Deprecated
-		public EmcPKTInfo(int id, int damage, long emc) {
-			this.id = id;
-			this.damage = damage;
-			this.emc = emc;
-		}
+            if (pkt.packetNum == -1) {
+                PELogger.logInfo("Received all packets!");
 
-		@Deprecated
-		public int getDamage() {
-			return damage;
-		}
+                Transmutation.cacheFullKnowledge();
+                FuelMapper.loadMap();
+            }
+            return null;
+        }
+    }
 
-		@Deprecated
-		public int getId() {
-			return id;
-		}
+    public static class EmcPKTInfo {
 
-		@Deprecated
-		public long getEmc() {
-			return emc;
-		}
-	}
+        private int id, damage;
+        private long emc;
+
+        @Deprecated
+        public EmcPKTInfo(int id, int damage, long emc) {
+            this.id = id;
+            this.damage = damage;
+            this.emc = emc;
+        }
+
+        @Deprecated
+        public int getDamage() {
+            return damage;
+        }
+
+        @Deprecated
+        public int getId() {
+            return id;
+        }
+
+        @Deprecated
+        public long getEmc() {
+            return emc;
+        }
+    }
 }

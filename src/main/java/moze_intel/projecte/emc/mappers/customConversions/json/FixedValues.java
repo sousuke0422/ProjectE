@@ -1,17 +1,17 @@
 package moze_intel.projecte.emc.mappers.customConversions.json;
 
+import java.util.List;
+import java.util.Map;
+
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.gson.annotations.SerializedName;
 
-import java.util.List;
-import java.util.Map;
+public class FixedValues {
 
-public class FixedValues
-{
-	@SerializedName("before")
-	public Map<String, Long> setValueBefore = Maps.newHashMap();
-	@SerializedName("after")
-	public Map<String, Long> setValueAfter = Maps.newHashMap();
-	public List<CustomConversion> conversion = Lists.newArrayList();
+    @SerializedName("before")
+    public Map<String, Long> setValueBefore = Maps.newHashMap();
+    @SerializedName("after")
+    public Map<String, Long> setValueAfter = Maps.newHashMap();
+    public List<CustomConversion> conversion = Lists.newArrayList();
 }

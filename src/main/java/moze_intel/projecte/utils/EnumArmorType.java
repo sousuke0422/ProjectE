@@ -1,7 +1,7 @@
 package moze_intel.projecte.utils;
 
-public enum EnumArmorType
-{
+public enum EnumArmorType {
+
     HEAD("HEAD"),
     CHEST("CHEST"),
     LEGS("LEGS"),
@@ -9,8 +9,7 @@ public enum EnumArmorType
 
     public final String name;
 
-    EnumArmorType(String name)
-    {
+    EnumArmorType(String name) {
         this.name = name;
     }
 }

@@ -1,48 +1,43 @@
 package moze_intel.projecte.network.packets;
 
+import net.minecraft.client.Minecraft;
+
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.client.Minecraft;
 
-public class SetFlyPKT implements IMessage
-{
-	private boolean flag;
+public class SetFlyPKT implements IMessage {
 
-	public SetFlyPKT() {}
+    private boolean flag;
 
-	public SetFlyPKT(boolean value)
-	{
-		flag = value;
-	}
+    public SetFlyPKT() {}
 
-	@Override
-	public void fromBytes(ByteBuf buf)
-	{
-		flag = buf.readBoolean();
-	}
+    public SetFlyPKT(boolean value) {
+        flag = value;
+    }
 
-	@Override
-	public void toBytes(ByteBuf buf)
-	{
-		buf.writeBoolean(flag);
-	}
+    @Override
+    public void fromBytes(ByteBuf buf) {
+        flag = buf.readBoolean();
+    }
 
-	public static class Handler implements IMessageHandler<SetFlyPKT, IMessage>
-	{
-		@Override
-		public IMessage onMessage(final SetFlyPKT message, MessageContext ctx)
-		{
-			Minecraft.getMinecraft().thePlayer.capabilities.allowFlying = message.flag;
+    @Override
+    public void toBytes(ByteBuf buf) {
+        buf.writeBoolean(flag);
+    }
 
-			if (!message.flag)
-			{
-				Minecraft.getMinecraft().thePlayer.capabilities.isFlying = false;
-			}
+    public static class Handler implements IMessageHandler<SetFlyPKT, IMessage> {
 
-			return null;
-		}
-	}
+        @Override
+        public IMessage onMessage(final SetFlyPKT message, MessageContext ctx) {
+            Minecraft.getMinecraft().thePlayer.capabilities.allowFlying = message.flag;
+
+            if (!message.flag) {
+                Minecraft.getMinecraft().thePlayer.capabilities.isFlying = false;
+            }
+
+            return null;
+        }
+    }
 }
-

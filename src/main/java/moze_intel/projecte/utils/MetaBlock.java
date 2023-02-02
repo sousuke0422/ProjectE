@@ -4,90 +4,76 @@ import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
-public class MetaBlock
-{
-	private Block block;
-	private int meta;
+public class MetaBlock {
 
-	public MetaBlock(World world, int x, int y, int z)
-	{
-		this.block = world.getBlock(x, y, z);
-		this.meta = world.getBlockMetadata(x, y, z);
-	}
+    private Block block;
+    private int meta;
 
-	public MetaBlock(Block block)
-	{
-		this.block = block;
-	}
+    public MetaBlock(World world, int x, int y, int z) {
+        this.block = world.getBlock(x, y, z);
+        this.meta = world.getBlockMetadata(x, y, z);
+    }
 
-	public MetaBlock(Block block, int meta)
-	{
-		this.block = block;
-		this.meta = meta;
-	}
+    public MetaBlock(Block block) {
+        this.block = block;
+    }
 
-	public MetaBlock(ItemStack stack)
-	{
-		this.block = Block.getBlockFromItem(stack.getItem());
-		this.meta = stack.getItemDamage();
-	}
+    public MetaBlock(Block block, int meta) {
+        this.block = block;
+        this.meta = meta;
+    }
 
-	public ItemStack toItemStack()
-	{
-		return new ItemStack(block, 1, meta);
-	}
+    public MetaBlock(ItemStack stack) {
+        this.block = Block.getBlockFromItem(stack.getItem());
+        this.meta = stack.getItemDamage();
+    }
 
-	public void setInWorld(World world, int x, int y, int z)
-	{
-		world.setBlock(x, y, z, block);
-		world.setBlockMetadataWithNotify(x, y, z, meta, 2);
-	}
+    public ItemStack toItemStack() {
+        return new ItemStack(block, 1, meta);
+    }
 
-	public Block getBlock()
-	{
-		return block;
-	}
+    public void setInWorld(World world, int x, int y, int z) {
+        world.setBlock(x, y, z, block);
+        world.setBlockMetadataWithNotify(x, y, z, meta, 2);
+    }
 
-	public void setBlock(Block block)
-	{
-		this.block = block;
-	}
+    public Block getBlock() {
+        return block;
+    }
 
-	public int getMeta()
-	{
-		return meta;
-	}
+    public void setBlock(Block block) {
+        this.block = block;
+    }
 
-	public void setMeta(int meta)
-	{
-		this.meta = meta;
-	}
+    public int getMeta() {
+        return meta;
+    }
 
-	@Override
-	public String toString()
-	{
-		return block.toString();
-	}
+    public void setMeta(int meta) {
+        this.meta = meta;
+    }
 
-	@Override
-	public int hashCode()
-	{
-		return toString().hashCode();
-	}
+    @Override
+    public String toString() {
+        return block.toString();
+    }
 
-	@Override
-	public boolean equals(Object obj)
-	{
-		if (obj instanceof MetaBlock)
-		{
-			MetaBlock block = (MetaBlock) obj;
+    @Override
+    public int hashCode() {
+        return toString().hashCode();
+    }
 
-			if (this.block == block.getBlock())
-			{
-				return this.meta == block.meta || this.block.damageDropped(this.meta) == block.block.damageDropped(block.meta);
-			}
-		}
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof MetaBlock) {
+            MetaBlock block = (MetaBlock) obj;
 
-		return false;
-	}
+            if (this.block == block.getBlock()) {
+                return this.meta == block.meta
+                        || this.block.damageDropped(this.meta) == block.block.damageDropped(block.meta);
+            }
+        }
+
+        return false;
+    }
 }

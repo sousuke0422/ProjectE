@@ -1,200 +1,168 @@
 package moze_intel.projecte.integration.NEI;
 
-import codechicken.nei.NEIClientUtils;
-import codechicken.nei.NEIServerUtils;
-import codechicken.nei.PositionedStack;
-import codechicken.nei.recipe.ShapedRecipeHandler;
-import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.gameObjs.customRecipes.RecipeAlchemyBag;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.CraftingManager;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraftforge.oredict.OreDictionary;
-
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.gameObjs.customRecipes.RecipeAlchemyBag;
 
-public class NEIAlchBagHandler extends ShapedRecipeHandler
-{
-	private static String id = "crafting";
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.CraftingManager;
+import net.minecraft.item.crafting.IRecipe;
+import net.minecraftforge.oredict.OreDictionary;
 
-	public int[][] stackorder = new int[][]{
-			{0, 0},
-			{1, 0},
-			{0, 1},
-			{1, 1},
-			{0, 2},
-			{1, 2},
-			{2, 0},
-			{2, 1},
-			{2, 2}};
+import codechicken.nei.NEIClientUtils;
+import codechicken.nei.NEIServerUtils;
+import codechicken.nei.PositionedStack;
+import codechicken.nei.recipe.ShapedRecipeHandler;
 
-	public class CachedAlchBagRecipe extends CachedRecipe
-	{
-		public CachedAlchBagRecipe()
-		{
-			ingredients = new ArrayList<>();
-		}
+public class NEIAlchBagHandler extends ShapedRecipeHandler {
 
-		public CachedAlchBagRecipe(ItemStack output)
-		{
-			this();
-			setResult(output);
-		}
+    private static String id = "crafting";
 
-		public CachedAlchBagRecipe(Object[] input, ItemStack output)
-		{
-			this(Arrays.asList(input), output);
-		}
+    public int[][] stackorder = new int[][] { { 0, 0 }, { 1, 0 }, { 0, 1 }, { 1, 1 }, { 0, 2 }, { 1, 2 }, { 2, 0 },
+            { 2, 1 }, { 2, 2 } };
 
-		public CachedAlchBagRecipe(List<?> input, ItemStack output)
-		{
-			this(output);
-			setIngredients(input);
-		}
+    public class CachedAlchBagRecipe extends CachedRecipe {
 
-		public void setIngredients(List<?> items)
-		{
-			ingredients.clear();
-			for (int ingred = 0; ingred < items.size(); ingred++)
-			{
-				PositionedStack stack = new PositionedStack(items.get(ingred), 25 + stackorder[ingred][0] * 18, 6 + stackorder[ingred][1] * 18);
-				stack.setMaxSize(1);
-				ingredients.add(stack);
-			}
-		}
+        public CachedAlchBagRecipe() {
+            ingredients = new ArrayList<>();
+        }
 
-		public void setResult(ItemStack output)
-		{
-			result = new PositionedStack(output, 119, 24);
-		}
+        public CachedAlchBagRecipe(ItemStack output) {
+            this();
+            setResult(output);
+        }
 
-		@Override
-		public List<PositionedStack> getIngredients()
-		{
-			return getCycledIngredients(cycleticks / 20, ingredients);
-		}
+        public CachedAlchBagRecipe(Object[] input, ItemStack output) {
+            this(Arrays.asList(input), output);
+        }
 
-		@Override
-		public PositionedStack getResult()
-		{
-			return result;
-		}
+        public CachedAlchBagRecipe(List<?> input, ItemStack output) {
+            this(output);
+            setIngredients(input);
+        }
 
-		public ArrayList<PositionedStack> ingredients;
-		public PositionedStack result;
-	}
+        public void setIngredients(List<?> items) {
+            ingredients.clear();
+            for (int ingred = 0; ingred < items.size(); ingred++) {
+                PositionedStack stack = new PositionedStack(
+                        items.get(ingred),
+                        25 + stackorder[ingred][0] * 18,
+                        6 + stackorder[ingred][1] * 18);
+                stack.setMaxSize(1);
+                ingredients.add(stack);
+            }
+        }
 
-	public String getRecipeName()
-	{
-		return NEIClientUtils.translate("recipe.shapeless");
-	}
+        public void setResult(ItemStack output) {
+            result = new PositionedStack(output, 119, 24);
+        }
 
-	@Override
-	public void loadCraftingRecipes(String outputId, Object... results)
-	{
-		if (outputId.equals("crafting") && getClass() == NEIAlchBagHandler.class)
-		{
-			List<IRecipe> allrecipes = CraftingManager.getInstance().getRecipeList();
-			for (IRecipe irecipe : allrecipes)
-			{
-				if (irecipe instanceof RecipeAlchemyBag)
-				{
-					List<ItemStack> ingList = new ArrayList<>();
+        @Override
+        public List<PositionedStack> getIngredients() {
+            return getCycledIngredients(cycleticks / 20, ingredients);
+        }
 
-					if (irecipe.getRecipeOutput().getItemDamage() == 0)
-					{
-						ingList.add(new ItemStack(ObjHandler.alchBag, 1, OreDictionary.WILDCARD_VALUE));
-						ingList.add(((RecipeAlchemyBag) irecipe).getRecipeInputDye());
-						arecipes.add(new CachedAlchBagRecipe(ingList, irecipe.getRecipeOutput()));
-						return;
-					} else
-					{
-						ingList.add(((RecipeAlchemyBag) irecipe).getRecipeInputBag());
-						ingList.add(((RecipeAlchemyBag) irecipe).getRecipeInputDye());
-						arecipes.add(new CachedAlchBagRecipe(ingList, irecipe.getRecipeOutput()));
-					}
-				}
-			}
-		} else
-		{
-			super.loadCraftingRecipes(outputId, results);
-		}
-	}
+        @Override
+        public PositionedStack getResult() {
+            return result;
+        }
 
-	@Override
-	public void loadCraftingRecipes(ItemStack result)
-	{		
-		List<IRecipe> allrecipes = CraftingManager.getInstance().getRecipeList();
-		for (IRecipe irecipe : allrecipes)
-		{
-			if (NEIServerUtils.areStacksSameTypeCrafting(irecipe.getRecipeOutput(), result))
-			{
-				if (irecipe instanceof RecipeAlchemyBag)
-				{
-					List<ItemStack> ingList = new ArrayList<>();
+        public ArrayList<PositionedStack> ingredients;
+        public PositionedStack result;
+    }
 
-					if (irecipe.getRecipeOutput().getItemDamage() == 0)
-					{
-						ingList.add(new ItemStack(ObjHandler.alchBag, 1, OreDictionary.WILDCARD_VALUE));
-						ingList.add(((RecipeAlchemyBag) irecipe).getRecipeInputDye());
-						arecipes.add(new CachedAlchBagRecipe(ingList, irecipe.getRecipeOutput()));
-						return;
-					} else
-					{
-						ingList.add(((RecipeAlchemyBag) irecipe).getRecipeInputBag());
-						ingList.add(((RecipeAlchemyBag) irecipe).getRecipeInputDye());
-						arecipes.add(new CachedAlchBagRecipe(ingList, irecipe.getRecipeOutput()));
-					}
-				}
-			}
-		}
-	}
+    public String getRecipeName() {
+        return NEIClientUtils.translate("recipe.shapeless");
+    }
 
-	@Override
-	public void loadUsageRecipes(ItemStack ingredient)
-	{
-		List<IRecipe> allrecipes = CraftingManager.getInstance().getRecipeList();
-		for (IRecipe irecipe : allrecipes)
-		{
+    @Override
+    public void loadCraftingRecipes(String outputId, Object... results) {
+        if (outputId.equals("crafting") && getClass() == NEIAlchBagHandler.class) {
+            List<IRecipe> allrecipes = CraftingManager.getInstance().getRecipeList();
+            for (IRecipe irecipe : allrecipes) {
+                if (irecipe instanceof RecipeAlchemyBag) {
+                    List<ItemStack> ingList = new ArrayList<>();
 
-			if (irecipe instanceof RecipeAlchemyBag)
-			{
-				if (NEIServerUtils.areStacksSameTypeCrafting(((RecipeAlchemyBag) irecipe).getRecipeInputDye(), ingredient)
-						|| NEIServerUtils.areStacksSameTypeCrafting(((RecipeAlchemyBag) irecipe).getRecipeInputBag(), ingredient))
-				{
-					List<ItemStack> ingList = new ArrayList<>();
+                    if (irecipe.getRecipeOutput().getItemDamage() == 0) {
+                        ingList.add(new ItemStack(ObjHandler.alchBag, 1, OreDictionary.WILDCARD_VALUE));
+                        ingList.add(((RecipeAlchemyBag) irecipe).getRecipeInputDye());
+                        arecipes.add(new CachedAlchBagRecipe(ingList, irecipe.getRecipeOutput()));
+                        return;
+                    } else {
+                        ingList.add(((RecipeAlchemyBag) irecipe).getRecipeInputBag());
+                        ingList.add(((RecipeAlchemyBag) irecipe).getRecipeInputDye());
+                        arecipes.add(new CachedAlchBagRecipe(ingList, irecipe.getRecipeOutput()));
+                    }
+                }
+            }
+        } else {
+            super.loadCraftingRecipes(outputId, results);
+        }
+    }
 
-					if (irecipe.getRecipeOutput().getItemDamage() == 0)
-					{
-						ingList.add(new ItemStack(ObjHandler.alchBag, 1, OreDictionary.WILDCARD_VALUE));
-						ingList.add(((RecipeAlchemyBag) irecipe).getRecipeInputDye());
-						arecipes.add(new CachedAlchBagRecipe(ingList, irecipe.getRecipeOutput()));
-						return;
-					} else
-					{
-						ingList.add(((RecipeAlchemyBag) irecipe).getRecipeInputBag());
-						ingList.add(((RecipeAlchemyBag) irecipe).getRecipeInputDye());
-						arecipes.add(new CachedAlchBagRecipe(ingList, irecipe.getRecipeOutput()));
-					}
+    @Override
+    public void loadCraftingRecipes(ItemStack result) {
+        List<IRecipe> allrecipes = CraftingManager.getInstance().getRecipeList();
+        for (IRecipe irecipe : allrecipes) {
+            if (NEIServerUtils.areStacksSameTypeCrafting(irecipe.getRecipeOutput(), result)) {
+                if (irecipe instanceof RecipeAlchemyBag) {
+                    List<ItemStack> ingList = new ArrayList<>();
 
-				}
-			}
-		}
-	}
+                    if (irecipe.getRecipeOutput().getItemDamage() == 0) {
+                        ingList.add(new ItemStack(ObjHandler.alchBag, 1, OreDictionary.WILDCARD_VALUE));
+                        ingList.add(((RecipeAlchemyBag) irecipe).getRecipeInputDye());
+                        arecipes.add(new CachedAlchBagRecipe(ingList, irecipe.getRecipeOutput()));
+                        return;
+                    } else {
+                        ingList.add(((RecipeAlchemyBag) irecipe).getRecipeInputBag());
+                        ingList.add(((RecipeAlchemyBag) irecipe).getRecipeInputDye());
+                        arecipes.add(new CachedAlchBagRecipe(ingList, irecipe.getRecipeOutput()));
+                    }
+                }
+            }
+        }
+    }
 
-	@Override
-	public boolean isRecipe2x2(int recipe)
-	{
-		return getIngredientStacks(recipe).size() <= 4;
-	}
+    @Override
+    public void loadUsageRecipes(ItemStack ingredient) {
+        List<IRecipe> allrecipes = CraftingManager.getInstance().getRecipeList();
+        for (IRecipe irecipe : allrecipes) {
 
-	@Override
-	public void loadTransferRects()
-	{
-		this.transferRects.add(new RecipeTransferRect(new Rectangle(83, 23, 25, 10), id));
-	}
+            if (irecipe instanceof RecipeAlchemyBag) {
+                if (NEIServerUtils
+                        .areStacksSameTypeCrafting(((RecipeAlchemyBag) irecipe).getRecipeInputDye(), ingredient)
+                        || NEIServerUtils.areStacksSameTypeCrafting(
+                                ((RecipeAlchemyBag) irecipe).getRecipeInputBag(),
+                                ingredient)) {
+                    List<ItemStack> ingList = new ArrayList<>();
+
+                    if (irecipe.getRecipeOutput().getItemDamage() == 0) {
+                        ingList.add(new ItemStack(ObjHandler.alchBag, 1, OreDictionary.WILDCARD_VALUE));
+                        ingList.add(((RecipeAlchemyBag) irecipe).getRecipeInputDye());
+                        arecipes.add(new CachedAlchBagRecipe(ingList, irecipe.getRecipeOutput()));
+                        return;
+                    } else {
+                        ingList.add(((RecipeAlchemyBag) irecipe).getRecipeInputBag());
+                        ingList.add(((RecipeAlchemyBag) irecipe).getRecipeInputDye());
+                        arecipes.add(new CachedAlchBagRecipe(ingList, irecipe.getRecipeOutput()));
+                    }
+
+                }
+            }
+        }
+    }
+
+    @Override
+    public boolean isRecipe2x2(int recipe) {
+        return getIngredientStacks(recipe).size() <= 4;
+    }
+
+    @Override
+    public void loadTransferRects() {
+        this.transferRects.add(new RecipeTransferRect(new Rectangle(83, 23, 25, 10), id));
+    }
 }
