@@ -45,6 +45,6 @@ dependencies {
 
     runtimeOnlyNonPublishable("com.github.GTNewHorizons:NotEnoughItems:2.6.34-GTNH:dev")
 
-    dependencies { compile fileTree(dir: 'lib', include: '*.jar') }
+    // dependencies { compile fileTree(dir: 'lib', include: '*.jar') }
 
 }
