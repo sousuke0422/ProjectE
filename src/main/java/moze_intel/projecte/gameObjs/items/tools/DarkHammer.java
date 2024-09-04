@@ -1,8 +1,5 @@
 package moze_intel.projecte.gameObjs.items.tools;
 
-import moze_intel.projecte.config.ProjectEConfig;
-import moze_intel.projecte.gameObjs.ObjHandler;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityLivingBase;
@@ -13,6 +10,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 import com.google.common.collect.Multimap;
+
+import moze_intel.projecte.config.ProjectEConfig;
+import moze_intel.projecte.gameObjs.ObjHandler;
 
 public class DarkHammer extends PEToolBase {
 
@@ -50,7 +50,7 @@ public class DarkHammer extends PEToolBase {
     @Override
     public float getDigSpeed(ItemStack stack, Block block, int metadata) {
         if ((block == ObjHandler.matterBlock && metadata == 0) || block == ObjHandler.dmFurnaceOff
-                || block == ObjHandler.dmFurnaceOn) {
+            || block == ObjHandler.dmFurnaceOn) {
             return 1200000.0F;
         }
 
@@ -68,8 +68,8 @@ public class DarkHammer extends PEToolBase {
 
         Multimap multimap = super.getAttributeModifiers(stack);
         multimap.put(
-                SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName(),
-                new AttributeModifier(field_111210_e, "Weapon modifier", damage, 0));
+            SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName(),
+            new AttributeModifier(field_111210_e, "Weapon modifier", damage, 0));
         return multimap;
     }
 }

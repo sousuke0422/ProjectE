@@ -1,13 +1,13 @@
 package moze_intel.projecte.gameObjs.entity;
 
-import moze_intel.projecte.utils.PlayerHelper;
-
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
+
+import moze_intel.projecte.utils.PlayerHelper;
 
 public class EntityFireProjectile extends PEProjectile {
 
@@ -41,7 +41,7 @@ public class EntityFireProjectile extends PEProjectile {
                             PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) getThrower()), x1, y1, z1, Blocks.fire, 0);
                         } else if (worldObj.getBlock(x1, y1, z1) == Blocks.sand) {
                             PlayerHelper
-                                    .checkedReplaceBlock(((EntityPlayerMP) getThrower()), x1, y1, z1, Blocks.glass, 0);
+                                .checkedReplaceBlock(((EntityPlayerMP) getThrower()), x1, y1, z1, Blocks.glass, 0);
                         }
 
                     }

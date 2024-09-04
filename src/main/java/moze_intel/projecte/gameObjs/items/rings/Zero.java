@@ -2,14 +2,6 @@ package moze_intel.projecte.gameObjs.items.rings;
 
 import java.util.List;
 
-import moze_intel.projecte.api.item.IModeChanger;
-import moze_intel.projecte.api.item.IPedestalItem;
-import moze_intel.projecte.config.ProjectEConfig;
-import moze_intel.projecte.gameObjs.items.ItemCharge;
-import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
-import moze_intel.projecte.utils.MathUtils;
-import moze_intel.projecte.utils.WorldHelper;
-
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -21,14 +13,20 @@ import net.minecraft.util.IIcon;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
-import baubles.api.BaubleType;
-import baubles.api.IBauble;
-
 import com.google.common.collect.Lists;
 
+import baubles.api.BaubleType;
+import baubles.api.IBauble;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import moze_intel.projecte.api.item.IModeChanger;
+import moze_intel.projecte.api.item.IPedestalItem;
+import moze_intel.projecte.config.ProjectEConfig;
+import moze_intel.projecte.gameObjs.items.ItemCharge;
+import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
+import moze_intel.projecte.utils.MathUtils;
+import moze_intel.projecte.utils.WorldHelper;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
 public class Zero extends ItemCharge implements IModeChanger, IBauble, IPedestalItem {
@@ -53,12 +51,12 @@ public class Zero extends ItemCharge implements IModeChanger, IBauble, IPedestal
         }
 
         AxisAlignedBB box = AxisAlignedBB.getBoundingBox(
-                entity.posX - 3,
-                entity.posY - 3,
-                entity.posZ - 3,
-                entity.posX + 3,
-                entity.posY + 3,
-                entity.posZ + 3);
+            entity.posX - 3,
+            entity.posY - 3,
+            entity.posZ - 3,
+            entity.posX + 3,
+            entity.posY + 3,
+            entity.posZ + 3);
         WorldHelper.freezeInBoundingBox(world, box, ((EntityPlayer) entity), true);
     }
 
@@ -160,9 +158,9 @@ public class Zero extends ItemCharge implements IModeChanger, IBauble, IPedestal
             list.add(EnumChatFormatting.BLUE + StatCollector.translateToLocal("pe.zero.pedestal1"));
             list.add(EnumChatFormatting.BLUE + StatCollector.translateToLocal("pe.zero.pedestal2"));
             list.add(
-                    EnumChatFormatting.BLUE + String.format(
-                            StatCollector.translateToLocal("pe.zero.pedestal3"),
-                            MathUtils.tickToSecFormatted(ProjectEConfig.zeroPedCooldown)));
+                EnumChatFormatting.BLUE + String.format(
+                    StatCollector.translateToLocal("pe.zero.pedestal3"),
+                    MathUtils.tickToSecFormatted(ProjectEConfig.zeroPedCooldown)));
         }
         return list;
     }

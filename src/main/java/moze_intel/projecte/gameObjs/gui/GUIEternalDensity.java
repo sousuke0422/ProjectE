@@ -1,9 +1,5 @@
 package moze_intel.projecte.gameObjs.gui;
 
-import moze_intel.projecte.PECore;
-import moze_intel.projecte.gameObjs.container.EternalDensityContainer;
-import moze_intel.projecte.gameObjs.container.inventory.EternalDensityInventory;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -13,11 +9,15 @@ import net.minecraft.util.StatCollector;
 
 import org.lwjgl.opengl.GL11;
 
+import moze_intel.projecte.PECore;
+import moze_intel.projecte.gameObjs.container.EternalDensityContainer;
+import moze_intel.projecte.gameObjs.container.inventory.EternalDensityInventory;
+
 public class GUIEternalDensity extends GuiContainer {
 
     private static final ResourceLocation texture = new ResourceLocation(
-            PECore.MODID.toLowerCase(),
-            "textures/gui/eternal_density.png");
+        PECore.MODID.toLowerCase(),
+        "textures/gui/eternal_density.png");
     private EternalDensityInventory inventory;
 
     public GUIEternalDensity(InventoryPlayer invPlayer, EternalDensityInventory invGem) {
@@ -34,13 +34,13 @@ public class GUIEternalDensity extends GuiContainer {
         super.initGui();
 
         this.buttonList.add(
-                new GuiButton(
-                        1,
-                        (width - xSize) / 2 + 62,
-                        (height - ySize) / 2 + 4,
-                        52,
-                        20,
-                        inventory.isWhitelistMode() ? "Whitelist" : "Blacklist"));
+            new GuiButton(
+                1,
+                (width - xSize) / 2 + 62,
+                (height - ySize) / 2 + 4,
+                52,
+                20,
+                inventory.isWhitelistMode() ? "Whitelist" : "Blacklist"));
     }
 
     @Override
@@ -50,7 +50,7 @@ public class GUIEternalDensity extends GuiContainer {
         inventory.changeMode();
 
         button.displayString = StatCollector
-                .translateToLocal(inventory.isWhitelistMode() ? "pe.gemdensity.whitelist" : "pe.gemdensity.blacklist");
+            .translateToLocal(inventory.isWhitelistMode() ? "pe.gemdensity.whitelist" : "pe.gemdensity.blacklist");
     }
 
     @Override

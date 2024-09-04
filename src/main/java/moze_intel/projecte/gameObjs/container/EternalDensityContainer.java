@@ -1,13 +1,13 @@
 package moze_intel.projecte.gameObjs.container;
 
-import moze_intel.projecte.gameObjs.container.inventory.EternalDensityInventory;
-import moze_intel.projecte.gameObjs.container.slots.SlotGhost;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+
+import moze_intel.projecte.gameObjs.container.inventory.EternalDensityInventory;
+import moze_intel.projecte.gameObjs.container.slots.SlotGhost;
 
 public class EternalDensityContainer extends Container {
 
@@ -36,7 +36,8 @@ public class EternalDensityContainer extends Container {
         if (slotIndex > 8) {
             int index = inventory.findFirstEmptySlot();
             if (index != -1) {
-                ItemStack toSet = slot.getStack().copy();
+                ItemStack toSet = slot.getStack()
+                    .copy();
                 toSet.stackSize = 1;
                 inventory.setInventorySlotContents(index, toSet);
             }

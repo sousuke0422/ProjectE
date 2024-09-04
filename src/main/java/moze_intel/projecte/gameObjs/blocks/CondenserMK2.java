@@ -2,11 +2,6 @@ package moze_intel.projecte.gameObjs.blocks;
 
 import java.util.Random;
 
-import moze_intel.projecte.PECore;
-import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.gameObjs.tiles.CondenserMK2Tile;
-import moze_intel.projecte.utils.Constants;
-
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -15,6 +10,10 @@ import net.minecraft.world.World;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import moze_intel.projecte.PECore;
+import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.gameObjs.tiles.CondenserMK2Tile;
+import moze_intel.projecte.utils.Constants;
 
 public class CondenserMK2 extends Condenser {
 
@@ -45,7 +44,7 @@ public class CondenserMK2 extends Condenser {
 
     @Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX,
-            float hitY, float hitZ) {
+        float hitY, float hitZ) {
         if (!world.isRemote) {
             player.openGui(PECore.instance, Constants.CONDENSER_MK2_GUI, world, x, y, z);
         }

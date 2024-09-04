@@ -1,7 +1,5 @@
 package moze_intel.projecte.gameObjs.entity;
 
-import moze_intel.projecte.utils.PlayerHelper;
-
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -12,6 +10,8 @@ import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.WorldInfo;
 import net.minecraftforge.common.util.ForgeDirection;
+
+import moze_intel.projecte.utils.PlayerHelper;
 
 public class EntityWaterProjectile extends PEProjectile {
 
@@ -33,7 +33,7 @@ public class EntityWaterProjectile extends PEProjectile {
 
         if (!this.worldObj.isRemote) {
             if (ticksExisted > 400
-                    || !this.worldObj.blockExists(((int) this.posX), ((int) this.posY), ((int) this.posZ))) {
+                || !this.worldObj.blockExists(((int) this.posX), ((int) this.posY), ((int) this.posZ))) {
                 this.setDead();
                 return;
             }
@@ -48,23 +48,21 @@ public class EntityWaterProjectile extends PEProjectile {
                             if (block == Blocks.lava) {
                                 PlayerHelper.checkedReplaceBlock(player, x, y, z, Blocks.obsidian, 0);
                                 this.worldObj.playSoundEffect(
-                                        x + 0.5,
-                                        y + 0.5,
-                                        z + 0.5,
-                                        "random.fizz",
-                                        0.5F,
-                                        2.6F + (this.worldObj.rand.nextFloat() - this.worldObj.rand.nextFloat())
-                                                * 0.8F);
+                                    x + 0.5,
+                                    y + 0.5,
+                                    z + 0.5,
+                                    "random.fizz",
+                                    0.5F,
+                                    2.6F + (this.worldObj.rand.nextFloat() - this.worldObj.rand.nextFloat()) * 0.8F);
                             } else if (block == Blocks.flowing_lava) {
                                 PlayerHelper.checkedReplaceBlock(player, x, y, z, Blocks.cobblestone, 0);
                                 this.worldObj.playSoundEffect(
-                                        x + 0.5,
-                                        y + 0.5,
-                                        z + 0.5,
-                                        "random.fizz",
-                                        0.5F,
-                                        2.6F + (this.worldObj.rand.nextFloat() - this.worldObj.rand.nextFloat())
-                                                * 0.8F);
+                                    x + 0.5,
+                                    y + 0.5,
+                                    z + 0.5,
+                                    "random.fizz",
+                                    0.5F,
+                                    2.6F + (this.worldObj.rand.nextFloat() - this.worldObj.rand.nextFloat()) * 0.8F);
                             }
 
                         }
@@ -92,12 +90,12 @@ public class EntityWaterProjectile extends PEProjectile {
             ForgeDirection dir = ForgeDirection.getOrientation(mop.sideHit);
             if (worldObj.isAirBlock(mop.blockX + dir.offsetX, mop.blockY + dir.offsetY, mop.blockZ + dir.offsetZ)) {
                 PlayerHelper.checkedPlaceBlock(
-                        ((EntityPlayerMP) getThrower()),
-                        mop.blockX + dir.offsetX,
-                        mop.blockY + dir.offsetY,
-                        mop.blockZ + dir.offsetZ,
-                        Blocks.flowing_water,
-                        0);
+                    ((EntityPlayerMP) getThrower()),
+                    mop.blockX + dir.offsetX,
+                    mop.blockY + dir.offsetY,
+                    mop.blockZ + dir.offsetZ,
+                    Blocks.flowing_water,
+                    0);
             }
         } else if (mop.typeOfHit == MovingObjectType.ENTITY) {
             Entity ent = mop.entityHit;

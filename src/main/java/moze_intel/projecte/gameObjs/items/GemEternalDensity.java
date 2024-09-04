@@ -3,20 +3,6 @@ package moze_intel.projecte.gameObjs.items;
 import java.util.ArrayList;
 import java.util.List;
 
-import moze_intel.projecte.PECore;
-import moze_intel.projecte.api.item.IAlchBagItem;
-import moze_intel.projecte.api.item.IAlchChestItem;
-import moze_intel.projecte.api.item.IModeChanger;
-import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
-import moze_intel.projecte.utils.ClientKeyHelper;
-import moze_intel.projecte.utils.Constants;
-import moze_intel.projecte.utils.EMCHelper;
-import moze_intel.projecte.utils.ItemHelper;
-import moze_intel.projecte.utils.PEKeybind;
-import moze_intel.projecte.utils.PELogger;
-import moze_intel.projecte.utils.WorldHelper;
-
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -31,14 +17,26 @@ import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
 
-import baubles.api.BaubleType;
-import baubles.api.IBauble;
-
 import com.google.common.collect.Lists;
 
+import baubles.api.BaubleType;
+import baubles.api.IBauble;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import moze_intel.projecte.PECore;
+import moze_intel.projecte.api.item.IAlchBagItem;
+import moze_intel.projecte.api.item.IAlchChestItem;
+import moze_intel.projecte.api.item.IModeChanger;
+import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
+import moze_intel.projecte.utils.ClientKeyHelper;
+import moze_intel.projecte.utils.Constants;
+import moze_intel.projecte.utils.EMCHelper;
+import moze_intel.projecte.utils.ItemHelper;
+import moze_intel.projecte.utils.PEKeybind;
+import moze_intel.projecte.utils.PELogger;
+import moze_intel.projecte.utils.WorldHelper;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
 public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChestItem, IModeChanger, IBauble {
@@ -84,8 +82,8 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
             ItemStack s = inv[i];
 
             if (s == null || !EMCHelper.doesItemHaveEmc(s)
-                    || s.getMaxStackSize() == 1
-                    || EMCHelper.getEmcValue(s) >= EMCHelper.getEmcValue(target)) {
+                || s.getMaxStackSize() == 1
+                || EMCHelper.getEmcValue(s) >= EMCHelper.getEmcValue(target)) {
                 continue;
             }
 
@@ -148,12 +146,12 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
                 }
             } else {
                 player.openGui(
-                        PECore.instance,
-                        Constants.ETERNAL_DENSITY_GUI,
-                        world,
-                        (int) player.posX,
-                        (int) player.posY,
-                        (int) player.posZ);
+                    PECore.instance,
+                    Constants.ETERNAL_DENSITY_GUI,
+                    world,
+                    (int) player.posX,
+                    (int) player.posY,
+                    (int) player.posZ);
             }
         }
 
@@ -190,8 +188,8 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
             case 4:
                 return new ItemStack(ObjHandler.matter, 1, 1);
             default:
-                PELogger.logFatal(
-                        "Invalid target for gem of eternal density: " + stack.stackTagCompound.getByte("Target"));
+                PELogger
+                    .logFatal("Invalid target for gem of eternal density: " + stack.stackTagCompound.getByte("Target"));
                 return null;
         }
     }
@@ -295,8 +293,8 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
         }
 
         player.addChatComponentMessage(
-                new ChatComponentTranslation("pe.gemdensity.mode_switch").appendText(" ")
-                        .appendSibling(new ChatComponentTranslation(getTargetName(stack))));
+            new ChatComponentTranslation("pe.gemdensity.mode_switch").appendText(" ")
+                .appendSibling(new ChatComponentTranslation(getTargetName(stack))));
     }
 
     @Override
@@ -306,14 +304,14 @@ public class GemEternalDensity extends ItemPE implements IAlchBagItem, IAlchChes
 
         if (stack.hasTagCompound()) {
             list.add(
-                    String.format(
-                            StatCollector.translateToLocal("pe.gemdensity.tooltip2"),
-                            StatCollector.translateToLocal(getTargetName(stack))));
+                String.format(
+                    StatCollector.translateToLocal("pe.gemdensity.tooltip2"),
+                    StatCollector.translateToLocal(getTargetName(stack))));
         }
         list.add(
-                String.format(
-                        StatCollector.translateToLocal("pe.gemdensity.tooltip3"),
-                        ClientKeyHelper.getKeyName(PEKeybind.MODE)));
+            String.format(
+                StatCollector.translateToLocal("pe.gemdensity.tooltip3"),
+                ClientKeyHelper.getKeyName(PEKeybind.MODE)));
         list.add(StatCollector.translateToLocal("pe.gemdensity.tooltip4"));
         list.add(StatCollector.translateToLocal("pe.gemdensity.tooltip5"));
     }

@@ -2,12 +2,12 @@ package moze_intel.projecte.utils;
 
 import java.util.List;
 
-import moze_intel.projecte.emc.SimpleStack;
-
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
 import com.google.common.collect.Lists;
+
+import moze_intel.projecte.emc.SimpleStack;
 
 public final class NBTWhitelist {
 

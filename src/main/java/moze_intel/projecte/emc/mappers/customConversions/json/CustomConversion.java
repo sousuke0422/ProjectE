@@ -2,9 +2,9 @@ package moze_intel.projecte.emc.mappers.customConversions.json;
 
 import java.util.Map;
 
-import moze_intel.projecte.emc.NormalizedSimpleStack;
-
 import com.google.common.collect.Maps;
+
+import moze_intel.projecte.emc.NormalizedSimpleStack;
 
 public class CustomConversion {
 
@@ -14,13 +14,16 @@ public class CustomConversion {
     public transient boolean evalOD = false;
 
     public static CustomConversion getFor(int count, NormalizedSimpleStack output,
-            Map<NormalizedSimpleStack, Integer> ingredients) {
+        Map<NormalizedSimpleStack, Integer> ingredients) {
         CustomConversion conversion = new CustomConversion();
         conversion.count = count;
         conversion.output = output.json();
         conversion.ingredients = Maps.newHashMap();
         for (Map.Entry<NormalizedSimpleStack, Integer> entry : ingredients.entrySet()) {
-            conversion.ingredients.put(entry.getKey().json(), entry.getValue());
+            conversion.ingredients.put(
+                entry.getKey()
+                    .json(),
+                entry.getValue());
         }
         return conversion;
     }

@@ -1,10 +1,10 @@
 package moze_intel.projecte.gameObjs.container.slots.relay;
 
-import moze_intel.projecte.api.item.IItemEmc;
-
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+
+import moze_intel.projecte.api.item.IItemEmc;
 
 public class SlotRelayKlein extends Slot {
 

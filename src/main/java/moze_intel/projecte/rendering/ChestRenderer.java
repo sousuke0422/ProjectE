@@ -1,8 +1,5 @@
 package moze_intel.projecte.rendering;
 
-import moze_intel.projecte.PECore;
-import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
-
 import net.minecraft.client.model.ModelChest;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
@@ -14,13 +11,15 @@ import org.lwjgl.opengl.GL12;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import moze_intel.projecte.PECore;
+import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
 
 @SideOnly(Side.CLIENT)
 public class ChestRenderer extends TileEntitySpecialRenderer {
 
     private final ResourceLocation texture = new ResourceLocation(
-            PECore.MODID.toLowerCase(),
-            "textures/blocks/alchemy_chest.png");
+        PECore.MODID.toLowerCase(),
+        "textures/blocks/alchemy_chest.png");
     private final ModelChest model = new ModelChest();
 
     @Override

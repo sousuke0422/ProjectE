@@ -2,12 +2,6 @@ package moze_intel.projecte.gameObjs.items.armor;
 
 import java.util.List;
 
-import moze_intel.projecte.config.ProjectEConfig;
-import moze_intel.projecte.gameObjs.items.IFireProtector;
-import moze_intel.projecte.handlers.PlayerTimers;
-import moze_intel.projecte.utils.EnumArmorType;
-import moze_intel.projecte.utils.WorldHelper;
-
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -18,6 +12,11 @@ import net.minecraft.world.World;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import moze_intel.projecte.config.ProjectEConfig;
+import moze_intel.projecte.gameObjs.items.IFireProtector;
+import moze_intel.projecte.handlers.PlayerTimers;
+import moze_intel.projecte.utils.EnumArmorType;
+import moze_intel.projecte.utils.WorldHelper;
 
 public class GemChest extends GemArmorBase implements IFireProtector {
 
@@ -40,7 +39,8 @@ public class GemChest extends GemArmorBase implements IFireProtector {
 
             Block b = world.getBlock(x, y - 1, z);
 
-            if ((b == Blocks.lava || b == Blocks.flowing_lava) && world.getBlock(x, y, z).equals(Blocks.air)) {
+            if ((b == Blocks.lava || b == Blocks.flowing_lava) && world.getBlock(x, y, z)
+                .equals(Blocks.air)) {
                 if (!player.isSneaking()) {
                     player.motionY = 0.0d;
                     player.fallDistance = 0.0f;
@@ -51,8 +51,10 @@ public class GemChest extends GemArmorBase implements IFireProtector {
             EntityPlayerMP playerMP = ((EntityPlayerMP) player);
             PlayerTimers.activateFeed(playerMP);
 
-            if (player.getFoodStats().needFood() && PlayerTimers.canFeed(playerMP)) {
-                player.getFoodStats().addStats(2, 10);
+            if (player.getFoodStats()
+                .needFood() && PlayerTimers.canFeed(playerMP)) {
+                player.getFoodStats()
+                    .addStats(2, 10);
             }
         }
     }

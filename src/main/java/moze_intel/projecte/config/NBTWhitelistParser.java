@@ -7,13 +7,13 @@ import java.io.IOException;
 import java.io.LineNumberReader;
 import java.io.PrintWriter;
 
+import net.minecraft.item.ItemStack;
+
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.utils.FileHelper;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.NBTWhitelist;
 import moze_intel.projecte.utils.PELogger;
-
-import net.minecraft.item.ItemStack;
 
 public final class NBTWhitelistParser {
 

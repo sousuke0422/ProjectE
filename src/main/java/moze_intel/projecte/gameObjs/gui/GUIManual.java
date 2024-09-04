@@ -4,15 +4,6 @@ import java.awt.*;
 import java.util.Iterator;
 import java.util.List;
 
-import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.manual.AbstractPage;
-import moze_intel.projecte.manual.ImagePage;
-import moze_intel.projecte.manual.IndexPage;
-import moze_intel.projecte.manual.ItemPage;
-import moze_intel.projecte.manual.ManualFontRenderer;
-import moze_intel.projecte.manual.ManualPageHandler;
-import moze_intel.projecte.utils.PELogger;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
@@ -32,6 +23,14 @@ import com.google.common.collect.Multimap;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.manual.AbstractPage;
+import moze_intel.projecte.manual.ImagePage;
+import moze_intel.projecte.manual.IndexPage;
+import moze_intel.projecte.manual.ItemPage;
+import moze_intel.projecte.manual.ManualFontRenderer;
+import moze_intel.projecte.manual.ManualPageHandler;
+import moze_intel.projecte.utils.PELogger;
 
 @SideOnly(Side.CLIENT)
 public class GUIManual extends GuiScreen {
@@ -83,28 +82,28 @@ public class GUIManual extends GuiScreen {
         GL11.glScalef(1 / GUI_SCALE_FACTOR, 1, 1 / GUI_SCALE_FACTOR);
 
         this.buttonList.add(
-                new PageTurnButton(
-                        0,
-                        Math.round((k + 256 - 40) * GUI_SCALE_FACTOR),
-                        PAGE_HEIGHT - Math.round(BUTTON_HEIGHT * 1.4f),
-                        true));
+            new PageTurnButton(
+                0,
+                Math.round((k + 256 - 40) * GUI_SCALE_FACTOR),
+                PAGE_HEIGHT - Math.round(BUTTON_HEIGHT * 1.4f),
+                true));
         this.buttonList.add(
-                new PageTurnButton(
-                        1,
-                        Math.round((k + 20) * GUI_SCALE_FACTOR),
-                        PAGE_HEIGHT - Math.round(BUTTON_HEIGHT * 1.4f),
-                        false));
+            new PageTurnButton(
+                1,
+                Math.round((k + 20) * GUI_SCALE_FACTOR),
+                PAGE_HEIGHT - Math.round(BUTTON_HEIGHT * 1.4f),
+                false));
 
         String text = StatCollector.translateToLocal("pe.manual.index_button");
         int stringWidth = mc.fontRenderer.getStringWidth(text);
         this.buttonList.add(
-                new TocButton(
-                        2,
-                        (this.width / 2) - (stringWidth / 2),
-                        PAGE_HEIGHT - Math.round(BUTTON_HEIGHT * 1.3f),
-                        stringWidth,
-                        15,
-                        text));
+            new TocButton(
+                2,
+                (this.width / 2) - (stringWidth / 2),
+                PAGE_HEIGHT - Math.round(BUTTON_HEIGHT * 1.3f),
+                stringWidth,
+                15,
+                text));
 
         addIndexButtons(Math.round((k + 20) * GUI_SCALE_FACTOR));
         currentSpread = 0;
@@ -116,14 +115,17 @@ public class GUIManual extends GuiScreen {
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 
-        this.mc.getTextureManager().bindTexture(BOOK_TEXTURE);
+        this.mc.getTextureManager()
+            .bindTexture(BOOK_TEXTURE);
 
         GL11.glScalef(GUI_SCALE_FACTOR, 1, GUI_SCALE_FACTOR);
         this.drawTexturedModalRect(k, 5, 0, 0, WINDOW_WIDTH, PAGE_HEIGHT);
         GL11.glScalef(1 / GUI_SCALE_FACTOR, 1, 1 / GUI_SCALE_FACTOR);
 
-        AbstractPage currentPage = ManualPageHandler.spreads.get(currentSpread).getLeft();
-        AbstractPage nextPage = ManualPageHandler.spreads.get(currentSpread).getRight();
+        AbstractPage currentPage = ManualPageHandler.spreads.get(currentSpread)
+            .getLeft();
+        AbstractPage nextPage = ManualPageHandler.spreads.get(currentSpread)
+            .getRight();
 
         if (currentPage != null) drawPage(currentPage, k + 40, k + 20);
         if (nextPage != null) drawPage(nextPage, k + 160, k + 140);
@@ -151,11 +153,13 @@ public class GUIManual extends GuiScreen {
             default:
                 int val = Math.round((button.id - 3) / 2.0F);
                 PELogger.logDebug(
-                        "Clicked button %d which is supposed to be page %d, taking you to spread %d which has page %d on the left",
-                        button.id,
-                        button.id - 3,
-                        val,
-                        ManualPageHandler.pages.indexOf(ManualPageHandler.spreads.get(val).getLeft()));
+                    "Clicked button %d which is supposed to be page %d, taking you to spread %d which has page %d on the left",
+                    button.id,
+                    button.id - 3,
+                    val,
+                    ManualPageHandler.pages.indexOf(
+                        ManualPageHandler.spreads.get(val)
+                            .getLeft()));
                 currentSpread = val;
         }
         this.updateButtons();
@@ -172,9 +176,9 @@ public class GUIManual extends GuiScreen {
                 // Display if the indexLinks map has this button for the current spread, handling nulls on the right as
                 // necessary
                 ((IndexLinkButton) buttonList.get(i)).visible = indexLinks.get(((IndexPage) spread.getLeft()))
-                        .contains(buttonList.get(i))
-                        || (spread.getRight() != null
-                                && indexLinks.get(((IndexPage) spread.getRight())).contains(buttonList.get(i)));
+                    .contains(buttonList.get(i))
+                    || (spread.getRight() != null && indexLinks.get(((IndexPage) spread.getRight()))
+                        .contains(buttonList.get(i)));
             }
         } else if (currentSpread == ManualPageHandler.spreads.size() - 1) {
             ((PageTurnButton) this.buttonList.get(0)).visible = false;
@@ -238,12 +242,12 @@ public class GUIManual extends GuiScreen {
             String text = page.getHeaderText();
             int buttonID = ManualPageHandler.pages.indexOf(page) + BUTTON_ID_OFFSET;
             IndexLinkButton button = new IndexLinkButton(
-                    buttonID,
-                    x,
-                    yOffset,
-                    mc.fontRenderer.getStringWidth(text),
-                    CHARACTER_HEIGHT,
-                    text);
+                buttonID,
+                x,
+                yOffset,
+                mc.fontRenderer.getStringWidth(text),
+                CHARACTER_HEIGHT,
+                text);
             buttonList.add(button);
             indexLinks.put(addingTo, button);
 
@@ -254,7 +258,8 @@ public class GUIManual extends GuiScreen {
     }
 
     private boolean isViewingIndex() {
-        return ManualPageHandler.spreads.get(currentSpread).getLeft() instanceof IndexPage;
+        return ManualPageHandler.spreads.get(currentSpread)
+            .getLeft() instanceof IndexPage;
     }
 
     // Header = k+40, k+160, Image/Text = k+20, k+140
@@ -269,23 +274,26 @@ public class GUIManual extends GuiScreen {
             bodyTexts = splitBody(page.getBodyText());
 
             for (int i = 0; i < bodyTexts.size()
-                    && i < Math.floor(GUIManual.TEXT_HEIGHT / GUIManual.TEXT_Y_OFFSET); i++) {
+                && i < Math.floor(GUIManual.TEXT_HEIGHT / GUIManual.TEXT_Y_OFFSET); i++) {
                 this.fontRendererObj.drawString(
-                        bodyTexts.get(i).charAt(0) == 32 ? bodyTexts.get(i).substring(1) : bodyTexts.get(i),
-                        Math.round(contentX * GUI_SCALE_FACTOR),
-                        43 + TEXT_Y_OFFSET * i,
-                        Color.black.getRGB());
+                    bodyTexts.get(i)
+                        .charAt(0) == 32 ? bodyTexts.get(i)
+                            .substring(1) : bodyTexts.get(i),
+                    Math.round(contentX * GUI_SCALE_FACTOR),
+                    43 + TEXT_Y_OFFSET * i,
+                    Color.black.getRGB());
             }
 
             if (page instanceof ItemPage) {
                 ItemPage itemPage = ((ItemPage) page);
                 drawItemStackToGui(
-                        mc,
-                        itemPage.getItemStack(),
-                        Math.round(contentX * GUI_SCALE_FACTOR),
-                        22,
-                        !(itemPage.getItemStack().getItem() instanceof ItemBlock)
-                                || itemPage.getItemStack().getItem() == Item.getItemFromBlock(ObjHandler.confuseTorch));
+                    mc,
+                    itemPage.getItemStack(),
+                    Math.round(contentX * GUI_SCALE_FACTOR),
+                    22,
+                    !(itemPage.getItemStack()
+                        .getItem() instanceof ItemBlock) || itemPage.getItemStack()
+                            .getItem() == Item.getItemFromBlock(ObjHandler.confuseTorch));
             }
         }
     }
@@ -329,10 +337,11 @@ public class GUIManual extends GuiScreen {
         public void drawButton(Minecraft mc, int mouseX, int mouseY) {
             if (this.visible) {
                 boolean hover = mouseX >= this.xPosition && mouseY >= this.yPosition
-                        && mouseX < this.xPosition + this.width
-                        && mouseY < this.yPosition + this.height;
+                    && mouseX < this.xPosition + this.width
+                    && mouseY < this.yPosition + this.height;
                 GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-                mc.getTextureManager().bindTexture(bookGui);
+                mc.getTextureManager()
+                    .bindTexture(bookGui);
                 int u = 0;
                 int v = 192;
 

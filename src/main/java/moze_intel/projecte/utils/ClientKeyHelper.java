@@ -1,7 +1,5 @@
 package moze_intel.projecte.utils;
 
-import moze_intel.projecte.PECore;
-
 import net.minecraft.client.settings.KeyBinding;
 
 import org.lwjgl.input.Keyboard;
@@ -11,6 +9,7 @@ import com.google.common.collect.ImmutableBiMap;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import moze_intel.projecte.PECore;
 
 /**
  * Clientside key helper - because PEKeybind cannot touch client classes or it will crash dedicated servers
@@ -36,7 +35,8 @@ public class ClientKeyHelper {
      * Get the key name this PEKeybind is bound to.
      */
     public static String getKeyName(PEKeybind k) {
-        int keyCode = peToMc.get(k).getKeyCode();
+        int keyCode = peToMc.get(k)
+            .getKeyCode();
         if (keyCode > Keyboard.getKeyCount() || keyCode < 0) {
             return "INVALID KEY";
         }

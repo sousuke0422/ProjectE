@@ -1,5 +1,10 @@
 package moze_intel.projecte.utils;
 
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
+
+import cpw.mods.fml.common.network.IGuiHandler;
 import moze_intel.projecte.gameObjs.container.AlchBagContainer;
 import moze_intel.projecte.gameObjs.container.AlchBagInventory;
 import moze_intel.projecte.gameObjs.container.AlchChestContainer;
@@ -49,12 +54,6 @@ import moze_intel.projecte.gameObjs.tiles.RMFurnaceTile;
 import moze_intel.projecte.gameObjs.tiles.RelayMK1Tile;
 import moze_intel.projecte.gameObjs.tiles.RelayMK2Tile;
 import moze_intel.projecte.gameObjs.tiles.RelayMK3Tile;
-
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
-
-import cpw.mods.fml.common.network.IGuiHandler;
 
 public class GuiHandler implements IGuiHandler {
 
@@ -113,8 +112,8 @@ public class GuiHandler implements IGuiHandler {
                 return new TransmutationContainer(player.inventory, new TransmutationInventory(player));
             case Constants.ETERNAL_DENSITY_GUI:
                 return new EternalDensityContainer(
-                        player.inventory,
-                        new EternalDensityInventory(player.getHeldItem(), player));
+                    player.inventory,
+                    new EternalDensityInventory(player.getHeldItem(), player));
             case Constants.CONDENSER_MK2_GUI:
                 return new CondenserMK2Container(player.inventory, (CondenserMK2Tile) tile);
             case Constants.PEDESTAL_GUI:
@@ -180,8 +179,8 @@ public class GuiHandler implements IGuiHandler {
             case Constants.ETERNAL_DENSITY_GUI:
                 player.getHeldItem();
                 return new GUIEternalDensity(
-                        player.inventory,
-                        new EternalDensityInventory(player.getHeldItem(), player));
+                    player.inventory,
+                    new EternalDensityInventory(player.getHeldItem(), player));
             case Constants.CONDENSER_MK2_GUI:
                 return new GUICondenserMK2(player.inventory, (CondenserMK2Tile) tile);
             case Constants.PEDESTAL_GUI:

@@ -23,7 +23,7 @@ public interface ITransmutationProxy {
      * @return Whether the registration succeeded. It may fail if transmutations already exist for block origin
      */
     boolean registerWorldTransmutation(Block origin, int originMeta, Block result1, int result1Meta,
-            @Nullable Block result2, int result2meta);
+        @Nullable Block result2, int result2meta);
 
     /**
      * Queries the knowledge of the provided player Can be called on both sides, only if the client player exists or the

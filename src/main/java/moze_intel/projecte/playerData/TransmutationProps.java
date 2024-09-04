@@ -3,9 +3,6 @@ package moze_intel.projecte.playerData;
 import java.util.Iterator;
 import java.util.List;
 
-import moze_intel.projecte.utils.EMCHelper;
-import moze_intel.projecte.utils.ItemHelper;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -16,6 +13,9 @@ import net.minecraftforge.common.IExtendedEntityProperties;
 import net.minecraftforge.common.util.Constants;
 
 import com.google.common.collect.Lists;
+
+import moze_intel.projecte.utils.EMCHelper;
+import moze_intel.projecte.utils.ItemHelper;
 
 public class TransmutationProps implements IExtendedEntityProperties {
 

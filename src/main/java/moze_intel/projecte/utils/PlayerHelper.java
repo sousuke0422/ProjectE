@@ -1,11 +1,5 @@
 package moze_intel.projecte.utils;
 
-import moze_intel.projecte.gameObjs.items.ItemPE;
-import moze_intel.projecte.network.PacketHandler;
-import moze_intel.projecte.network.packets.SetFlyPKT;
-import moze_intel.projecte.network.packets.StepHeightPKT;
-import moze_intel.projecte.network.packets.SwingItemPKT;
-
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -27,6 +21,11 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import baubles.api.BaublesApi;
 import cpw.mods.fml.common.Loader;
+import moze_intel.projecte.gameObjs.items.ItemPE;
+import moze_intel.projecte.network.PacketHandler;
+import moze_intel.projecte.network.packets.SetFlyPKT;
+import moze_intel.projecte.network.packets.StepHeightPKT;
+import moze_intel.projecte.network.packets.SwingItemPKT;
 
 /**
  * Helper class for player-related methods. Notice: Please try to keep methods tidy and alphabetically ordered. Thanks!
@@ -39,7 +38,7 @@ public final class PlayerHelper {
      * @return Whether the block was successfully placed
      */
     public static boolean checkedPlaceBlock(EntityPlayerMP player, int x, int y, int z, Block toPlace,
-            int toPlaceMeta) {
+        int toPlaceMeta) {
         if (!hasEditPermission(player, x, y, z)) {
             return false;
         }
@@ -62,7 +61,7 @@ public final class PlayerHelper {
     }
 
     public static boolean checkedReplaceBlock(EntityPlayerMP player, int x, int y, int z, Block toPlace,
-            int toPlaceMeta) {
+        int toPlaceMeta) {
         return hasBreakPermission(player, x, y, z) && checkedPlaceBlock(player, x, y, z, toPlace, toPlaceMeta);
     }
 
@@ -89,9 +88,9 @@ public final class PlayerHelper {
         if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
             ForgeDirection dir = ForgeDirection.getOrientation(mop.sideHit);
             return Vec3.createVectorHelper(
-                    mop.blockX + dir.offsetX * 1.1,
-                    mop.blockY + dir.offsetY * 1.1,
-                    mop.blockZ + dir.offsetZ * 1.1);
+                mop.blockX + dir.offsetX * 1.1,
+                mop.blockY + dir.offsetY * 1.1,
+                mop.blockZ + dir.offsetZ * 1.1);
         }
         return null;
     }
@@ -103,9 +102,9 @@ public final class PlayerHelper {
         // Thank you ForgeEssentials
         Vec3 look = player.getLook(1.0F);
         Vec3 playerPos = Vec3.createVectorHelper(
-                player.posX,
-                player.posY + (player.getEyeHeight() - player.getDefaultEyeHeight()),
-                player.posZ);
+            player.posX,
+            player.posY + (player.getEyeHeight() - player.getDefaultEyeHeight()),
+            player.posZ);
         Vec3 src = playerPos.addVector(0, player.getEyeHeight(), 0);
         Vec3 dest = src.addVector(look.xCoord * maxDistance, look.yCoord * maxDistance, look.zCoord * maxDistance);
         return ImmutablePair.of(src, dest);
@@ -113,13 +112,14 @@ public final class PlayerHelper {
 
     public static boolean hasBreakPermission(EntityPlayerMP player, int x, int y, int z) {
         return hasEditPermission(player, x, y, z) && !ForgeHooks
-                .onBlockBreakEvent(player.worldObj, player.theItemInWorldManager.getGameType(), player, x, y, z)
-                .isCanceled();
+            .onBlockBreakEvent(player.worldObj, player.theItemInWorldManager.getGameType(), player, x, y, z)
+            .isCanceled();
     }
 
     public static boolean hasEditPermission(EntityPlayerMP player, int x, int y, int z) {
         return player.canPlayerEdit(x, y, z, player.worldObj.getBlockMetadata(x, y, z), null)
-                && !MinecraftServer.getServer().isBlockProtected(player.worldObj, x, y, z, player);
+            && !MinecraftServer.getServer()
+                .isBlockProtected(player.worldObj, x, y, z, player);
     }
 
     public static void setPlayerFireImmunity(EntityPlayer player, boolean value) {

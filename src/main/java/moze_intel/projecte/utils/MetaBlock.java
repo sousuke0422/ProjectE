@@ -70,7 +70,7 @@ public class MetaBlock {
 
             if (this.block == block.getBlock()) {
                 return this.meta == block.meta
-                        || this.block.damageDropped(this.meta) == block.block.damageDropped(block.meta);
+                    || this.block.damageDropped(this.meta) == block.block.damageDropped(block.meta);
             }
         }
 

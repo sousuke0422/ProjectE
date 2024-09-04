@@ -1,10 +1,10 @@
 package moze_intel.projecte.gameObjs.container.slots.collector;
 
-import moze_intel.projecte.emc.FuelMapper;
-
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+
+import moze_intel.projecte.emc.FuelMapper;
 
 public class SlotCollectorLock extends Slot {
 

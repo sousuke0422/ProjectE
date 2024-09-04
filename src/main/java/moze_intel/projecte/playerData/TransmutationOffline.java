@@ -7,9 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import moze_intel.projecte.utils.ItemHelper;
-import moze_intel.projecte.utils.PELogger;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
@@ -20,7 +17,10 @@ import net.minecraftforge.common.util.Constants;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+
 import cpw.mods.fml.common.FMLCommonHandler;
+import moze_intel.projecte.utils.ItemHelper;
+import moze_intel.projecte.utils.PELogger;
 
 public class TransmutationOffline {
 
@@ -68,15 +68,17 @@ public class TransmutationOffline {
 
     private static void cacheOfflineData(UUID playerUUID) {
         Preconditions.checkState(
-                FMLCommonHandler.instance().getEffectiveSide().isServer(),
-                "CRITICAL: Trying to read filesystem on client!!");
+            FMLCommonHandler.instance()
+                .getEffectiveSide()
+                .isServer(),
+            "CRITICAL: Trying to read filesystem on client!!");
         File playerData = new File(DimensionManager.getCurrentSaveRootDirectory(), "playerdata");
         if (playerData.exists()) {
             File player = new File(playerData, playerUUID.toString() + ".dat");
             if (player.exists() && player.isFile()) {
                 try {
                     NBTTagCompound props = CompressedStreamTools.readCompressed(new FileInputStream(player))
-                            .getCompoundTag(TransmutationProps.PROP_NAME);
+                        .getCompoundTag(TransmutationProps.PROP_NAME);
                     cachedEmc.put(playerUUID, props.getDouble("transmutationEmc"));
                     cachedFullKnowledge.put(playerUUID, props.getBoolean("tome"));
 

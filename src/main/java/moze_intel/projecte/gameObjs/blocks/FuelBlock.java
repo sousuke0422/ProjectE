@@ -2,8 +2,6 @@ package moze_intel.projecte.gameObjs.blocks;
 
 import java.util.List;
 
-import moze_intel.projecte.gameObjs.ObjHandler;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -15,6 +13,7 @@ import net.minecraft.util.MathHelper;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import moze_intel.projecte.gameObjs.ObjHandler;
 
 public class FuelBlock extends Block {
 

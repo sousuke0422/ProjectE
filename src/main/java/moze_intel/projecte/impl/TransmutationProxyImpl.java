@@ -5,13 +5,6 @@ import java.util.UUID;
 
 import javax.annotation.Nullable;
 
-import moze_intel.projecte.PECore;
-import moze_intel.projecte.api.proxy.ITransmutationProxy;
-import moze_intel.projecte.playerData.Transmutation;
-import moze_intel.projecte.playerData.TransmutationOffline;
-import moze_intel.projecte.utils.MetaBlock;
-import moze_intel.projecte.utils.WorldTransmutations;
-
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -23,6 +16,12 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.LoaderState;
 import cpw.mods.fml.relauncher.Side;
+import moze_intel.projecte.PECore;
+import moze_intel.projecte.api.proxy.ITransmutationProxy;
+import moze_intel.projecte.playerData.Transmutation;
+import moze_intel.projecte.playerData.TransmutationOffline;
+import moze_intel.projecte.utils.MetaBlock;
+import moze_intel.projecte.utils.WorldTransmutations;
 
 public class TransmutationProxyImpl implements ITransmutationProxy {
 
@@ -32,21 +31,24 @@ public class TransmutationProxyImpl implements ITransmutationProxy {
 
     @Override
     public boolean registerWorldTransmutation(Block origin, int originMeta, Block result1, int result1Meta,
-            @Nullable Block result2, int result2meta) {
+        @Nullable Block result2, int result2meta) {
         Preconditions.checkNotNull(origin);
         Preconditions.checkNotNull(result1);
         Preconditions.checkState(
-                Loader.instance().isInState(LoaderState.POSTINITIALIZATION),
-                String.format(
-                        "Mod %s tried to register world transmutation at an invalid time!",
-                        Loader.instance().activeModContainer().getModId()));
+            Loader.instance()
+                .isInState(LoaderState.POSTINITIALIZATION),
+            String.format(
+                "Mod %s tried to register world transmutation at an invalid time!",
+                Loader.instance()
+                    .activeModContainer()
+                    .getModId()));
         if (WorldTransmutations.getWorldTransmutation(new MetaBlock(origin, originMeta), false) != null) {
             return false;
         } else {
             WorldTransmutations.register(
-                    new MetaBlock(origin, originMeta),
-                    new MetaBlock(result1, result1Meta),
-                    result2 == null ? null : new MetaBlock(result2, result2meta));
+                new MetaBlock(origin, originMeta),
+                new MetaBlock(result1, result1Meta),
+                result2 == null ? null : new MetaBlock(result2, result2meta));
             return true;
         }
     }
@@ -54,14 +56,16 @@ public class TransmutationProxyImpl implements ITransmutationProxy {
     @Override
     public boolean hasKnowledgeFor(UUID playerUUID, ItemStack stack) {
         Preconditions.checkNotNull(stack);
-        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) {
+        if (FMLCommonHandler.instance()
+            .getEffectiveSide() == Side.CLIENT) {
             Preconditions.checkState(PECore.proxy.getClientPlayer() != null, "Client player doesn't exist!");
             return Transmutation.hasKnowledgeForStack(stack, PECore.proxy.getClientPlayer());
         } else {
             Preconditions.checkNotNull(playerUUID);
             Preconditions.checkState(
-                    Loader.instance().hasReachedState(LoaderState.SERVER_STARTED),
-                    "Server must be running to query knowledge!");
+                Loader.instance()
+                    .hasReachedState(LoaderState.SERVER_STARTED),
+                "Server must be running to query knowledge!");
             EntityPlayer player = findOnlinePlayer(playerUUID);
             if (player != null) {
                 return Transmutation.hasKnowledgeForStack(stack, player);
@@ -73,14 +77,16 @@ public class TransmutationProxyImpl implements ITransmutationProxy {
 
     @Override
     public List<ItemStack> getKnowledge(UUID playerUUID) {
-        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) {
+        if (FMLCommonHandler.instance()
+            .getEffectiveSide() == Side.CLIENT) {
             Preconditions.checkState(PECore.proxy.getClientPlayer() != null, "Client player doesn't exist!");
             return Transmutation.getKnowledge(PECore.proxy.getClientPlayer());
         } else {
             Preconditions.checkNotNull(playerUUID);
             Preconditions.checkState(
-                    Loader.instance().hasReachedState(LoaderState.SERVER_STARTED),
-                    "Server must be running to query knowledge!");
+                Loader.instance()
+                    .hasReachedState(LoaderState.SERVER_STARTED),
+                "Server must be running to query knowledge!");
             EntityPlayer player = findOnlinePlayer(playerUUID);
             if (player != null) {
                 return Transmutation.getKnowledge(player);
@@ -100,11 +106,14 @@ public class TransmutationProxyImpl implements ITransmutationProxy {
         Preconditions.checkNotNull(playerUUID);
         Preconditions.checkNotNull(stack);
         Preconditions.checkState(
-                FMLCommonHandler.instance().getEffectiveSide().isServer(),
-                "Cannot modify knowledge clientside!");
+            FMLCommonHandler.instance()
+                .getEffectiveSide()
+                .isServer(),
+            "Cannot modify knowledge clientside!");
         Preconditions.checkState(
-                Loader.instance().hasReachedState(LoaderState.SERVER_STARTED),
-                "Server must be running to modify knowledge!");
+            Loader.instance()
+                .hasReachedState(LoaderState.SERVER_STARTED),
+            "Server must be running to modify knowledge!");
         EntityPlayer player = findOnlinePlayer(playerUUID);
         if (player != null) {
             Transmutation.addKnowledge(stack, player);
@@ -117,11 +126,14 @@ public class TransmutationProxyImpl implements ITransmutationProxy {
         Preconditions.checkNotNull(playerUUID);
         Preconditions.checkNotNull(stack);
         Preconditions.checkState(
-                FMLCommonHandler.instance().getEffectiveSide().isServer(),
-                "Cannot modify knowledge clientside!");
+            FMLCommonHandler.instance()
+                .getEffectiveSide()
+                .isServer(),
+            "Cannot modify knowledge clientside!");
         Preconditions.checkState(
-                Loader.instance().hasReachedState(LoaderState.SERVER_STARTED),
-                "Server must be running to modify knowledge!");
+            Loader.instance()
+                .hasReachedState(LoaderState.SERVER_STARTED),
+            "Server must be running to modify knowledge!");
         EntityPlayer player = findOnlinePlayer(playerUUID);
         if (player != null) {
             Transmutation.removeKnowledge(stack, player);
@@ -132,11 +144,15 @@ public class TransmutationProxyImpl implements ITransmutationProxy {
     @Override
     public void setEMC(UUID playerUUID, double emc) {
         Preconditions.checkNotNull(playerUUID);
-        Preconditions
-                .checkState(FMLCommonHandler.instance().getEffectiveSide().isServer(), "Cannot modify EMC clientside!");
         Preconditions.checkState(
-                Loader.instance().hasReachedState(LoaderState.SERVER_STARTED),
-                "Server must be running to modify player EMC!");
+            FMLCommonHandler.instance()
+                .getEffectiveSide()
+                .isServer(),
+            "Cannot modify EMC clientside!");
+        Preconditions.checkState(
+            Loader.instance()
+                .hasReachedState(LoaderState.SERVER_STARTED),
+            "Server must be running to modify player EMC!");
         EntityPlayer player = findOnlinePlayer(playerUUID);
         if (player != null) {
             Transmutation.setEmc(player, emc);
@@ -146,14 +162,16 @@ public class TransmutationProxyImpl implements ITransmutationProxy {
 
     @Override
     public double getEMC(UUID playerUUID) {
-        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) {
+        if (FMLCommonHandler.instance()
+            .getEffectiveSide() == Side.CLIENT) {
             Preconditions.checkState(PECore.proxy.getClientPlayer() != null, "Client player doesn't exist!");
             return Transmutation.getEmc(PECore.proxy.getClientPlayer());
         } else {
             Preconditions.checkNotNull(playerUUID);
             Preconditions.checkState(
-                    Loader.instance().hasReachedState(LoaderState.SERVER_STARTED),
-                    "Server must be running to query player EMC!");
+                Loader.instance()
+                    .hasReachedState(LoaderState.SERVER_STARTED),
+                "Server must be running to query player EMC!");
             EntityPlayer player = findOnlinePlayer(playerUUID);
             if (player != null) {
                 return Transmutation.getEmc(player);
@@ -166,8 +184,9 @@ public class TransmutationProxyImpl implements ITransmutationProxy {
     @SuppressWarnings("unchecked")
     private EntityPlayer findOnlinePlayer(UUID playerUUID) {
         for (EntityPlayer player : (List<EntityPlayer>) MinecraftServer.getServer()
-                .getConfigurationManager().playerEntityList) {
-            if (player.getUniqueID().equals(playerUUID)) {
+            .getConfigurationManager().playerEntityList) {
+            if (player.getUniqueID()
+                .equals(playerUUID)) {
                 return player;
             }
         }

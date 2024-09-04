@@ -5,9 +5,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.gameObjs.customRecipes.RecipeShapelessHidden;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
@@ -17,13 +14,15 @@ import codechicken.nei.NEIServerUtils;
 import codechicken.nei.PositionedStack;
 import codechicken.nei.recipe.ShapedRecipeHandler;
 import codechicken.nei.recipe.TemplateRecipeHandler;
+import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.gameObjs.customRecipes.RecipeShapelessHidden;
 
 public class NEIKleinStarHandler extends ShapedRecipeHandler {
 
     private static String id = "crafting";
 
     public int[][] stackorder = new int[][] { { 0, 0 }, { 1, 0 }, { 0, 1 }, { 1, 1 }, { 0, 2 }, { 1, 2 }, { 2, 0 },
-            { 2, 1 }, { 2, 2 } };
+        { 2, 1 }, { 2, 2 } };
 
     public class CachedKleinStarRecipe extends CachedRecipe {
 
@@ -49,9 +48,9 @@ public class NEIKleinStarHandler extends ShapedRecipeHandler {
             ingredients.clear();
             for (int ingred = 0; ingred < items.size(); ingred++) {
                 PositionedStack stack = new PositionedStack(
-                        items.get(ingred),
-                        25 + stackorder[ingred][0] * 18,
-                        6 + stackorder[ingred][1] * 18);
+                    items.get(ingred),
+                    25 + stackorder[ingred][0] * 18,
+                    6 + stackorder[ingred][1] * 18);
                 stack.setMaxSize(1);
                 ingredients.add(stack);
             }
@@ -82,14 +81,15 @@ public class NEIKleinStarHandler extends ShapedRecipeHandler {
     @Override
     public void loadCraftingRecipes(String outputId, Object... results) {
         if (outputId.equals(id) && getClass() == NEIKleinStarHandler.class) {
-            List<IRecipe> allrecipes = CraftingManager.getInstance().getRecipeList();
+            List<IRecipe> allrecipes = CraftingManager.getInstance()
+                .getRecipeList();
             for (IRecipe irecipe : allrecipes) {
-                if (irecipe instanceof RecipeShapelessHidden
-                        && irecipe.getRecipeOutput().getItem() == ObjHandler.kleinStars) {
+                if (irecipe instanceof RecipeShapelessHidden && irecipe.getRecipeOutput()
+                    .getItem() == ObjHandler.kleinStars) {
                     arecipes.add(
-                            new CachedKleinStarRecipe(
-                                    ((RecipeShapelessHidden) irecipe).getInput(),
-                                    irecipe.getRecipeOutput()));
+                        new CachedKleinStarRecipe(
+                            ((RecipeShapelessHidden) irecipe).getInput(),
+                            irecipe.getRecipeOutput()));
                 }
             }
         } else {
@@ -99,15 +99,16 @@ public class NEIKleinStarHandler extends ShapedRecipeHandler {
 
     @Override
     public void loadCraftingRecipes(ItemStack result) {
-        List<IRecipe> allrecipes = CraftingManager.getInstance().getRecipeList();
+        List<IRecipe> allrecipes = CraftingManager.getInstance()
+            .getRecipeList();
         for (IRecipe irecipe : allrecipes) {
             if (NEIServerUtils.areStacksSameTypeCrafting(irecipe.getRecipeOutput(), result)) {
-                if (irecipe instanceof RecipeShapelessHidden
-                        && irecipe.getRecipeOutput().getItem() == ObjHandler.kleinStars) {
+                if (irecipe instanceof RecipeShapelessHidden && irecipe.getRecipeOutput()
+                    .getItem() == ObjHandler.kleinStars) {
                     arecipes.add(
-                            new CachedKleinStarRecipe(
-                                    ((RecipeShapelessHidden) irecipe).getInput(),
-                                    irecipe.getRecipeOutput()));
+                        new CachedKleinStarRecipe(
+                            ((RecipeShapelessHidden) irecipe).getInput(),
+                            irecipe.getRecipeOutput()));
                 }
             }
         }
@@ -115,16 +116,17 @@ public class NEIKleinStarHandler extends ShapedRecipeHandler {
 
     @Override
     public void loadUsageRecipes(ItemStack ingredient) {
-        List<IRecipe> allrecipes = CraftingManager.getInstance().getRecipeList();
+        List<IRecipe> allrecipes = CraftingManager.getInstance()
+            .getRecipeList();
         for (IRecipe irecipe : allrecipes) {
-            if (irecipe instanceof RecipeShapelessHidden
-                    && irecipe.getRecipeOutput().getItem() == ObjHandler.kleinStars) {
+            if (irecipe instanceof RecipeShapelessHidden && irecipe.getRecipeOutput()
+                .getItem() == ObjHandler.kleinStars) {
                 for (Object is : ((RecipeShapelessHidden) irecipe).getInput()) {
                     if (NEIServerUtils.areStacksSameTypeCrafting((ItemStack) is, ingredient)) {
                         arecipes.add(
-                                new CachedKleinStarRecipe(
-                                        ((RecipeShapelessHidden) irecipe).getInput(),
-                                        irecipe.getRecipeOutput()));
+                            new CachedKleinStarRecipe(
+                                ((RecipeShapelessHidden) irecipe).getInput(),
+                                irecipe.getRecipeOutput()));
                         break;
                     }
                 }

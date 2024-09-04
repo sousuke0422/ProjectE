@@ -2,13 +2,12 @@ package moze_intel.projecte.impl;
 
 import java.util.Locale;
 
-import moze_intel.projecte.utils.PELogger;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 
 import cpw.mods.fml.common.event.FMLInterModComms;
+import moze_intel.projecte.utils.PELogger;
 
 public class IMCHandler {
 
@@ -16,8 +15,8 @@ public class IMCHandler {
         String messageKey = msg.key.toLowerCase(Locale.ROOT);
         if ("registeremc".equals(messageKey)) {
             PELogger.logWarn(
-                    "Mod %s is using a deprecated version of the ProjectE API, their EMC registrations have been ignored",
-                    msg.getSender());
+                "Mod %s is using a deprecated version of the ProjectE API, their EMC registrations have been ignored",
+                msg.getSender());
         } else if ("interdictionblacklist".equals(messageKey) && msg.isStringMessage()) {
             blacklist(false, msg);
         } else if ("swrgblacklist".equals(messageKey) && msg.isStringMessage()) {

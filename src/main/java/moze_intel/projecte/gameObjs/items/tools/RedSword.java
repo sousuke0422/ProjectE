@@ -1,20 +1,20 @@
 package moze_intel.projecte.gameObjs.items.tools;
 
-import moze_intel.projecte.config.ProjectEConfig;
-
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 
+import moze_intel.projecte.config.ProjectEConfig;
+
 public class RedSword extends DarkSword {
 
     public RedSword() {
         super(
-                "rm_sword",
-                (byte) 3,
-                new String[] { StatCollector.translateToLocal("pe.redsword.mode1"),
-                        StatCollector.translateToLocal("pe.redsword.mode2") });
+            "rm_sword",
+            (byte) 3,
+            new String[] { StatCollector.translateToLocal("pe.redsword.mode1"),
+                StatCollector.translateToLocal("pe.redsword.mode2") });
         this.setNoRepair();
         this.peToolMaterial = "rm_tools";
         this.pePrimaryToolClass = "sword";

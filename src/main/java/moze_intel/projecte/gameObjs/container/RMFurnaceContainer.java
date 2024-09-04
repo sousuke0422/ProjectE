@@ -1,8 +1,5 @@
 package moze_intel.projecte.gameObjs.container;
 
-import moze_intel.projecte.api.item.IItemEmc;
-import moze_intel.projecte.gameObjs.tiles.RMFurnaceTile;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
@@ -14,6 +11,8 @@ import net.minecraft.tileentity.TileEntityFurnace;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import moze_intel.projecte.api.item.IItemEmc;
+import moze_intel.projecte.gameObjs.tiles.RMFurnaceTile;
 
 public class RMFurnaceContainer extends Container {
 
@@ -113,13 +112,14 @@ public class RMFurnaceContainer extends Container {
                 if (!this.mergeItemStack(stack, 0, 1, false)) {
                     return null;
                 }
-            } else if (FurnaceRecipes.smelting().getSmeltingResult(newStack) != null) {
-                if (!this.mergeItemStack(stack, 1, 14, false)) {
+            } else if (FurnaceRecipes.smelting()
+                .getSmeltingResult(newStack) != null) {
+                    if (!this.mergeItemStack(stack, 1, 14, false)) {
+                        return null;
+                    }
+                } else {
                     return null;
                 }
-            } else {
-                return null;
-            }
         }
 
         if (stack.stackSize == 0) {

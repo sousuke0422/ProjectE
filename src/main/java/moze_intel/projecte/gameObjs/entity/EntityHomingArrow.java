@@ -8,13 +8,13 @@ import javax.vecmath.AxisAngle4d;
 import javax.vecmath.Matrix4d;
 import javax.vecmath.Vector3d;
 
-import moze_intel.projecte.utils.WorldHelper;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.world.World;
+
+import moze_intel.projecte.utils.WorldHelper;
 
 public class EntityHomingArrow extends EntityArrow {
 
@@ -58,21 +58,21 @@ public class EntityHomingArrow extends EntityArrow {
 
         if (ticksExisted > 3 && hasTarget() && !WorldHelper.isArrowInGround(this)) {
             this.worldObj.spawnParticle(
-                    "flame",
-                    this.posX + this.motionX / 4.0D,
-                    this.posY + this.motionY / 4.0D,
-                    this.posZ + this.motionZ / 4.0D,
-                    -this.motionX / 2,
-                    -this.motionY / 2 + 0.2D,
-                    -this.motionZ / 2);
+                "flame",
+                this.posX + this.motionX / 4.0D,
+                this.posY + this.motionY / 4.0D,
+                this.posZ + this.motionZ / 4.0D,
+                -this.motionX / 2,
+                -this.motionY / 2 + 0.2D,
+                -this.motionZ / 2);
             this.worldObj.spawnParticle(
-                    "flame",
-                    this.posX + this.motionX / 4.0D,
-                    this.posY + this.motionY / 4.0D,
-                    this.posZ + this.motionZ / 4.0D,
-                    -this.motionX / 2,
-                    -this.motionY / 2 + 0.2D,
-                    -this.motionZ / 2);
+                "flame",
+                this.posX + this.motionX / 4.0D,
+                this.posY + this.motionY / 4.0D,
+                this.posZ + this.motionZ / 4.0D,
+                -this.motionX / 2,
+                -this.motionY / 2 + 0.2D,
+                -this.motionZ / 2);
             Entity target = getTarget();
 
             Vector3d arrowLoc = new Vector3d(posX, posY, posZ);
@@ -119,13 +119,13 @@ public class EntityHomingArrow extends EntityArrow {
 
     private void findNewTarget() {
         List<EntityLiving> candidates = worldObj
-                .getEntitiesWithinAABB(EntityLiving.class, this.boundingBox.expand(8, 8, 8));
+            .getEntitiesWithinAABB(EntityLiving.class, this.boundingBox.expand(8, 8, 8));
         Collections.sort(candidates, new Comparator<EntityLiving>() {
 
             @Override
             public int compare(EntityLiving o1, EntityLiving o2) {
                 double dist = EntityHomingArrow.this.getDistanceSqToEntity(o1)
-                        - EntityHomingArrow.this.getDistanceSqToEntity(o2);
+                    - EntityHomingArrow.this.getDistanceSqToEntity(o2);
                 if (dist == 0.0) {
                     return 0;
                 } else {
@@ -135,7 +135,10 @@ public class EntityHomingArrow extends EntityArrow {
         });
 
         if (!candidates.isEmpty()) {
-            dataWatcher.updateObject(DW_TARGET_ID, candidates.get(0).getEntityId());
+            dataWatcher.updateObject(
+                DW_TARGET_ID,
+                candidates.get(0)
+                    .getEntityId());
         }
 
         newTargetCooldown = 5;

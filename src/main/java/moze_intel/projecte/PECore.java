@@ -4,6 +4,29 @@ import java.io.File;
 import java.util.List;
 import java.util.UUID;
 
+import net.minecraft.block.Block;
+import net.minecraft.item.Item;
+import net.minecraftforge.common.MinecraftForge;
+
+import com.google.common.base.Throwables;
+import com.google.common.collect.Lists;
+import com.mojang.authlib.GameProfile;
+
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.Mod;
+import cpw.mods.fml.common.Mod.EventHandler;
+import cpw.mods.fml.common.Mod.Instance;
+import cpw.mods.fml.common.SidedProxy;
+import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLInterModComms;
+import cpw.mods.fml.common.event.FMLMissingMappingsEvent;
+import cpw.mods.fml.common.event.FMLPostInitializationEvent;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.event.FMLServerStartingEvent;
+import cpw.mods.fml.common.event.FMLServerStoppedEvent;
+import cpw.mods.fml.common.event.FMLServerStoppingEvent;
+import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.common.registry.GameRegistry;
 import moze_intel.projecte.config.CustomEMCParser;
 import moze_intel.projecte.config.NBTWhitelistParser;
 import moze_intel.projecte.config.ProjectEConfig;
@@ -28,30 +51,6 @@ import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.GuiHandler;
 import moze_intel.projecte.utils.PELogger;
 
-import net.minecraft.block.Block;
-import net.minecraft.item.Item;
-import net.minecraftforge.common.MinecraftForge;
-
-import com.google.common.base.Throwables;
-import com.google.common.collect.Lists;
-import com.mojang.authlib.GameProfile;
-
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.Mod.EventHandler;
-import cpw.mods.fml.common.Mod.Instance;
-import cpw.mods.fml.common.SidedProxy;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLInterModComms;
-import cpw.mods.fml.common.event.FMLMissingMappingsEvent;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.event.FMLServerStartingEvent;
-import cpw.mods.fml.common.event.FMLServerStoppedEvent;
-import cpw.mods.fml.common.event.FMLServerStoppingEvent;
-import cpw.mods.fml.common.network.NetworkRegistry;
-import cpw.mods.fml.common.registry.GameRegistry;
-
 @Mod(modid = PECore.MODID, name = PECore.MODNAME, version = PECore.VERSION)
 public class PECore {
 
@@ -59,8 +58,8 @@ public class PECore {
     public static final String MODNAME = "ProjectE";
     public static final String VERSION = "1.7.10-PE1.10.1";
     public static final GameProfile FAKEPLAYER_GAMEPROFILE = new GameProfile(
-            UUID.fromString("590e39c7-9fb6-471b-a4c2-c0e539b2423d"),
-            "[ProjectE]");
+        UUID.fromString("590e39c7-9fb6-471b-a4c2-c0e539b2423d"),
+        "[ProjectE]");
     public static File CONFIG_DIR;
     public static File PREGENERATED_EMC_FILE;
 
@@ -68,8 +67,8 @@ public class PECore {
     public static PECore instance;
 
     @SidedProxy(
-            clientSide = "moze_intel.projecte.proxies.ClientProxy",
-            serverSide = "moze_intel.projecte.proxies.ServerProxy")
+        clientSide = "moze_intel.projecte.proxies.ClientProxy",
+        serverSide = "moze_intel.projecte.proxies.ServerProxy")
     public static IProxy proxy;
 
     public static final List<String> uuids = Lists.newArrayList();
@@ -95,10 +94,16 @@ public class PECore {
 
         PlayerEvents pe = new PlayerEvents();
         MinecraftForge.EVENT_BUS.register(pe);
-        FMLCommonHandler.instance().bus().register(pe);
+        FMLCommonHandler.instance()
+            .bus()
+            .register(pe);
 
-        FMLCommonHandler.instance().bus().register(new TickEvents());
-        FMLCommonHandler.instance().bus().register(new ConnectionHandler());
+        FMLCommonHandler.instance()
+            .bus()
+            .register(new TickEvents());
+        FMLCommonHandler.instance()
+            .bus()
+            .register(new ConnectionHandler());
 
         proxy.registerClientOnlyEvents();
 
@@ -143,12 +148,17 @@ public class PECore {
         EMCMapper.map();
 
         PELogger.logInfo(
-                "Registered " + EMCMapper.emc.size()
-                        + " EMC values. (took "
-                        + (System.currentTimeMillis() - start)
-                        + " ms)");
+            "Registered " + EMCMapper.emc.size()
+                + " EMC values. (took "
+                + (System.currentTimeMillis() - start)
+                + " ms)");
 
-        File dir = new File(event.getServer().getEntityWorld().getSaveHandler().getWorldDirectory(), "ProjectE");
+        File dir = new File(
+            event.getServer()
+                .getEntityWorld()
+                .getSaveHandler()
+                .getWorldDirectory(),
+            "ProjectE");
 
         if (!dir.exists()) {
             dir.mkdirs();
@@ -204,10 +214,10 @@ public class PECore {
                         if (remappedItem != null) {
                             mapping.remap(remappedItem);
                             PELogger.logInfo(
-                                    String.format(
-                                            "Remapped ProjectE ItemBlock from %s to %s",
-                                            mapping.name,
-                                            PECore.MODID + ":" + newSubName));
+                                String.format(
+                                    "Remapped ProjectE ItemBlock from %s to %s",
+                                    mapping.name,
+                                    PECore.MODID + ":" + newSubName));
                         } else {
                             PELogger.logFatal("Failed to remap ProjectE ItemBlock: " + mapping.name);
                         }
@@ -221,10 +231,10 @@ public class PECore {
                     if (remappedBlock != null) {
                         mapping.remap(remappedBlock);
                         PELogger.logInfo(
-                                String.format(
-                                        "Remapped ProjectE Block from %s to %s",
-                                        mapping.name,
-                                        PECore.MODID + ":" + newSubName));
+                            String.format(
+                                "Remapped ProjectE Block from %s to %s",
+                                mapping.name,
+                                PECore.MODID + ":" + newSubName));
                     } else {
                         PELogger.logFatal("Failed to remap PE Block: " + mapping.name);
                     }

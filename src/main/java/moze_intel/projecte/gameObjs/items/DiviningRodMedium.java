@@ -28,9 +28,9 @@ public class DiviningRodMedium extends DiviningRodLow {
     public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4) {
         if (stack.hasTagCompound()) {
             list.add(
-                    StatCollector.translateToLocal("pe.item.mode") + ": "
-                            + EnumChatFormatting.AQUA
-                            + modes[getMode(stack)]);
+                StatCollector.translateToLocal("pe.item.mode") + ": "
+                    + EnumChatFormatting.AQUA
+                    + modes[getMode(stack)]);
         }
     }
 

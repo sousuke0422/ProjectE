@@ -10,17 +10,17 @@ import java.io.PrintWriter;
 import java.util.List;
 import java.util.Map;
 
-import moze_intel.projecte.PECore;
-import moze_intel.projecte.emc.NormalizedSimpleStack;
-import moze_intel.projecte.utils.FileHelper;
-import moze_intel.projecte.utils.ItemHelper;
-import moze_intel.projecte.utils.PELogger;
-
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+
+import moze_intel.projecte.PECore;
+import moze_intel.projecte.emc.NormalizedSimpleStack;
+import moze_intel.projecte.utils.FileHelper;
+import moze_intel.projecte.utils.ItemHelper;
+import moze_intel.projecte.utils.PELogger;
 
 public final class CustomEMCParser {
 
@@ -97,7 +97,8 @@ public final class CustomEMCParser {
                     }
                     userValues.put(NormalizedSimpleStack.getFor(stack), (entry.emc > 0 ? entry.emc : 0));
                 } else {
-                    if (OreDictionary.getOres(entry.name).isEmpty()) {
+                    if (OreDictionary.getOres(entry.name)
+                        .isEmpty()) {
                         PELogger.logFatal("Error in custom EMC file: no OD entry for " + entry.name);
                         PELogger.logFatal("At line number: " + reader.getLineNumber());
                         continue;
@@ -348,9 +349,9 @@ public final class CustomEMCParser {
             writer.println(VERSION);
             writer.println("Custom EMC file");
             writer.println(
-                    "This file is used for custom EMC registration, it is recommended that you do not modify it manually.");
-            writer.println(
-                    "In game commands are avaliable to set custom values. Type /projecte in game for usage info.");
+                "This file is used for custom EMC registration, it is recommended that you do not modify it manually.");
+            writer
+                .println("In game commands are avaliable to set custom values. Type /projecte in game for usage info.");
         } catch (IOException e) {
             e.printStackTrace();
         } finally {

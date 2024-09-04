@@ -2,12 +2,6 @@ package moze_intel.projecte.gameObjs.items;
 
 import java.util.List;
 
-import moze_intel.projecte.network.PacketHandler;
-import moze_intel.projecte.network.packets.ParticlePKT;
-import moze_intel.projecte.utils.Coordinates;
-import moze_intel.projecte.utils.PlayerHelper;
-import moze_intel.projecte.utils.WorldHelper;
-
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
@@ -25,6 +19,11 @@ import com.google.common.collect.Lists;
 import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import moze_intel.projecte.network.PacketHandler;
+import moze_intel.projecte.network.packets.ParticlePKT;
+import moze_intel.projecte.utils.Coordinates;
+import moze_intel.projecte.utils.PlayerHelper;
+import moze_intel.projecte.utils.WorldHelper;
 
 public class DestructionCatalyst extends ItemCharge {
 
@@ -82,8 +81,8 @@ public class DestructionCatalyst extends ItemCharge {
 
                         if (world.rand.nextInt(8) == 0) {
                             PacketHandler.sendToAllAround(
-                                    new ParticlePKT("largesmoke", x, y, z),
-                                    new TargetPoint(world.provider.dimensionId, x, y + 1, z, 32));
+                                new ParticlePKT("largesmoke", x, y, z),
+                                new TargetPoint(world.provider.dimensionId, x, y + 1, z, 32));
                         }
                     }
                 }

@@ -2,8 +2,6 @@ package moze_intel.projecte.gameObjs.items;
 
 import java.util.List;
 
-import moze_intel.projecte.utils.AchievementHandler;
-
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
@@ -15,6 +13,7 @@ import net.minecraft.world.World;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import moze_intel.projecte.utils.AchievementHandler;
 
 public class Matter extends ItemPE {
 

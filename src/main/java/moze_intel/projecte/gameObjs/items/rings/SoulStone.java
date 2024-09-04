@@ -2,12 +2,6 @@ package moze_intel.projecte.gameObjs.items.rings;
 
 import java.util.List;
 
-import moze_intel.projecte.api.item.IPedestalItem;
-import moze_intel.projecte.config.ProjectEConfig;
-import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
-import moze_intel.projecte.handlers.PlayerTimers;
-import moze_intel.projecte.utils.MathUtils;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -17,11 +11,16 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
+import com.google.common.collect.Lists;
+
 import baubles.api.BaubleType;
 import baubles.api.IBauble;
-
-import com.google.common.collect.Lists;
 import cpw.mods.fml.common.Optional;
+import moze_intel.projecte.api.item.IPedestalItem;
+import moze_intel.projecte.config.ProjectEConfig;
+import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
+import moze_intel.projecte.handlers.PlayerTimers;
+import moze_intel.projecte.utils.MathUtils;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
 public class SoulStone extends RingToggle implements IBauble, IPedestalItem {
@@ -108,7 +107,7 @@ public class SoulStone extends RingToggle implements IBauble, IPedestalItem {
             DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(x, y, z));
             if (tile.getActivityCooldown() == 0) {
                 List<EntityPlayerMP> players = world
-                        .getEntitiesWithinAABB(EntityPlayerMP.class, tile.getEffectBounds());
+                    .getEntitiesWithinAABB(EntityPlayerMP.class, tile.getEffectBounds());
 
                 for (EntityPlayerMP player : players) {
                     if (player.getHealth() < player.getMaxHealth()) {
@@ -130,9 +129,9 @@ public class SoulStone extends RingToggle implements IBauble, IPedestalItem {
         if (ProjectEConfig.soulPedCooldown != -1) {
             list.add(EnumChatFormatting.BLUE + StatCollector.translateToLocal("pe.soul.pedestal1"));
             list.add(
-                    EnumChatFormatting.BLUE + String.format(
-                            StatCollector.translateToLocal("pe.soul.pedestal2"),
-                            MathUtils.tickToSecFormatted(ProjectEConfig.soulPedCooldown)));
+                EnumChatFormatting.BLUE + String.format(
+                    StatCollector.translateToLocal("pe.soul.pedestal2"),
+                    MathUtils.tickToSecFormatted(ProjectEConfig.soulPedCooldown)));
         }
         return list;
     }

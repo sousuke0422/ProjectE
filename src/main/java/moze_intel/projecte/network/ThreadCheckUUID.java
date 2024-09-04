@@ -7,10 +7,10 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 
+import com.google.common.collect.Lists;
+
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.utils.PELogger;
-
-import com.google.common.collect.Lists;
 
 public class ThreadCheckUUID extends Thread {
 

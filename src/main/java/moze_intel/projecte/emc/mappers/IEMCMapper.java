@@ -1,8 +1,8 @@
 package moze_intel.projecte.emc.mappers;
 
-import moze_intel.projecte.emc.collector.IMappingCollector;
-
 import net.minecraftforge.common.config.Configuration;
+
+import moze_intel.projecte.emc.collector.IMappingCollector;
 
 /**
  * Interface for Classes that want to make Contributions to the EMC Mapping.

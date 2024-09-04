@@ -5,6 +5,13 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+
+import com.google.common.collect.Lists;
+
 import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.playerData.Transmutation;
@@ -14,13 +21,6 @@ import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
 import moze_intel.projecte.utils.ItemSearchHelper;
 import moze_intel.projecte.utils.NBTWhitelist;
-
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-
-import com.google.common.collect.Lists;
 
 public class TransmutationInventory implements IInventory {
 
@@ -228,7 +228,7 @@ public class TransmutationInventory implements IInventory {
     public void writeIntoOutputSlot(int slot, ItemStack item) {
 
         if (EMCHelper.doesItemHaveEmc(item) && EMCHelper.getEmcValue(item) <= this.emc
-                && Transmutation.hasKnowledgeForStack(item, player)) {
+            && Transmutation.hasKnowledgeForStack(item, player)) {
             inventory[slot] = item;
         } else {
             inventory[slot] = null;
@@ -236,7 +236,8 @@ public class TransmutationInventory implements IInventory {
     }
 
     public List<ItemStack> getOutputSlots() {
-        return Arrays.asList(inventory).subList(10, 26);
+        return Arrays.asList(inventory)
+            .subList(10, 26);
     }
 
     @Override

@@ -1,16 +1,15 @@
 package moze_intel.projecte.gameObjs.entity;
 
-import moze_intel.projecte.network.PacketHandler;
-import moze_intel.projecte.network.packets.ParticlePKT;
-import moze_intel.projecte.utils.Constants;
-import moze_intel.projecte.utils.WorldHelper;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 
 import cpw.mods.fml.common.network.NetworkRegistry;
+import moze_intel.projecte.network.PacketHandler;
+import moze_intel.projecte.network.packets.ParticlePKT;
+import moze_intel.projecte.utils.Constants;
+import moze_intel.projecte.utils.WorldHelper;
 
 public class EntityLensProjectile extends PEProjectile {
 
@@ -46,8 +45,8 @@ public class EntityLensProjectile extends PEProjectile {
         if (this.isInWater()) {
             this.playSound("random.fizz", 0.7F, 1.6F + (this.rand.nextFloat() - this.rand.nextFloat()) * 0.4F);
             PacketHandler.sendToAllAround(
-                    new ParticlePKT("largesmoke", posX, posY, posZ),
-                    new NetworkRegistry.TargetPoint(worldObj.provider.dimensionId, posX, posY, posZ, 32));
+                new ParticlePKT("largesmoke", posX, posY, posZ),
+                new NetworkRegistry.TargetPoint(worldObj.provider.dimensionId, posX, posY, posZ, 32));
             this.setDead();
         }
     }
@@ -56,7 +55,7 @@ public class EntityLensProjectile extends PEProjectile {
     protected void apply(MovingObjectPosition mop) {
         if (this.worldObj.isRemote) return;
         WorldHelper
-                .createNovaExplosion(worldObj, getThrower(), posX, posY, posZ, Constants.EXPLOSIVE_LENS_RADIUS[charge]);
+            .createNovaExplosion(worldObj, getThrower(), posX, posY, posZ, Constants.EXPLOSIVE_LENS_RADIUS[charge]);
     }
 
     public void writeEntityToNBT(NBTTagCompound nbt) {

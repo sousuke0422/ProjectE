@@ -2,19 +2,19 @@ package moze_intel.projecte.handlers;
 
 import java.util.Set;
 
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
+
+import com.google.common.collect.Sets;
+
+import gnu.trove.map.hash.TObjectIntHashMap;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.items.IFireProtector;
 import moze_intel.projecte.gameObjs.items.IFlightProvider;
 import moze_intel.projecte.gameObjs.items.IStepAssister;
 import moze_intel.projecte.utils.PlayerHelper;
-
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
-
-import com.google.common.collect.Sets;
-import gnu.trove.map.hash.TObjectIntHashMap;
 
 public final class PlayerChecks {
 
@@ -115,7 +115,7 @@ public final class PlayerChecks {
 
         for (ItemStack stack : player.inventory.armorInventory) {
             if (stack != null && stack.getItem() instanceof IFlightProvider
-                    && ((IFlightProvider) stack.getItem()).canProvideFlight(stack, player)) {
+                && ((IFlightProvider) stack.getItem()).canProvideFlight(stack, player)) {
                 return true;
             }
         }
@@ -124,7 +124,7 @@ public final class PlayerChecks {
             ItemStack stack = player.inventory.getStackInSlot(i);
 
             if (stack != null && stack.getItem() instanceof IFlightProvider
-                    && ((IFlightProvider) stack.getItem()).canProvideFlight(stack, player)) {
+                && ((IFlightProvider) stack.getItem()).canProvideFlight(stack, player)) {
                 return true;
             }
         }
@@ -134,7 +134,7 @@ public final class PlayerChecks {
             for (int i = 0; i < baubles.getSizeInventory(); i++) {
                 ItemStack stack = baubles.getStackInSlot(i);
                 if (stack != null && stack.getItem() instanceof IFlightProvider
-                        && ((IFlightProvider) stack.getItem()).canProvideFlight(stack, player)) {
+                    && ((IFlightProvider) stack.getItem()).canProvideFlight(stack, player)) {
                     return true;
                 }
             }
@@ -150,7 +150,7 @@ public final class PlayerChecks {
 
         for (ItemStack stack : player.inventory.armorInventory) {
             if (stack != null && stack.getItem() instanceof IFireProtector
-                    && ((IFireProtector) stack.getItem()).canProtectAgainstFire(stack, player)) {
+                && ((IFireProtector) stack.getItem()).canProtectAgainstFire(stack, player)) {
                 return true;
             }
         }
@@ -159,7 +159,7 @@ public final class PlayerChecks {
             ItemStack stack = player.inventory.getStackInSlot(i);
 
             if (stack != null && stack.getItem() instanceof IFireProtector
-                    && ((IFireProtector) stack.getItem()).canProtectAgainstFire(stack, player)) {
+                && ((IFireProtector) stack.getItem()).canProtectAgainstFire(stack, player)) {
                 return true;
             }
         }
@@ -169,7 +169,7 @@ public final class PlayerChecks {
             for (int i = 0; i < baubles.getSizeInventory(); i++) {
                 ItemStack stack = baubles.getStackInSlot(i);
                 if (stack != null && stack.getItem() instanceof IFireProtector
-                        && ((IFireProtector) stack.getItem()).canProtectAgainstFire(stack, player)) {
+                    && ((IFireProtector) stack.getItem()).canProtectAgainstFire(stack, player)) {
                     return true;
                 }
             }
@@ -181,7 +181,7 @@ public final class PlayerChecks {
     private static boolean shouldPlayerStep(EntityPlayerMP player) {
         for (ItemStack stack : player.inventory.armorInventory) {
             if (stack != null && stack.getItem() instanceof IStepAssister
-                    && ((IStepAssister) stack.getItem()).canAssistStep(stack, player)) {
+                && ((IStepAssister) stack.getItem()).canAssistStep(stack, player)) {
                 return true;
             }
         }
@@ -190,7 +190,7 @@ public final class PlayerChecks {
             ItemStack stack = player.inventory.getStackInSlot(i);
 
             if (stack != null && stack.getItem() instanceof IStepAssister
-                    && ((IStepAssister) stack.getItem()).canAssistStep(stack, player)) {
+                && ((IStepAssister) stack.getItem()).canAssistStep(stack, player)) {
                 return true;
             }
         }
@@ -200,7 +200,7 @@ public final class PlayerChecks {
             for (int i = 0; i < baubles.getSizeInventory(); i++) {
                 ItemStack stack = baubles.getStackInSlot(i);
                 if (stack != null && stack.getItem() instanceof IStepAssister
-                        && ((IStepAssister) stack.getItem()).canAssistStep(stack, player)) {
+                    && ((IStepAssister) stack.getItem()).canAssistStep(stack, player)) {
                     return true;
                 }
             }
@@ -212,7 +212,7 @@ public final class PlayerChecks {
     private static boolean hasSwrg(EntityPlayerMP player) {
         for (int i = 0; i <= 8; i++) {
             if (player.inventory.mainInventory[i] != null
-                    && player.inventory.mainInventory[i].getItem() == ObjHandler.swrg) {
+                && player.inventory.mainInventory[i].getItem() == ObjHandler.swrg) {
                 return true;
             }
         }
@@ -220,7 +220,8 @@ public final class PlayerChecks {
         IInventory baubles = PlayerHelper.getBaubles(player);
         if (baubles != null) {
             for (int i = 0; i < baubles.getSizeInventory(); i++) {
-                if (baubles.getStackInSlot(i) != null && baubles.getStackInSlot(i).getItem() == ObjHandler.swrg) {
+                if (baubles.getStackInSlot(i) != null && baubles.getStackInSlot(i)
+                    .getItem() == ObjHandler.swrg) {
                     return true;
                 }
             }

@@ -1,9 +1,5 @@
 package moze_intel.projecte.gameObjs.tiles;
 
-import moze_intel.projecte.api.item.IPedestalItem;
-import moze_intel.projecte.network.PacketHandler;
-import moze_intel.projecte.network.packets.SyncPedestalPKT;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
@@ -12,6 +8,10 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.Packet;
 import net.minecraft.util.AxisAlignedBB;
+
+import moze_intel.projecte.api.item.IPedestalItem;
+import moze_intel.projecte.network.PacketHandler;
+import moze_intel.projecte.network.packets.SyncPedestalPKT;
 
 public class DMPedestalTile extends TileEmc implements IInventory {
 
@@ -29,7 +29,8 @@ public class DMPedestalTile extends TileEmc implements IInventory {
     @Override
     public void updateEntity() {
         if (worldObj.isRemote) {
-            if (worldObj.getChunkFromBlockCoords(xCoord, zCoord).isEmpty()) {
+            if (worldObj.getChunkFromBlockCoords(xCoord, zCoord)
+                .isEmpty()) {
                 // Handle condition where this method is called even after the clientside chunk has unloaded.
                 // This will make IPedestalItems below crash with an NPE since the TE they get back is null
                 // Don't you love vanilla???
@@ -42,12 +43,12 @@ public class DMPedestalTile extends TileEmc implements IInventory {
 
         if (effectBounds == null) {
             effectBounds = AxisAlignedBB.getBoundingBox(
-                    centeredX - 4.5,
-                    centeredY - 4.5,
-                    centeredZ - 4.5,
-                    centeredX + 4.5,
-                    centeredY + 4.5,
-                    centeredZ + 4.5);
+                centeredX - 4.5,
+                centeredY - 4.5,
+                centeredZ - 4.5,
+                centeredX + 4.5,
+                centeredY + 4.5,
+                centeredZ + 4.5);
         }
 
         if (getActive()) {
@@ -213,10 +214,8 @@ public class DMPedestalTile extends TileEmc implements IInventory {
     @Override
     public boolean isUseableByPlayer(EntityPlayer var1) {
         return this.worldObj.getTileEntity(this.xCoord, this.yCoord, this.zCoord) != this ? false
-                : var1.getDistanceSq(
-                        (double) this.xCoord + 0.5D,
-                        (double) this.yCoord + 0.5D,
-                        (double) this.zCoord + 0.5D) <= 64.0D;
+            : var1.getDistanceSq((double) this.xCoord + 0.5D, (double) this.yCoord + 0.5D, (double) this.zCoord + 0.5D)
+                <= 64.0D;
     }
 
     @Override
@@ -247,25 +246,25 @@ public class DMPedestalTile extends TileEmc implements IInventory {
                 worldObj.playSoundEffect(centeredX, centeredY, centeredZ, "projecte:item.pecharge", 1.0F, 1.0F);
                 for (int i = 0; i < worldObj.rand.nextInt(35) + 10; ++i) {
                     this.worldObj.spawnParticle(
-                            "witchMagic",
-                            centeredX + worldObj.rand.nextGaussian() * 0.12999999523162842D,
-                            yCoord + 1 + worldObj.rand.nextGaussian() * 0.12999999523162842D,
-                            centeredZ + worldObj.rand.nextGaussian() * 0.12999999523162842D,
-                            0.0D,
-                            0.0D,
-                            0.0D);
+                        "witchMagic",
+                        centeredX + worldObj.rand.nextGaussian() * 0.12999999523162842D,
+                        yCoord + 1 + worldObj.rand.nextGaussian() * 0.12999999523162842D,
+                        centeredZ + worldObj.rand.nextGaussian() * 0.12999999523162842D,
+                        0.0D,
+                        0.0D,
+                        0.0D);
                 }
             } else {
                 worldObj.playSoundEffect(centeredX, centeredY, centeredZ, "projecte:item.peuncharge", 1.0F, 1.0F);
                 for (int i = 0; i < worldObj.rand.nextInt(35) + 10; ++i) {
                     this.worldObj.spawnParticle(
-                            "smoke",
-                            centeredX + worldObj.rand.nextGaussian() * 0.12999999523162842D,
-                            yCoord + 1 + worldObj.rand.nextGaussian() * 0.12999999523162842D,
-                            centeredZ + worldObj.rand.nextGaussian() * 0.12999999523162842D,
-                            0.0D,
-                            0.0D,
-                            0.0D);
+                        "smoke",
+                        centeredX + worldObj.rand.nextGaussian() * 0.12999999523162842D,
+                        yCoord + 1 + worldObj.rand.nextGaussian() * 0.12999999523162842D,
+                        centeredZ + worldObj.rand.nextGaussian() * 0.12999999523162842D,
+                        0.0D,
+                        0.0D,
+                        0.0D);
                 }
             }
         }

@@ -3,12 +3,6 @@ package moze_intel.projecte.gameObjs.items;
 import java.util.List;
 import java.util.Set;
 
-import moze_intel.projecte.api.item.IModeChanger;
-import moze_intel.projecte.api.item.IPedestalItem;
-import moze_intel.projecte.config.ProjectEConfig;
-import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
-import moze_intel.projecte.utils.WorldHelper;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.IGrowable;
@@ -30,24 +24,28 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.fluids.BlockFluidBase;
 
-import baubles.api.BaubleType;
-import baubles.api.IBauble;
-
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
+import baubles.api.BaubleType;
+import baubles.api.IBauble;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import moze_intel.projecte.api.item.IModeChanger;
+import moze_intel.projecte.api.item.IPedestalItem;
+import moze_intel.projecte.config.ProjectEConfig;
+import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
+import moze_intel.projecte.utils.WorldHelper;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
 public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPedestalItem {
 
     private static Set<String> internalBlacklist = Sets.newHashSet(
-            "moze_intel.projecte.gameObjs.tiles.DMPedestalTile",
-            "Reika.ChromatiCraft.TileEntity.AOE.TileEntityAccelerator",
-            "com.sci.torcherino.tile.TileTorcherino",
-            "com.sci.torcherino.tile.TileCompressedTorcherino");
+        "moze_intel.projecte.gameObjs.tiles.DMPedestalTile",
+        "Reika.ChromatiCraft.TileEntity.AOE.TileEntityAccelerator",
+        "com.sci.torcherino.tile.TileTorcherino",
+        "com.sci.torcherino.tile.TileCompressedTorcherino");
 
     @SideOnly(Side.CLIENT)
     private IIcon ringOff;
@@ -76,9 +74,9 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
             setTimeBoost(stack, (byte) (current == 2 ? 0 : current + 1));
 
             player.addChatComponentMessage(
-                    new ChatComponentTranslation(
-                            "pe.timewatch.mode_switch",
-                            new ChatComponentTranslation(getTimeName(stack)).getUnformattedTextForChat()));
+                new ChatComponentTranslation(
+                    "pe.timewatch.mode_switch",
+                    new ChatComponentTranslation(getTimeName(stack)).getUnformattedTextForChat()));
         }
 
         return stack;
@@ -100,7 +98,8 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 
         byte timeControl = getTimeBoost(stack);
 
-        if (world.getGameRules().getGameRuleBooleanValue("doDaylightCycle")) {
+        if (world.getGameRules()
+            .getGameRuleBooleanValue("doDaylightCycle")) {
             if (timeControl == 1) {
                 if (world.getWorldTime() + ((getCharge(stack) + 1) * 4) > Long.MAX_VALUE) {
                     world.setWorldTime(Long.MAX_VALUE);
@@ -175,7 +174,9 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
         List<TileEntity> list = WorldHelper.getTileEntitiesWithinAABB(world, bBox);
         for (int i = 0; i < bonusTicks; i++) {
             for (TileEntity tile : list) {
-                if (!tile.isInvalid() && !internalBlacklist.contains(tile.getClass().getName())) {
+                if (!tile.isInvalid() && !internalBlacklist.contains(
+                    tile.getClass()
+                        .getName())) {
                     tile.updateEntity();
                 }
             }
@@ -194,10 +195,10 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 
                     if (block.getTickRandomly() && !(block instanceof BlockLiquid) // Don't speed vanilla non-source
                                                                                    // blocks - dupe issues
-                            && !(block instanceof BlockFluidBase) // Don't speed Forge fluids - just in case of dupes as
-                                                                  // well
-                            && !(block instanceof IGrowable)
-                            && !(block instanceof IPlantable) // All plants should be sped using Harvest Goddess
+                        && !(block instanceof BlockFluidBase) // Don't speed Forge fluids - just in case of dupes as
+                                                              // well
+                        && !(block instanceof IGrowable)
+                        && !(block instanceof IPlantable) // All plants should be sped using Harvest Goddess
                     ) {
                         for (int i = 0; i < bonusTicks; i++) {
                             block.updateTick(world, x, y, z, itemRand);
@@ -284,9 +285,9 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
 
         if (stack.hasTagCompound()) {
             list.add(
-                    String.format(
-                            StatCollector.translateToLocal("pe.timewatch.mode"),
-                            StatCollector.translateToLocal(getTimeName(stack))));
+                String.format(
+                    StatCollector.translateToLocal("pe.timewatch.mode"),
+                    StatCollector.translateToLocal(getTimeName(stack))));
         }
     }
 
@@ -347,15 +348,14 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
         List<String> list = Lists.newArrayList();
         if (ProjectEConfig.timePedBonus > 0) {
             list.add(
-                    EnumChatFormatting.BLUE + String.format(
-                            StatCollector.translateToLocal("pe.timewatch.pedestal1"),
-                            ProjectEConfig.timePedBonus));
+                EnumChatFormatting.BLUE + String
+                    .format(StatCollector.translateToLocal("pe.timewatch.pedestal1"), ProjectEConfig.timePedBonus));
         }
         if (ProjectEConfig.timePedMobSlowness < 1.0F) {
             list.add(
-                    EnumChatFormatting.BLUE + String.format(
-                            StatCollector.translateToLocal("pe.timewatch.pedestal2"),
-                            ProjectEConfig.timePedMobSlowness));
+                EnumChatFormatting.BLUE + String.format(
+                    StatCollector.translateToLocal("pe.timewatch.pedestal2"),
+                    ProjectEConfig.timePedMobSlowness));
         }
         return list;
     }

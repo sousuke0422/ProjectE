@@ -2,9 +2,6 @@ package moze_intel.projecte.gameObjs.items.armor;
 
 import java.util.Locale;
 
-import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.utils.EnumArmorType;
-
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -14,15 +11,17 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraftforge.common.ISpecialArmor;
 
-import thaumcraft.api.IGoggles;
-import thaumcraft.api.nodes.IRevealer;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.utils.EnumArmorType;
+import thaumcraft.api.IGoggles;
+import thaumcraft.api.nodes.IRevealer;
 
 @Optional.InterfaceList(
-        value = { @Optional.Interface(iface = "thaumcraft.api.nodes.IRevealer", modid = "Thaumcraft"),
-                @Optional.Interface(iface = "thaumcraft.api.IGoggles", modid = "Thaumcraft") })
+    value = { @Optional.Interface(iface = "thaumcraft.api.nodes.IRevealer", modid = "Thaumcraft"),
+        @Optional.Interface(iface = "thaumcraft.api.IGoggles", modid = "Thaumcraft") })
 public class RMArmor extends ItemArmor implements ISpecialArmor, IRevealer, IGoggles {
 
     private final EnumArmorType armorPiece;
@@ -38,7 +37,7 @@ public class RMArmor extends ItemArmor implements ISpecialArmor, IRevealer, IGog
 
     @Override
     public ArmorProperties getProperties(EntityLivingBase player, ItemStack armor, DamageSource source, double damage,
-            int slot) {
+        int slot) {
         EnumArmorType type = ((RMArmor) armor.getItem()).armorPiece;
         if (source.isExplosion()) {
             return new ArmorProperties(1, 1.0D, 500);

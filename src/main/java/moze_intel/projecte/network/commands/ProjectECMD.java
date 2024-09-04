@@ -14,7 +14,7 @@ import com.google.common.collect.Lists;
 public class ProjectECMD extends ProjectEBaseCMD {
 
     private static final List<String> commands = Lists
-            .newArrayList("changelog", "clearKnowledge", "setEMC", "reloadEMC", "removeEMC", "resetEMC");
+        .newArrayList("changelog", "clearKnowledge", "setEMC", "reloadEMC", "removeEMC", "resetEMC");
 
     ChangelogCMD changelogcmd = new ChangelogCMD();
     ReloadEmcCMD reloademccmd = new ReloadEmcCMD();
@@ -112,7 +112,8 @@ public class ProjectECMD extends ProjectEBaseCMD {
 
         @Override
         public boolean apply(String input) {
-            return input.toLowerCase(Locale.ROOT).startsWith(prefix.toLowerCase(Locale.ROOT));
+            return input.toLowerCase(Locale.ROOT)
+                .startsWith(prefix.toLowerCase(Locale.ROOT));
         }
     }
 }

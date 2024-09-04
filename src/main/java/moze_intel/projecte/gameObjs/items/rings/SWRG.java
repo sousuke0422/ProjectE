@@ -2,15 +2,6 @@ package moze_intel.projecte.gameObjs.items.rings;
 
 import java.util.List;
 
-import moze_intel.projecte.api.item.IPedestalItem;
-import moze_intel.projecte.config.ProjectEConfig;
-import moze_intel.projecte.gameObjs.items.IFlightProvider;
-import moze_intel.projecte.gameObjs.items.ItemPE;
-import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
-import moze_intel.projecte.handlers.PlayerChecks;
-import moze_intel.projecte.utils.MathUtils;
-import moze_intel.projecte.utils.WorldHelper;
-
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
@@ -26,14 +17,21 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
-import baubles.api.BaubleType;
-import baubles.api.IBauble;
-
 import com.google.common.collect.Lists;
 
+import baubles.api.BaubleType;
+import baubles.api.IBauble;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import moze_intel.projecte.api.item.IPedestalItem;
+import moze_intel.projecte.config.ProjectEConfig;
+import moze_intel.projecte.gameObjs.items.IFlightProvider;
+import moze_intel.projecte.gameObjs.items.ItemPE;
+import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
+import moze_intel.projecte.handlers.PlayerChecks;
+import moze_intel.projecte.utils.MathUtils;
+import moze_intel.projecte.utils.WorldHelper;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
 public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightProvider {
@@ -54,12 +52,12 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightProvi
         if (stack.getItemDamage() > 1) {
             // Repel on both sides - smooth animation
             WorldHelper.repelEntitiesInAABBFromPoint(
-                    player.worldObj,
-                    player.boundingBox.expand(5.0, 5.0, 5.0),
-                    player.posX,
-                    player.posY,
-                    player.posZ,
-                    true);
+                player.worldObj,
+                player.boundingBox.expand(5.0, 5.0, 5.0),
+                player.posX,
+                player.posY,
+                player.posZ,
+                true);
         }
 
         if (player.worldObj.isRemote) {
@@ -258,9 +256,9 @@ public class SWRG extends ItemPE implements IBauble, IPedestalItem, IFlightProvi
         if (ProjectEConfig.swrgPedCooldown != -1) {
             list.add(EnumChatFormatting.BLUE + StatCollector.translateToLocal("pe.swrg.pedestal1"));
             list.add(
-                    EnumChatFormatting.BLUE + String.format(
-                            StatCollector.translateToLocal("pe.swrg.pedestal2"),
-                            MathUtils.tickToSecFormatted(ProjectEConfig.swrgPedCooldown)));
+                EnumChatFormatting.BLUE + String.format(
+                    StatCollector.translateToLocal("pe.swrg.pedestal2"),
+                    MathUtils.tickToSecFormatted(ProjectEConfig.swrgPedCooldown)));
         }
         return list;
     }

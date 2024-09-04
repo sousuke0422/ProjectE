@@ -2,13 +2,13 @@ package moze_intel.projecte.utils;
 
 import java.util.Comparator;
 
-import moze_intel.projecte.emc.EMCMapper;
-import moze_intel.projecte.emc.SimpleStack;
-import moze_intel.projecte.manual.AbstractPage;
-
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
+
+import moze_intel.projecte.emc.EMCMapper;
+import moze_intel.projecte.emc.SimpleStack;
+import moze_intel.projecte.manual.AbstractPage;
 
 public final class Comparators {
 
@@ -117,7 +117,7 @@ public final class Comparators {
         @Override
         public int compare(AbstractPage o1, AbstractPage o2) {
             return StatCollector.translateToLocal(o1.getHeaderText())
-                    .compareToIgnoreCase(StatCollector.translateToLocal(o2.getHeaderText()));
+                .compareToIgnoreCase(StatCollector.translateToLocal(o2.getHeaderText()));
         }
     };
 }

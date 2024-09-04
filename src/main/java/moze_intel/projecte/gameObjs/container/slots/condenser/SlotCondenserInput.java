@@ -1,10 +1,10 @@
 package moze_intel.projecte.gameObjs.container.slots.condenser;
 
-import moze_intel.projecte.gameObjs.tiles.CondenserTile;
-import moze_intel.projecte.utils.EMCHelper;
-
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+
+import moze_intel.projecte.gameObjs.tiles.CondenserTile;
+import moze_intel.projecte.utils.EMCHelper;
 
 public class SlotCondenserInput extends Slot {
 

@@ -15,7 +15,8 @@ public final class ChatHelper {
      */
     public static IChatComponent modifyColor(IChatComponent chat, EnumChatFormatting format) {
         if (format.isColor()) {
-            chat.getChatStyle().setColor(format);
+            chat.getChatStyle()
+                .setColor(format);
         }
         return chat;
     }

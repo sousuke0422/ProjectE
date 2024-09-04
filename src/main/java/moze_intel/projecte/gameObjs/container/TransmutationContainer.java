@@ -1,5 +1,11 @@
 package moze_intel.projecte.gameObjs.container;
 
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.Container;
+import net.minecraft.inventory.Slot;
+import net.minecraft.item.ItemStack;
+
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.container.inventory.TransmutationInventory;
 import moze_intel.projecte.gameObjs.container.slots.transmutation.SlotConsume;
@@ -11,12 +17,6 @@ import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.SearchUpdatePKT;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
-
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.Slot;
-import net.minecraft.item.ItemStack;
 
 public class TransmutationContainer extends Container {
 
@@ -90,7 +90,7 @@ public class TransmutationContainer extends Container {
             int stackSize = 0;
 
             while (transmutationInventory.emc >= emc && stackSize < newStack.getMaxStackSize()
-                    && ItemHelper.hasSpace(player.inventory.mainInventory, newStack)) {
+                && ItemHelper.hasSpace(player.inventory.mainInventory, newStack)) {
                 transmutationInventory.removeEmc(emc);
                 ItemHelper.pushStackInInv(player.inventory, ItemHelper.getNormalizedStack(newStack));
                 stackSize++;
@@ -141,7 +141,8 @@ public class TransmutationContainer extends Container {
                                        // NEI IN STACKTRACE]
         Class<?>[] stacktrace = accessibleManager.getStackClasses();
         return stacktrace.length >= stacktraceDepth && stacktrace[stacktraceDepth] != null
-                && stacktrace[stacktraceDepth].getName().equals("codechicken.nei.FastTransferManager");
+            && stacktrace[stacktraceDepth].getName()
+                .equals("codechicken.nei.FastTransferManager");
     }
 
     @Override
@@ -151,8 +152,8 @@ public class TransmutationContainer extends Container {
             PacketHandler.sendToServer(new SearchUpdatePKT(slot, getSlot(slot).getStack()));
         }
         if (slot >= 0 && getSlot(slot) != null) {
-            if (getSlot(slot).getStack() != null && getSlot(slot).getStack().getItem() == ObjHandler.transmutationTablet
-                    && getSlot(slot).getStack() == player.getHeldItem()) {
+            if (getSlot(slot).getStack() != null && getSlot(slot).getStack()
+                .getItem() == ObjHandler.transmutationTablet && getSlot(slot).getStack() == player.getHeldItem()) {
                 return null;
             }
         }
@@ -163,10 +164,9 @@ public class TransmutationContainer extends Container {
     @Override
     public boolean canDragIntoSlot(Slot slot) {
         if (slot instanceof SlotConsume || slot instanceof SlotUnlearn
-                || slot instanceof SlotInput
-                || slot instanceof SlotLock
-                || slot instanceof SlotOutput)
-            return false;
+            || slot instanceof SlotInput
+            || slot instanceof SlotLock
+            || slot instanceof SlotOutput) return false;
         return true;
     }
 }

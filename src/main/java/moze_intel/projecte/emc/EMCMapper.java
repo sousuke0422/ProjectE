@@ -8,6 +8,15 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.minecraft.item.Item;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.oredict.OreDictionary;
+
+import org.apache.commons.lang3.math.Fraction;
+
+import com.google.common.collect.Maps;
+
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.event.EMCRemapEvent;
 import moze_intel.projecte.config.ProjectEConfig;
@@ -25,15 +34,6 @@ import moze_intel.projecte.playerData.Transmutation;
 import moze_intel.projecte.utils.PELogger;
 import moze_intel.projecte.utils.PrefixConfiguration;
 
-import net.minecraft.item.Item;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.oredict.OreDictionary;
-
-import org.apache.commons.lang3.math.Fraction;
-
-import com.google.common.collect.Maps;
-
 public final class EMCMapper {
 
     public static Map<SimpleStack, Long> emc = new LinkedHashMap<>();
@@ -43,75 +43,78 @@ public final class EMCMapper {
 
     public static void map() {
         List<IEMCMapper<NormalizedSimpleStack, Long>> emcMappers = Arrays.asList(
-                new OreDictionaryMapper(),
-                new LazyMapper(),
-                new Chisel2Mapper(),
-                APICustomEMCMapper.instance,
-                new CustomConversionMapper(),
-                new CustomEMCMapper(),
-                new CraftingMapper(),
-                new FluidMapper(),
-                new SmeltingMapper(),
-                new APICustomConversionMapper());
+            new OreDictionaryMapper(),
+            new LazyMapper(),
+            new Chisel2Mapper(),
+            APICustomEMCMapper.instance,
+            new CustomConversionMapper(),
+            new CustomEMCMapper(),
+            new CraftingMapper(),
+            new FluidMapper(),
+            new SmeltingMapper(),
+            new APICustomConversionMapper());
         SimpleGraphMapper<NormalizedSimpleStack, Double, IValueArithmetic<Double>> mapper = new SimpleGraphMapper(
-                new HiddenDoubleArithmetic());
+            new HiddenDoubleArithmetic());
         IValueGenerator<NormalizedSimpleStack, Long> valueGenerator = new DoubleToLongGenerator(mapper);
         IExtendedMappingCollector<NormalizedSimpleStack, Long, IValueArithmetic<Fraction>> mappingCollector = new LongToDoubleCollector(
-                mapper);
+            mapper);
 
         Configuration config = new Configuration(new File(PECore.CONFIG_DIR, "mapping.cfg"));
         config.load();
 
         if (config.getBoolean(
-                "dumpEverythingToFile",
-                "general",
-                false,
-                "Want to take a look at the internals of EMC Calculation? Enable this to write all the conversions and setValue-Commands to config/ProjectE/mappingdump.json")) {
+            "dumpEverythingToFile",
+            "general",
+            false,
+            "Want to take a look at the internals of EMC Calculation? Enable this to write all the conversions and setValue-Commands to config/ProjectE/mappingdump.json")) {
             mappingCollector = new DumpToFileCollector(
-                    new File(PECore.CONFIG_DIR, "mappingdump.json"),
-                    mappingCollector);
+                new File(PECore.CONFIG_DIR, "mappingdump.json"),
+                mappingCollector);
         }
 
         boolean shouldUsePregenerated = config.getBoolean(
-                "pregenerate",
-                "general",
-                false,
-                "When the next EMC mapping occurs write the results to config/ProjectE/pregenerated_emc.json and only ever run the mapping again"
-                        + " when that file does not exist, this setting is set to false, or an error occurred parsing that file.");
+            "pregenerate",
+            "general",
+            false,
+            "When the next EMC mapping occurs write the results to config/ProjectE/pregenerated_emc.json and only ever run the mapping again"
+                + " when that file does not exist, this setting is set to false, or an error occurred parsing that file.");
 
         if (shouldUsePregenerated && PECore.PREGENERATED_EMC_FILE.canRead()
-                && PregeneratedEMC.tryRead(PECore.PREGENERATED_EMC_FILE, graphMapperValues = Maps.newHashMap())) {
+            && PregeneratedEMC.tryRead(PECore.PREGENERATED_EMC_FILE, graphMapperValues = Maps.newHashMap())) {
             PELogger.logInfo(String.format("Loaded %d values from pregenerated EMC File", graphMapperValues.size()));
         } else {
 
             SimpleGraphMapper.setLogFoundExploits(
-                    config.getBoolean(
-                            "logEMCExploits",
-                            "general",
-                            true,
-                            "Log known EMC Exploits. This can not and will not find all possible exploits. "
-                                    + "This will only find exploits that result in fixed/custom emc values that the algorithm did not overwrite. "
-                                    + "Exploits that derive from conversions that are unknown to ProjectE will not be found."));
+                config.getBoolean(
+                    "logEMCExploits",
+                    "general",
+                    true,
+                    "Log known EMC Exploits. This can not and will not find all possible exploits. "
+                        + "This will only find exploits that result in fixed/custom emc values that the algorithm did not overwrite. "
+                        + "Exploits that derive from conversions that are unknown to ProjectE will not be found."));
 
             PELogger.logInfo("Starting to collect Mappings...");
             for (IEMCMapper<NormalizedSimpleStack, Long> emcMapper : emcMappers) {
                 try {
                     if (config.getBoolean(
-                            emcMapper.getName(),
-                            "enabledMappers",
-                            emcMapper.isAvailable(),
-                            emcMapper.getDescription()) && emcMapper.isAvailable()) {
+                        emcMapper.getName(),
+                        "enabledMappers",
+                        emcMapper.isAvailable(),
+                        emcMapper.getDescription()) && emcMapper.isAvailable()) {
                         DumpToFileCollector.currentGroupName = emcMapper.getName();
                         emcMapper.addMappings(
-                                mappingCollector,
-                                new PrefixConfiguration(config, "mapperConfigurations." + emcMapper.getName()));
-                        PELogger.logInfo("Collected Mappings from " + emcMapper.getClass().getName());
+                            mappingCollector,
+                            new PrefixConfiguration(config, "mapperConfigurations." + emcMapper.getName()));
+                        PELogger.logInfo(
+                            "Collected Mappings from " + emcMapper.getClass()
+                                .getName());
                     }
                 } catch (Exception e) {
                     PELogger.logFatal(
-                            String.format(
-                                    "Exception during Mapping Collection from Mapper %s. PLEASE REPORT THIS! EMC VALUES MIGHT BE INCONSISTENT!",
-                                    emcMapper.getClass().getName()));
+                        String.format(
+                            "Exception during Mapping Collection from Mapper %s. PLEASE REPORT THIS! EMC VALUES MIGHT BE INCONSISTENT!",
+                            emcMapper.getClass()
+                                .getName()));
                     e.printStackTrace();
                 }
             }
@@ -150,9 +153,9 @@ public final class EMCMapper {
                     emc.put(new SimpleStack(id, 1, (int) normStackItem.damage), entry.getValue());
                 } else {
                     PELogger.logWarn(
-                            "Could not add EMC value for %s|%s. Can not get ItemID!",
-                            normStackItem.itemName,
-                            normStackItem.damage);
+                        "Could not add EMC value for %s|%s. Can not get ItemID!",
+                        normStackItem.itemName,
+                        normStackItem.damage);
                 }
             }
         }
@@ -169,8 +172,8 @@ public final class EMCMapper {
      * @param map
      */
     static void filterEMCMap(Map<NormalizedSimpleStack, Long> map) {
-        for (Iterator<Map.Entry<NormalizedSimpleStack, Long>> iter = graphMapperValues.entrySet().iterator(); iter
-                .hasNext();) {
+        for (Iterator<Map.Entry<NormalizedSimpleStack, Long>> iter = graphMapperValues.entrySet()
+            .iterator(); iter.hasNext();) {
             Map.Entry<NormalizedSimpleStack, Long> entry = iter.next();
             NormalizedSimpleStack normStack = entry.getKey();
             if (normStack instanceof NormalizedSimpleStack.NSSItem && entry.getValue() > 0) {

@@ -3,16 +3,16 @@ package moze_intel.projecte.emc;
 import java.util.Collections;
 import java.util.List;
 
-import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.utils.Comparators;
-import moze_intel.projecte.utils.EMCHelper;
-import moze_intel.projecte.utils.PELogger;
-
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 
 import com.google.common.collect.Lists;
+
+import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.utils.Comparators;
+import moze_intel.projecte.utils.EMCHelper;
+import moze_intel.projecte.utils.PELogger;
 
 public final class FuelMapper {
 
@@ -68,7 +68,8 @@ public final class FuelMapper {
 
         int nextIndex = index == FUEL_MAP.size() - 1 ? 0 : index + 1;
 
-        return FUEL_MAP.get(nextIndex).toItemStack();
+        return FUEL_MAP.get(nextIndex)
+            .toItemStack();
     }
 
     private static void addToMap(SimpleStack stack) {

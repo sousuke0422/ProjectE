@@ -1,13 +1,13 @@
 package moze_intel.projecte.gameObjs.customRecipes;
 
-import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.gameObjs.items.KleinStar;
-
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
+
+import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.gameObjs.items.KleinStar;
 
 public class RecipeShapedKleinStar implements IRecipe {
 
@@ -115,7 +115,8 @@ public class RecipeShapedKleinStar implements IRecipe {
      * Returns an Item that is the result of this recipe
      */
     public ItemStack getCraftingResult(InventoryCrafting p_77572_1_) {
-        ItemStack itemstack = this.getRecipeOutput().copy();
+        ItemStack itemstack = this.getRecipeOutput()
+            .copy();
 
         if (this.field_92101_f) {
             for (int i = 0; i < p_77572_1_.getSizeInventory(); ++i) {

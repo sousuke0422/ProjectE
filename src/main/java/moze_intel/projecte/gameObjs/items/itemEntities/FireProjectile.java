@@ -1,8 +1,8 @@
 package moze_intel.projecte.gameObjs.items.itemEntities;
 
-import moze_intel.projecte.gameObjs.items.ItemPE;
-
 import net.minecraft.client.renderer.texture.IIconRegister;
+
+import moze_intel.projecte.gameObjs.items.ItemPE;
 
 public class FireProjectile extends ItemPE {
 

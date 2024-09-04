@@ -2,11 +2,6 @@ package moze_intel.projecte.impl;
 
 import javax.annotation.Nonnull;
 
-import moze_intel.projecte.api.proxy.IEMCProxy;
-import moze_intel.projecte.emc.mappers.APICustomEMCMapper;
-import moze_intel.projecte.utils.EMCHelper;
-import moze_intel.projecte.utils.PELogger;
-
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -15,6 +10,10 @@ import com.google.common.base.Preconditions;
 
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.LoaderState;
+import moze_intel.projecte.api.proxy.IEMCProxy;
+import moze_intel.projecte.emc.mappers.APICustomEMCMapper;
+import moze_intel.projecte.utils.EMCHelper;
+import moze_intel.projecte.utils.PELogger;
 
 public class EMCProxyImpl implements IEMCProxy {
 
@@ -25,39 +24,53 @@ public class EMCProxyImpl implements IEMCProxy {
     @Override
     public void registerCustomEMC(ItemStack stack, int value) {
         Preconditions.checkNotNull(stack);
-        boolean flag = Loader.instance().isInState(LoaderState.PREINITIALIZATION)
-                || Loader.instance().isInState(LoaderState.INITIALIZATION)
-                || Loader.instance().isInState(LoaderState.POSTINITIALIZATION);
+        boolean flag = Loader.instance()
+            .isInState(LoaderState.PREINITIALIZATION)
+            || Loader.instance()
+                .isInState(LoaderState.INITIALIZATION)
+            || Loader.instance()
+                .isInState(LoaderState.POSTINITIALIZATION);
         Preconditions.checkState(
-                flag,
-                String.format(
-                        "Mod %s tried to register EMC at an invalid time!",
-                        Loader.instance().activeModContainer().getModId()));
+            flag,
+            String.format(
+                "Mod %s tried to register EMC at an invalid time!",
+                Loader.instance()
+                    .activeModContainer()
+                    .getModId()));
         APICustomEMCMapper.instance.registerCustomEMC(stack, value);
         PELogger.logInfo(
-                "Mod %s registered emc value %d for itemstack %s",
-                Loader.instance().activeModContainer().getModId(),
-                value,
-                stack.toString());
+            "Mod %s registered emc value %d for itemstack %s",
+            Loader.instance()
+                .activeModContainer()
+                .getModId(),
+            value,
+            stack.toString());
     }
 
     @Override
     public void registerCustomEMC(Object o, int value) {
         Preconditions.checkNotNull(o);
-        boolean flag = Loader.instance().isInState(LoaderState.PREINITIALIZATION)
-                || Loader.instance().isInState(LoaderState.INITIALIZATION)
-                || Loader.instance().isInState(LoaderState.POSTINITIALIZATION);
+        boolean flag = Loader.instance()
+            .isInState(LoaderState.PREINITIALIZATION)
+            || Loader.instance()
+                .isInState(LoaderState.INITIALIZATION)
+            || Loader.instance()
+                .isInState(LoaderState.POSTINITIALIZATION);
         Preconditions.checkState(
-                flag,
-                String.format(
-                        "Mod %s tried to register EMC at an invalid time!",
-                        Loader.instance().activeModContainer().getModId()));
+            flag,
+            String.format(
+                "Mod %s tried to register EMC at an invalid time!",
+                Loader.instance()
+                    .activeModContainer()
+                    .getModId()));
         APICustomEMCMapper.instance.registerCustomEMC(o, value);
         PELogger.logInfo(
-                "Mod %s registered emc value %d for Object %s",
-                Loader.instance().activeModContainer().getModId(),
-                value,
-                o);
+            "Mod %s registered emc value %d for Object %s",
+            Loader.instance()
+                .activeModContainer()
+                .getModId(),
+            value,
+            o);
     }
 
     @Override

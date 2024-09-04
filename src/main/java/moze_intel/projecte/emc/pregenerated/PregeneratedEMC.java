@@ -4,17 +4,19 @@ import java.io.*;
 import java.lang.reflect.Type;
 import java.util.Map;
 
-import moze_intel.projecte.emc.NormalizedSimpleStack;
-
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import moze_intel.projecte.emc.NormalizedSimpleStack;
+
 public class PregeneratedEMC {
 
     static final Gson gson = new GsonBuilder()
-            .registerTypeAdapter(NormalizedSimpleStack.class, new NSSJsonTypeAdapter().nullSafe())
-            .enableComplexMapKeySerialization().setPrettyPrinting().create();
+        .registerTypeAdapter(NormalizedSimpleStack.class, new NSSJsonTypeAdapter().nullSafe())
+        .enableComplexMapKeySerialization()
+        .setPrettyPrinting()
+        .create();
 
     public static boolean tryRead(File f, Map<NormalizedSimpleStack, Long> map) {
         try {

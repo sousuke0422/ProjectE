@@ -1,10 +1,10 @@
 package moze_intel.projecte.gameObjs.entity;
 
-import moze_intel.projecte.utils.WorldHelper;
-
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityTNTPrimed;
 import net.minecraft.world.World;
+
+import moze_intel.projecte.utils.WorldHelper;
 
 public class EntityNovaCatalystPrimed extends EntityTNTPrimed {
 

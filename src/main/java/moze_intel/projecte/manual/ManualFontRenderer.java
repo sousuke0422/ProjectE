@@ -19,15 +19,17 @@ public class ManualFontRenderer extends FontRenderer {
 
     public ManualFontRenderer() {
         super(
-                Minecraft.getMinecraft().gameSettings,
-                new ResourceLocation("textures/font/ascii.png"),
-                Minecraft.getMinecraft().renderEngine,
-                false);
+            Minecraft.getMinecraft().gameSettings,
+            new ResourceLocation("textures/font/ascii.png"),
+            Minecraft.getMinecraft().renderEngine,
+            false);
     }
 
     @Override
     public List listFormattedStringToWidth(String string, int width) {
-        return Arrays.asList(this.wrapFormStringToWidth(string, width).split("\n"));
+        return Arrays.asList(
+            this.wrapFormStringToWidth(string, width)
+                .split("\n"));
     }
 
     String wrapFormStringToWidth(String str, int width) {
@@ -122,13 +124,13 @@ public class ManualFontRenderer extends FontRenderer {
 
     private static boolean isFormatColor(char p_78272_0_) {
         return p_78272_0_ >= 48 && p_78272_0_ <= 57 || p_78272_0_ >= 97 && p_78272_0_ <= 102
-                || p_78272_0_ >= 65 && p_78272_0_ <= 70;
+            || p_78272_0_ >= 65 && p_78272_0_ <= 70;
     }
 
     private static boolean isFormatSpecial(char p_78270_0_) {
         return p_78270_0_ >= 107 && p_78270_0_ <= 111 || p_78270_0_ >= 75 && p_78270_0_ <= 79
-                || p_78270_0_ == 114
-                || p_78270_0_ == 82;
+            || p_78270_0_ == 114
+            || p_78270_0_ == 82;
     }
 
 }

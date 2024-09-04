@@ -1,14 +1,14 @@
 package moze_intel.projecte.gameObjs.container;
 
-import moze_intel.projecte.gameObjs.container.slots.relay.SlotRelayInput;
-import moze_intel.projecte.gameObjs.container.slots.relay.SlotRelayKlein;
-import moze_intel.projecte.gameObjs.tiles.RelayMK3Tile;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+
+import moze_intel.projecte.gameObjs.container.slots.relay.SlotRelayInput;
+import moze_intel.projecte.gameObjs.container.slots.relay.SlotRelayKlein;
+import moze_intel.projecte.gameObjs.tiles.RelayMK3Tile;
 
 public class RelayMK3Container extends Container {
 

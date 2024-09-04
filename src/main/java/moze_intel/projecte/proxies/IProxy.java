@@ -1,9 +1,9 @@
 package moze_intel.projecte.proxies;
 
+import net.minecraft.entity.player.EntityPlayer;
+
 import moze_intel.projecte.playerData.AlchBagProps;
 import moze_intel.projecte.playerData.TransmutationProps;
-
-import net.minecraft.entity.player.EntityPlayer;
 
 public interface IProxy {
 

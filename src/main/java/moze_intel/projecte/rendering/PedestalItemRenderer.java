@@ -1,8 +1,5 @@
 package moze_intel.projecte.rendering;
 
-import moze_intel.projecte.rendering.model.ModelPedestal;
-import moze_intel.projecte.utils.Constants;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.IItemRenderer;
@@ -10,6 +7,8 @@ import net.minecraftforge.client.IItemRenderer;
 import org.lwjgl.opengl.GL11;
 
 import cpw.mods.fml.client.FMLClientHandler;
+import moze_intel.projecte.rendering.model.ModelPedestal;
+import moze_intel.projecte.utils.Constants;
 
 public class PedestalItemRenderer implements IItemRenderer {
 
@@ -47,7 +46,8 @@ public class PedestalItemRenderer implements IItemRenderer {
     }
 
     private void renderPedestal(float x, float y, float z, int meta) {
-        FMLClientHandler.instance().getClient().renderEngine.bindTexture(texture);
+        FMLClientHandler.instance()
+            .getClient().renderEngine.bindTexture(texture);
         GL11.glPushMatrix();
         GL11.glTranslatef(x, y, z);
         GL11.glRotatef(180, 1, 0, 0);

@@ -2,11 +2,11 @@ package moze_intel.projecte.emc.pregenerated;
 
 import java.io.IOException;
 
-import moze_intel.projecte.emc.NormalizedSimpleStack;
-
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
+
+import moze_intel.projecte.emc.NormalizedSimpleStack;
 
 public class NSSJsonTypeAdapter extends TypeAdapter<NormalizedSimpleStack> {
 

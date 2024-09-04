@@ -1,10 +1,5 @@
 package moze_intel.projecte.gameObjs.tiles;
 
-import moze_intel.projecte.api.item.IItemEmc;
-import moze_intel.projecte.api.tile.IEmcAcceptor;
-import moze_intel.projecte.gameObjs.blocks.MatterFurnace;
-import moze_intel.projecte.utils.ItemHelper;
-
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -20,6 +15,10 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import moze_intel.projecte.api.item.IItemEmc;
+import moze_intel.projecte.api.tile.IEmcAcceptor;
+import moze_intel.projecte.gameObjs.blocks.MatterFurnace;
+import moze_intel.projecte.utils.ItemHelper;
 
 public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventory, IEmcAcceptor {
 
@@ -76,7 +75,8 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
                         --inventory[0].stackSize;
 
                         if (inventory[0].stackSize == 0) {
-                            inventory[0] = inventory[0].getItem().getContainerItem(inventory[0]);
+                            inventory[0] = inventory[0].getItem()
+                                .getContainerItem(inventory[0]);
                         }
                     }
                 }
@@ -98,7 +98,7 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
 
                 if (!this.worldObj.isRemote && block instanceof MatterFurnace) {
                     ((MatterFurnace) block)
-                            .updateFurnaceBlockState(furnaceBurnTime > 0, worldObj, xCoord, yCoord, zCoord);
+                        .updateFurnaceBlockState(furnaceBurnTime > 0, worldObj, xCoord, yCoord, zCoord);
                 }
             }
         }
@@ -270,9 +270,10 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
                     }
 
                     continue;
-                } else if (FurnaceRecipes.smelting().getSmeltingResult(stack) == null) {
-                    continue;
-                }
+                } else if (FurnaceRecipes.smelting()
+                    .getSmeltingResult(stack) == null) {
+                        continue;
+                    }
 
                 for (int j = inputStorage[0]; j < inputStorage[1]; j++) {
                     ItemStack otherStack = inventory[j];
@@ -374,10 +375,13 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
 
     private void smeltItem() {
         ItemStack toSmelt = inventory[1];
-        ItemStack smeltResult = FurnaceRecipes.smelting().getSmeltingResult(toSmelt).copy();
+        ItemStack smeltResult = FurnaceRecipes.smelting()
+            .getSmeltingResult(toSmelt)
+            .copy();
         ItemStack currentSmelted = getStackInSlot(outputSlot);
 
-        if (ItemHelper.getOreDictionaryName(toSmelt).startsWith("ore")) {
+        if (ItemHelper.getOreDictionaryName(toSmelt)
+            .startsWith("ore")) {
             smeltResult.stackSize *= 2;
         }
 
@@ -397,7 +401,8 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
             return false;
         }
 
-        ItemStack smeltResult = FurnaceRecipes.smelting().getSmeltingResult(toSmelt);
+        ItemStack smeltResult = FurnaceRecipes.smelting()
+            .getSmeltingResult(toSmelt);
         if (smeltResult == null) {
             return false;
         }
@@ -529,10 +534,8 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
     @Override
     public boolean isUseableByPlayer(EntityPlayer var1) {
         return this.worldObj.getTileEntity(this.xCoord, this.yCoord, this.zCoord) != this ? false
-                : var1.getDistanceSq(
-                        (double) this.xCoord + 0.5D,
-                        (double) this.yCoord + 0.5D,
-                        (double) this.zCoord + 0.5D) <= 64.0D;
+            : var1.getDistanceSq((double) this.xCoord + 0.5D, (double) this.yCoord + 0.5D, (double) this.zCoord + 0.5D)
+                <= 64.0D;
     }
 
     @Override
@@ -554,7 +557,8 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
         if (slot == 0) {
             return TileEntityFurnace.isItemFuel(stack) || stack.getItem() instanceof IItemEmc;
         } else if (slot >= 1 && slot <= 13) {
-            return FurnaceRecipes.smelting().getSmeltingResult(stack) != null;
+            return FurnaceRecipes.smelting()
+                .getSmeltingResult(stack) != null;
         }
 
         return false;
@@ -567,7 +571,7 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
                 return new int[] { 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26 }; // Outputs accessible from bottom
             case 1:
                 return new int[] { 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
-                        26 }; // Inputs accessible from top
+                    26 }; // Inputs accessible from top
             case 2: // Fall through
             case 3:
             case 4:

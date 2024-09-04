@@ -1,11 +1,11 @@
 package moze_intel.projecte.gameObjs.container.slots.relay;
 
-import moze_intel.projecte.api.item.IItemEmc;
-import moze_intel.projecte.utils.EMCHelper;
-
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+
+import moze_intel.projecte.api.item.IItemEmc;
+import moze_intel.projecte.utils.EMCHelper;
 
 public class SlotRelayInput extends Slot {
 

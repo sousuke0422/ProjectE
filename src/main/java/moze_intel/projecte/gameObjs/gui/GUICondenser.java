@@ -1,10 +1,5 @@
 package moze_intel.projecte.gameObjs.gui;
 
-import moze_intel.projecte.PECore;
-import moze_intel.projecte.gameObjs.container.CondenserContainer;
-import moze_intel.projecte.gameObjs.tiles.CondenserTile;
-import moze_intel.projecte.utils.TransmutationEMCFormatter;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -12,11 +7,16 @@ import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
+import moze_intel.projecte.PECore;
+import moze_intel.projecte.gameObjs.container.CondenserContainer;
+import moze_intel.projecte.gameObjs.tiles.CondenserTile;
+import moze_intel.projecte.utils.TransmutationEMCFormatter;
+
 public class GUICondenser extends GuiContainer {
 
     private static final ResourceLocation texture = new ResourceLocation(
-            PECore.MODID.toLowerCase(),
-            "textures/gui/condenser.png");
+        PECore.MODID.toLowerCase(),
+        "textures/gui/condenser.png");
     private CondenserTile tile;
 
     public GUICondenser(InventoryPlayer invPlayer, CondenserTile tile) {

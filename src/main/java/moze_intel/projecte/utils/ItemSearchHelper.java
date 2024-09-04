@@ -43,7 +43,8 @@ public abstract class ItemSearchHelper {
             String displayName;
 
             try {
-                displayName = stack.getDisplayName().toLowerCase(Locale.ROOT);
+                displayName = stack.getDisplayName()
+                    .toLowerCase(Locale.ROOT);
             } catch (Exception e) {
                 e.printStackTrace();
                 // From old code... Not sure if intended to not remove items that crash on getDisplayName

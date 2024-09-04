@@ -1,8 +1,5 @@
 package moze_intel.projecte.rendering;
 
-import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.gameObjs.entity.EntityNovaCataclysmPrimed;
-
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.texture.TextureMap;
@@ -13,6 +10,8 @@ import org.lwjgl.opengl.GL11;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.gameObjs.entity.EntityNovaCataclysmPrimed;
 
 @SideOnly(Side.CLIENT)
 public class NovaCataclysmRenderer extends Render {

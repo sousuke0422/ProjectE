@@ -1,10 +1,10 @@
 package moze_intel.projecte.gameObjs.container.slots.mercurial;
 
-import moze_intel.projecte.gameObjs.items.KleinStar;
-
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+
+import moze_intel.projecte.gameObjs.items.KleinStar;
 
 public class SlotMercurialKlein extends Slot {
 

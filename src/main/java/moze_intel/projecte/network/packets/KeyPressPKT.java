@@ -1,5 +1,13 @@
 package moze_intel.projecte.network.packets;
 
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.ChatComponentTranslation;
+
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
+import io.netty.buffer.ByteBuf;
 import moze_intel.projecte.api.item.IExtraFunction;
 import moze_intel.projecte.api.item.IItemCharge;
 import moze_intel.projecte.api.item.IModeChanger;
@@ -13,15 +21,6 @@ import moze_intel.projecte.gameObjs.items.armor.GemHelmet;
 import moze_intel.projecte.handlers.PlayerChecks;
 import moze_intel.projecte.utils.PEKeybind;
 import moze_intel.projecte.utils.PlayerHelper;
-
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ChatComponentTranslation;
-
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
-import cpw.mods.fml.common.network.simpleimpl.MessageContext;
-import io.netty.buffer.ByteBuf;
 
 public class KeyPressPKT implements IMessage {
 
@@ -73,9 +72,8 @@ public class KeyPressPKT implements IMessage {
                         if (GemArmorBase.hasAnyPiece(player)) {
                             PlayerChecks.setGemState(player, !PlayerChecks.getGemState(player));
                             player.addChatMessage(
-                                    new ChatComponentTranslation(
-                                            PlayerChecks.getGemState(player) ? "pe.gem.activate"
-                                                    : "pe.gem.deactivate"));
+                                new ChatComponentTranslation(
+                                    PlayerChecks.getGemState(player) ? "pe.gem.activate" : "pe.gem.deactivate"));
                         }
                     }
                     break;
@@ -84,7 +82,7 @@ public class KeyPressPKT implements IMessage {
                         ((IExtraFunction) stack.getItem()).doExtraFunction(stack, player);
                     } else if (stack == null || ProjectEConfig.unsafeKeyBinds) {
                         if (PlayerChecks.getGemState(player) && player.inventory.armorInventory[2] != null
-                                && player.inventory.armorInventory[2].getItem() == ObjHandler.gemChest) {
+                            && player.inventory.armorInventory[2].getItem() == ObjHandler.gemChest) {
                             if (PlayerChecks.getGemCooldown(player) <= 0) {
                                 ((GemChest) ObjHandler.gemChest).doExplode(player);
                                 PlayerChecks.resetGemCooldown(player);
@@ -102,7 +100,7 @@ public class KeyPressPKT implements IMessage {
                         }
                     } else if (stack == null || ProjectEConfig.unsafeKeyBinds) {
                         if (PlayerChecks.getGemState(player) && player.inventory.armorInventory[3] != null
-                                && player.inventory.armorInventory[3].getItem() == ObjHandler.gemHelmet) {
+                            && player.inventory.armorInventory[3].getItem() == ObjHandler.gemHelmet) {
                             ((GemHelmet) ObjHandler.gemHelmet).doZap(player);
                         }
                     }

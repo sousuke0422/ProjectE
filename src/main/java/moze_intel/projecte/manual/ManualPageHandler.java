@@ -4,11 +4,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.gameObjs.gui.GUIManual;
-import moze_intel.projecte.utils.Comparators;
-import moze_intel.projecte.utils.PELogger;
-
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.IReloadableResourceManager;
@@ -26,6 +21,10 @@ import com.google.common.collect.Maps;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.gameObjs.gui.GUIManual;
+import moze_intel.projecte.utils.Comparators;
+import moze_intel.projecte.utils.PELogger;
 
 @SideOnly(Side.CLIENT)
 public class ManualPageHandler {
@@ -36,7 +35,8 @@ public class ManualPageHandler {
     public static final List<Pair<AbstractPage, AbstractPage>> spreads = Lists.newArrayList();
 
     public static void init() {
-        IResourceManager resourceManager = Minecraft.getMinecraft().getResourceManager();
+        IResourceManager resourceManager = Minecraft.getMinecraft()
+            .getResourceManager();
         if (resourceManager instanceof IReloadableResourceManager) {
             ((IReloadableResourceManager) resourceManager).registerReloadListener(new IResourceManagerReloadListener() {
 
@@ -206,13 +206,15 @@ public class ManualPageHandler {
     private static void addItem(Item item, PageCategory category) {
         // Manually exclude alchBag from having 16 of the same entry
         List<ItemStack> list = (item == ObjHandler.alchBag || !item.getHasSubtypes())
-                ? Collections.singletonList(new ItemStack(item))
-                : getSubItems(item);
+            ? Collections.singletonList(new ItemStack(item))
+            : getSubItems(item);
 
         for (ItemStack s : list) {
             AbstractPage page = AbstractPage.createItemPage(s, category);
-            categoryMap.get(category).add(page);
-            categoryMap.get(category).addAll(page.subPages);
+            categoryMap.get(category)
+                .add(page);
+            categoryMap.get(category)
+                .addAll(page.subPages);
             PELogger.logDebug("Added %d item pages for stack %s", page.subPages.size() + 1, s.toString());
         }
     }
@@ -223,14 +225,17 @@ public class ManualPageHandler {
 
     private static void addTextPage(String identifier, PageCategory category) {
         AbstractPage page = AbstractPage.createTextPages(identifier, category);
-        categoryMap.get(category).add(page);
-        categoryMap.get(category).addAll(page.subPages);
+        categoryMap.get(category)
+            .add(page);
+        categoryMap.get(category)
+            .addAll(page.subPages);
         PELogger.logDebug("Added %d text pages for identifier %s", page.subPages.size() + 1, identifier);
     }
 
     private static void addImagePage(String identifier, ResourceLocation resource, PageCategory category) {
         AbstractPage page = AbstractPage.createImagePage(identifier, resource, category);
-        categoryMap.get(category).add(page);
+        categoryMap.get(category)
+            .add(page);
     }
 
     private static List<ItemStack> getSubItems(Item i) {

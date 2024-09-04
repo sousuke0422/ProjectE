@@ -11,7 +11,7 @@ import moze_intel.projecte.emc.mappers.customConversions.json.CustomConversion;
 import moze_intel.projecte.emc.mappers.customConversions.json.CustomConversionFile;
 
 public class DumpToFileCollector<A extends IValueArithmetic>
-        extends AbstractMappingCollector<NormalizedSimpleStack, Long, A> {
+    extends AbstractMappingCollector<NormalizedSimpleStack, Long, A> {
 
     public static String currentGroupName = "default";
     CustomConversionFile out = new CustomConversionFile();
@@ -26,7 +26,7 @@ public class DumpToFileCollector<A extends IValueArithmetic>
 
     @Override
     public void setValueFromConversion(int outnumber, NormalizedSimpleStack something,
-            Map<NormalizedSimpleStack, Integer> ingredientsWithAmount) {
+        Map<NormalizedSimpleStack, Integer> ingredientsWithAmount) {
         inner.setValueFromConversion(outnumber, something, ingredientsWithAmount);
         if (something == null || ingredientsWithAmount.containsKey(null)) return;
         out.values.conversion.add(CustomConversion.getFor(outnumber, something, ingredientsWithAmount));
@@ -34,7 +34,7 @@ public class DumpToFileCollector<A extends IValueArithmetic>
 
     @Override
     public void addConversion(int outnumber, NormalizedSimpleStack output,
-            Map<NormalizedSimpleStack, Integer> ingredientsWithAmount, A arithmeticForConversion) {
+        Map<NormalizedSimpleStack, Integer> ingredientsWithAmount, A arithmeticForConversion) {
         inner.addConversion(outnumber, output, ingredientsWithAmount, arithmeticForConversion);
         if (output == null || ingredientsWithAmount.containsKey(null)) return;
         if (!out.groups.containsKey(currentGroupName)) out.groups.put(currentGroupName, new ConversionGroup());

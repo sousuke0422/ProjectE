@@ -1,9 +1,9 @@
 package moze_intel.projecte.integration;
 
+import cpw.mods.fml.common.Loader;
 import moze_intel.projecte.integration.MineTweaker.TweakInit;
 import moze_intel.projecte.integration.NEI.NEIInit;
 import moze_intel.projecte.utils.PELogger;
-import cpw.mods.fml.common.Loader;
 
 public class Integration {
     // Single class to initiate different mod compatibilities. Idea came from Avaritia by SpitefulFox

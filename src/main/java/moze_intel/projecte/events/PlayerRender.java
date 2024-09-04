@@ -1,7 +1,5 @@
 package moze_intel.projecte.events;
 
-import moze_intel.projecte.gameObjs.items.armor.GemFeet;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.util.ResourceLocation;
@@ -13,6 +11,7 @@ import org.lwjgl.opengl.GL11;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import moze_intel.projecte.gameObjs.items.armor.GemFeet;
 
 @SideOnly(Side.CLIENT)
 public class PlayerRender {
@@ -26,7 +25,8 @@ public class PlayerRender {
 
     @SubscribeEvent
     public void playerRender(RenderPlayerEvent.Specials.Pre evt) {
-        playeruuid = evt.entityPlayer.getUniqueID().toString();
+        playeruuid = evt.entityPlayer.getUniqueID()
+            .toString();
 
         if (playeruuid.equals(sinuuid) || playeruuid.equals(claruuid)) {
             GL11.glPushMatrix();
@@ -45,11 +45,11 @@ public class PlayerRender {
             if (playeruuid.equals(claruuid)) {
                 GL11.glColor4f(0.49F, 0.97F, 1.0F, 1.0F);
                 Minecraft.getMinecraft().renderEngine
-                        .bindTexture(new ResourceLocation("projecte:textures/models/heartcircle.png"));
+                    .bindTexture(new ResourceLocation("projecte:textures/models/heartcircle.png"));
             } else {
                 GL11.glColor4f(0.0F, 1.0F, 0.0F, 1.0F);
                 Minecraft.getMinecraft().renderEngine
-                        .bindTexture(new ResourceLocation("projecte:textures/models/yuecircle.png"));
+                    .bindTexture(new ResourceLocation("projecte:textures/models/yuecircle.png"));
             }
 
             yuemodel.renderAll();
@@ -60,7 +60,8 @@ public class PlayerRender {
 
     @SubscribeEvent
     public void onFOVUpdateEvent(FOVUpdateEvent evt) {
-        if (evt.entity.getCurrentArmor(0) != null && evt.entity.getCurrentArmor(0).getItem() instanceof GemFeet) {
+        if (evt.entity.getCurrentArmor(0) != null && evt.entity.getCurrentArmor(0)
+            .getItem() instanceof GemFeet) {
             evt.newfov = evt.fov - 0.4F;
         }
     }

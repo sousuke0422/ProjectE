@@ -1,11 +1,5 @@
 package moze_intel.projecte.gameObjs.gui;
 
-import moze_intel.projecte.PECore;
-import moze_intel.projecte.gameObjs.container.AlchBagContainer;
-import moze_intel.projecte.gameObjs.container.AlchBagInventory;
-import moze_intel.projecte.gameObjs.container.AlchChestContainer;
-import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -13,11 +7,17 @@ import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
+import moze_intel.projecte.PECore;
+import moze_intel.projecte.gameObjs.container.AlchBagContainer;
+import moze_intel.projecte.gameObjs.container.AlchBagInventory;
+import moze_intel.projecte.gameObjs.container.AlchChestContainer;
+import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
+
 public class GUIAlchChest extends GuiContainer {
 
     private static final ResourceLocation texture = new ResourceLocation(
-            PECore.MODID.toLowerCase(),
-            "textures/gui/alchchest.png");
+        PECore.MODID.toLowerCase(),
+        "textures/gui/alchchest.png");
 
     public GUIAlchChest(InventoryPlayer invPlayer, AlchChestTile tile) {
         super(new AlchChestContainer(invPlayer, tile));

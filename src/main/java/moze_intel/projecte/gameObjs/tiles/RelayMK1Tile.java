@@ -1,14 +1,5 @@
 package moze_intel.projecte.gameObjs.tiles;
 
-import moze_intel.projecte.api.item.IItemEmc;
-import moze_intel.projecte.api.tile.IEmcAcceptor;
-import moze_intel.projecte.api.tile.IEmcProvider;
-import moze_intel.projecte.network.PacketHandler;
-import moze_intel.projecte.network.packets.RelaySyncPKT;
-import moze_intel.projecte.utils.Constants;
-import moze_intel.projecte.utils.EMCHelper;
-import moze_intel.projecte.utils.ItemHelper;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
@@ -19,6 +10,14 @@ import net.minecraft.util.MathHelper;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
+import moze_intel.projecte.api.item.IItemEmc;
+import moze_intel.projecte.api.tile.IEmcAcceptor;
+import moze_intel.projecte.api.tile.IEmcProvider;
+import moze_intel.projecte.network.PacketHandler;
+import moze_intel.projecte.network.packets.RelaySyncPKT;
+import moze_intel.projecte.utils.Constants;
+import moze_intel.projecte.utils.EMCHelper;
+import moze_intel.projecte.utils.ItemHelper;
 
 public class RelayMK1Tile extends TileEmc implements IInventory, ISidedInventory, IEmcAcceptor, IEmcProvider {
 
@@ -90,14 +89,8 @@ public class RelayMK1Tile extends TileEmc implements IInventory, ISidedInventory
 
         if (numUsing > 0) {
             PacketHandler.sendToAllAround(
-                    new RelaySyncPKT(
-                            displayEmc,
-                            displayChargingEmc,
-                            displayRawEmc,
-                            this.xCoord,
-                            this.yCoord,
-                            this.zCoord),
-                    new TargetPoint(this.worldObj.provider.dimensionId, this.xCoord, this.yCoord, this.zCoord, 8));
+                new RelaySyncPKT(displayEmc, displayChargingEmc, displayRawEmc, this.xCoord, this.yCoord, this.zCoord),
+                new TargetPoint(this.worldObj.provider.dimensionId, this.xCoord, this.yCoord, this.zCoord, 8));
         }
     }
 
@@ -127,17 +120,17 @@ public class RelayMK1Tile extends TileEmc implements IInventory, ISidedInventory
                 inventory[nextIndex] = current;
                 decrStackSize(i, current.stackSize);
             } else if (ItemHelper.areItemStacksEqual(current, following)
-                    && following.stackSize < following.getMaxStackSize()) {
-                        int missingForFullStack = following.getMaxStackSize() - following.stackSize;
+                && following.stackSize < following.getMaxStackSize()) {
+                    int missingForFullStack = following.getMaxStackSize() - following.stackSize;
 
-                        if (current.stackSize <= missingForFullStack) {
-                            inventory[nextIndex].stackSize += current.stackSize;
-                            inventory[i] = null;
-                        } else {
-                            inventory[nextIndex].stackSize += missingForFullStack;
-                            decrStackSize(i, missingForFullStack);
-                        }
+                    if (current.stackSize <= missingForFullStack) {
+                        inventory[nextIndex].stackSize += current.stackSize;
+                        inventory[i] = null;
+                    } else {
+                        inventory[nextIndex].stackSize += missingForFullStack;
+                        decrStackSize(i, missingForFullStack);
                     }
+                }
         }
     }
 
@@ -174,7 +167,7 @@ public class RelayMK1Tile extends TileEmc implements IInventory, ISidedInventory
         int index = getSizeInventory() - 1;
         if (inventory[index] != null && inventory[index].getItem() instanceof IItemEmc) {
             return ((int) Math.round(
-                    displayChargingEmc * i / ((IItemEmc) inventory[index].getItem()).getMaximumEmc(inventory[index])));
+                displayChargingEmc * i / ((IItemEmc) inventory[index].getItem()).getMaximumEmc(inventory[index])));
         }
 
         return 0;
@@ -199,7 +192,7 @@ public class RelayMK1Tile extends TileEmc implements IInventory, ISidedInventory
 
         if (inventory[0].getItem() instanceof IItemEmc) {
             return (int) Math
-                    .round(displayRawEmc * i / ((IItemEmc) inventory[0].getItem()).getMaximumEmc(inventory[0]));
+                .round(displayRawEmc * i / ((IItemEmc) inventory[0].getItem()).getMaximumEmc(inventory[0]));
         }
 
         long emc = EMCHelper.getEmcValue(inventory[0]);
@@ -294,10 +287,8 @@ public class RelayMK1Tile extends TileEmc implements IInventory, ISidedInventory
     @Override
     public boolean isUseableByPlayer(EntityPlayer var1) {
         return this.worldObj.getTileEntity(this.xCoord, this.yCoord, this.zCoord) != this ? false
-                : var1.getDistanceSq(
-                        (double) this.xCoord + 0.5D,
-                        (double) this.yCoord + 0.5D,
-                        (double) this.zCoord + 0.5D) <= 64.0D;
+            : var1.getDistanceSq((double) this.xCoord + 0.5D, (double) this.yCoord + 0.5D, (double) this.zCoord + 0.5D)
+                <= 64.0D;
     }
 
     @Override
@@ -341,9 +332,9 @@ public class RelayMK1Tile extends TileEmc implements IInventory, ISidedInventory
     @Override
     public double acceptEMC(ForgeDirection side, double toAccept) {
         if (worldObj.getTileEntity(
-                xCoord + side.offsetX,
-                yCoord + side.offsetY,
-                zCoord + side.offsetZ) instanceof RelayMK1Tile) {
+            xCoord + side.offsetX,
+            yCoord + side.offsetY,
+            zCoord + side.offsetZ) instanceof RelayMK1Tile) {
             return 0; // Do not accept from other relays - avoid infinite loop / thrashing
         } else {
             double toAdd = Math.min(maximumEMC - currentEMC, toAccept);

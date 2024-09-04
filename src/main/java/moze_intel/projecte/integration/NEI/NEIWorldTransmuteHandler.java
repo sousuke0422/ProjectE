@@ -3,10 +3,6 @@ package moze_intel.projecte.integration.NEI;
 import java.awt.*;
 import java.util.Map.Entry;
 
-import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.utils.MetaBlock;
-import moze_intel.projecte.utils.WorldTransmutations;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.item.ItemStack;
@@ -15,6 +11,9 @@ import net.minecraft.util.StatCollector;
 import codechicken.nei.NEIServerUtils;
 import codechicken.nei.PositionedStack;
 import codechicken.nei.recipe.TemplateRecipeHandler;
+import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.utils.MetaBlock;
+import moze_intel.projecte.utils.WorldTransmutations;
 
 public class NEIWorldTransmuteHandler extends TemplateRecipeHandler {
 
@@ -96,7 +95,10 @@ public class NEIWorldTransmuteHandler extends TemplateRecipeHandler {
     @Override
     public void loadUsageRecipes(ItemStack ingredient) {
         for (Entry<MetaBlock, MetaBlock[]> entry : WorldTransmutations.MAP.entrySet()) {
-            if (NEIServerUtils.areStacksSameTypeCrafting(entry.getKey().toItemStack(), ingredient)) {
+            if (NEIServerUtils.areStacksSameTypeCrafting(
+                entry.getKey()
+                    .toItemStack(),
+                ingredient)) {
                 if (entry != null) {
                     if (entry.getValue()[0] != null) arecipes.add(new CachedTransmutationRecipe(entry.getKey(), false));
                     if (entry.getValue()[1] != null) arecipes.add(new CachedTransmutationRecipe(entry.getKey(), true));

@@ -2,9 +2,6 @@ package moze_intel.projecte.gameObjs.items.armor;
 
 import java.util.List;
 
-import moze_intel.projecte.utils.EnumArmorType;
-import moze_intel.projecte.utils.WorldHelper;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
@@ -13,6 +10,8 @@ import net.minecraft.world.World;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import moze_intel.projecte.utils.EnumArmorType;
+import moze_intel.projecte.utils.WorldHelper;
 
 public class GemLegs extends GemArmorBase {
 
@@ -36,12 +35,12 @@ public class GemLegs extends GemArmorBase {
 
         if (player.isSneaking()) {
             AxisAlignedBB box = AxisAlignedBB.getBoundingBox(
-                    player.posX - 3.5,
-                    player.posY - 3.5,
-                    player.posZ - 3.5,
-                    player.posX + 3.5,
-                    player.posY + 3.5,
-                    player.posZ + 3.5);
+                player.posX - 3.5,
+                player.posY - 3.5,
+                player.posZ - 3.5,
+                player.posX + 3.5,
+                player.posY + 3.5,
+                player.posZ + 3.5);
             WorldHelper.repelEntitiesInAABBFromPoint(world, box, player.posX, player.posY, player.posZ, true);
         }
     }

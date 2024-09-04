@@ -1,7 +1,5 @@
 package moze_intel.projecte.gameObjs.customRecipes;
 
-import moze_intel.projecte.gameObjs.ObjHandler;
-
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
@@ -18,6 +16,8 @@ import net.minecraft.item.ItemSword;
 import net.minecraft.item.ItemTool;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
+
+import moze_intel.projecte.gameObjs.ObjHandler;
 
 public class RecipesCovalenceRepair implements IRecipe {
 
@@ -77,8 +77,8 @@ public class RecipesCovalenceRepair implements IRecipe {
 
     private boolean correctDustCount(int dustCounter, Item toRepair) {
         if (toRepair instanceof ItemSpade || toRepair instanceof ItemShears
-                || toRepair instanceof ItemFlintAndSteel
-                || toRepair instanceof ItemFishingRod) {
+            || toRepair instanceof ItemFlintAndSteel
+            || toRepair instanceof ItemFishingRod) {
             return dustCounter == 1;
         }
 
@@ -122,14 +122,14 @@ public class RecipesCovalenceRepair implements IRecipe {
         Item item = stack.getItem();
 
         if (item instanceof ItemShears || item instanceof ItemFlintAndSteel
-                || item instanceof ItemFishingRod
-                || item instanceof ItemBow) {
+            || item instanceof ItemFishingRod
+            || item instanceof ItemBow) {
             return true;
         }
 
         return (item instanceof ItemTool || item instanceof ItemSword
-                || item instanceof ItemHoe
-                || item instanceof ItemArmor);
+            || item instanceof ItemHoe
+            || item instanceof ItemArmor);
     }
 
     private int getDustType(ItemStack stack) {
@@ -152,7 +152,8 @@ public class RecipesCovalenceRepair implements IRecipe {
         } else if (item instanceof ItemHoe) {
             name = ((ItemHoe) item).getToolMaterialName();
         } else if (item instanceof ItemArmor) {
-            name = ((ItemArmor) item).getArmorMaterial().toString();
+            name = ((ItemArmor) item).getArmorMaterial()
+                .toString();
         }
 
         if (name.equals("WOOD") || name.equals("STONE") || name.equals("CLOTH")) {

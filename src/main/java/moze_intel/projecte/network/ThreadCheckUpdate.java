@@ -7,9 +7,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 
-import moze_intel.projecte.network.commands.ChangelogCMD;
-import moze_intel.projecte.utils.PELogger;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.event.ClickEvent;
 import net.minecraft.util.ChatComponentText;
@@ -17,9 +14,11 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.util.StatCollector;
 
-import xyz.akirin.fmpe.FMPEMain;
-
 import com.google.common.collect.Lists;
+
+import moze_intel.projecte.network.commands.ChangelogCMD;
+import moze_intel.projecte.utils.PELogger;
+import xyz.akirin.fmpe.FMPEMain;
 
 public class ThreadCheckUpdate extends Thread {
 
@@ -67,14 +66,15 @@ public class ThreadCheckUpdate extends Thread {
                 }
 
                 if (!line.isEmpty()) {
-                    line = line.substring(1).trim();
+                    line = line.substring(1)
+                        .trim();
                     changes.add(line);
                 }
             }
 
             if (!FMPEMain.RVersion.equals(latestVersion)) {
                 PELogger.logInfo(
-                        "Mod is outdated! Check " + curseURL + " to get the latest version (" + latestVersion + ").");
+                    "Mod is outdated! Check " + curseURL + " to get the latest version (" + latestVersion + ").");
 
                 for (String s : changes) {
                     PELogger.logInfo(s);
@@ -84,22 +84,22 @@ public class ThreadCheckUpdate extends Thread {
                     ChangelogCMD.changelog.addAll(changes);
                 } else {
                     Minecraft.getMinecraft().thePlayer.addChatMessage(
-                            new ChatComponentText(
-                                    String.format(
-                                            EnumChatFormatting.GOLD
-                                                    + StatCollector.translateToLocal("pe.update.available"),
-                                            latestVersion)));
+                        new ChatComponentText(
+                            String.format(
+                                EnumChatFormatting.GOLD + StatCollector.translateToLocal("pe.update.available"),
+                                latestVersion)));
                     Minecraft.getMinecraft().thePlayer.addChatMessage(
-                            new ChatComponentText(
-                                    EnumChatFormatting.GREEN + StatCollector.translateToLocal("pe.update.getit")));
+                        new ChatComponentText(
+                            EnumChatFormatting.GREEN + StatCollector.translateToLocal("pe.update.getit")));
 
                     IChatComponent link = new ChatComponentText(EnumChatFormatting.AQUA + curseURL);
-                    link.getChatStyle().setChatClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, curseURL));
+                    link.getChatStyle()
+                        .setChatClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, curseURL));
                     Minecraft.getMinecraft().thePlayer.addChatMessage(link);
 
                     Minecraft.getMinecraft().thePlayer.addChatMessage(
-                            new ChatComponentText(
-                                    EnumChatFormatting.GREEN + StatCollector.translateToLocal("pe.update.changelog")));
+                        new ChatComponentText(
+                            EnumChatFormatting.GREEN + StatCollector.translateToLocal("pe.update.changelog")));
                 }
             } else {
                 PELogger.logInfo("Mod is updated.");

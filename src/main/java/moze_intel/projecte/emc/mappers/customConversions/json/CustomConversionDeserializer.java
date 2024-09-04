@@ -17,7 +17,7 @@ public class CustomConversionDeserializer implements JsonDeserializer<CustomConv
 
     @Override
     public CustomConversion deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
-            throws JsonParseException {
+        throws JsonParseException {
         CustomConversion out = new CustomConversion();
         JsonObject o = json.getAsJsonObject();
         boolean foundOutput = false, foundIngredients = false;
@@ -54,12 +54,13 @@ public class CustomConversionDeserializer implements JsonDeserializer<CustomConv
                 } else {
                     throw new JsonParseException("Could not parse ingredients!");
                 }
-            } else if (entry.getKey().equalsIgnoreCase("evalOD")) {
-                out.evalOD = element.getAsBoolean();
-            } else {
-                throw new JsonParseException(
+            } else if (entry.getKey()
+                .equalsIgnoreCase("evalOD")) {
+                    out.evalOD = element.getAsBoolean();
+                } else {
+                    throw new JsonParseException(
                         String.format("Unknown Key: %s in Conversion with value %s", entry.getKey(), element));
-            }
+                }
         }
         return out;
     }

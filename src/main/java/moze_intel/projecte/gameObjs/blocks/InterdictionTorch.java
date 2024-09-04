@@ -2,9 +2,6 @@ package moze_intel.projecte.gameObjs.blocks;
 
 import java.util.Random;
 
-import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.gameObjs.tiles.InterdictionTile;
-
 import net.minecraft.block.BlockTorch;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.tileentity.TileEntity;
@@ -12,6 +9,8 @@ import net.minecraft.world.World;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.gameObjs.tiles.InterdictionTile;
 
 public class InterdictionTorch extends BlockTorch {
 

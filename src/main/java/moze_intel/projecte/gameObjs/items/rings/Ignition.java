@@ -2,16 +2,6 @@ package moze_intel.projecte.gameObjs.items.rings;
 
 import java.util.List;
 
-import moze_intel.projecte.api.item.IPedestalItem;
-import moze_intel.projecte.api.item.IProjectileShooter;
-import moze_intel.projecte.config.ProjectEConfig;
-import moze_intel.projecte.gameObjs.entity.EntityFireProjectile;
-import moze_intel.projecte.gameObjs.items.IFireProtector;
-import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
-import moze_intel.projecte.utils.MathUtils;
-import moze_intel.projecte.utils.PlayerHelper;
-import moze_intel.projecte.utils.WorldHelper;
-
 import net.minecraft.block.BlockTNT;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
@@ -25,11 +15,20 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
+import com.google.common.collect.Lists;
+
 import baubles.api.BaubleType;
 import baubles.api.IBauble;
-
-import com.google.common.collect.Lists;
 import cpw.mods.fml.common.Optional;
+import moze_intel.projecte.api.item.IPedestalItem;
+import moze_intel.projecte.api.item.IProjectileShooter;
+import moze_intel.projecte.config.ProjectEConfig;
+import moze_intel.projecte.gameObjs.entity.EntityFireProjectile;
+import moze_intel.projecte.gameObjs.items.IFireProtector;
+import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
+import moze_intel.projecte.utils.MathUtils;
+import moze_intel.projecte.utils.PlayerHelper;
+import moze_intel.projecte.utils.WorldHelper;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
 public class Ignition extends RingToggle implements IBauble, IPedestalItem, IFireProtector, IProjectileShooter {
@@ -77,11 +76,11 @@ public class Ignition extends RingToggle implements IBauble, IPedestalItem, IFir
         if (!world.isRemote) {
             MovingObjectPosition mop = getMovingObjectPositionFromPlayer(world, player, false);
             if (mop != null && mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
-                if (world.getBlock(mop.blockX, mop.blockY, mop.blockZ) instanceof BlockTNT && PlayerHelper
-                        .hasBreakPermission(((EntityPlayerMP) player), mop.blockX, mop.blockY, mop.blockZ)) {
+                if (world.getBlock(mop.blockX, mop.blockY, mop.blockZ) instanceof BlockTNT
+                    && PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), mop.blockX, mop.blockY, mop.blockZ)) {
                     // Ignite TNT or derivatives
                     ((BlockTNT) world.getBlock(mop.blockX, mop.blockY, mop.blockZ))
-                            .func_150114_a(world, mop.blockX, mop.blockY, mop.blockZ, 1, player);
+                        .func_150114_a(world, mop.blockX, mop.blockY, mop.blockZ, 1, player);
                     world.setBlockToAir(mop.blockX, mop.blockY, mop.blockZ);
                 }
             }
@@ -146,9 +145,9 @@ public class Ignition extends RingToggle implements IBauble, IPedestalItem, IFir
         if (ProjectEConfig.ignitePedCooldown != -1) {
             list.add(EnumChatFormatting.BLUE + StatCollector.translateToLocal("pe.ignition.pedestal1"));
             list.add(
-                    EnumChatFormatting.BLUE + String.format(
-                            StatCollector.translateToLocal("pe.ignition.pedestal2"),
-                            MathUtils.tickToSecFormatted(ProjectEConfig.ignitePedCooldown)));
+                EnumChatFormatting.BLUE + String.format(
+                    StatCollector.translateToLocal("pe.ignition.pedestal2"),
+                    MathUtils.tickToSecFormatted(ProjectEConfig.ignitePedCooldown)));
         }
         return list;
     }

@@ -1,9 +1,5 @@
 package moze_intel.projecte.gameObjs.gui;
 
-import moze_intel.projecte.PECore;
-import moze_intel.projecte.gameObjs.container.RelayMK3Container;
-import moze_intel.projecte.gameObjs.tiles.RelayMK3Tile;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -12,11 +8,15 @@ import net.minecraft.util.StatCollector;
 
 import org.lwjgl.opengl.GL11;
 
+import moze_intel.projecte.PECore;
+import moze_intel.projecte.gameObjs.container.RelayMK3Container;
+import moze_intel.projecte.gameObjs.tiles.RelayMK3Tile;
+
 public class GUIRelayMK3 extends GuiContainer {
 
     private static final ResourceLocation texture = new ResourceLocation(
-            PECore.MODID.toLowerCase(),
-            "textures/gui/relay3.png");
+        PECore.MODID.toLowerCase(),
+        "textures/gui/relay3.png");
     private RelayMK3Tile tile;
 
     public GUIRelayMK3(InventoryPlayer invPlayer, RelayMK3Tile tile) {

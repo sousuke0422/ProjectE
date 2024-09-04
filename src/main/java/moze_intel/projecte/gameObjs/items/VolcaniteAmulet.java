@@ -2,18 +2,6 @@ package moze_intel.projecte.gameObjs.items;
 
 import java.util.List;
 
-import moze_intel.projecte.api.item.IPedestalItem;
-import moze_intel.projecte.api.item.IProjectileShooter;
-import moze_intel.projecte.config.ProjectEConfig;
-import moze_intel.projecte.gameObjs.entity.EntityLavaProjectile;
-import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
-import moze_intel.projecte.utils.ClientKeyHelper;
-import moze_intel.projecte.utils.Constants;
-import moze_intel.projecte.utils.FluidHelper;
-import moze_intel.projecte.utils.MathUtils;
-import moze_intel.projecte.utils.PEKeybind;
-import moze_intel.projecte.utils.PlayerHelper;
-
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -29,14 +17,24 @@ import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.IFluidHandler;
 
-import baubles.api.BaubleType;
-import baubles.api.IBauble;
-
 import com.google.common.collect.Lists;
 
+import baubles.api.BaubleType;
+import baubles.api.IBauble;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import moze_intel.projecte.api.item.IPedestalItem;
+import moze_intel.projecte.api.item.IProjectileShooter;
+import moze_intel.projecte.config.ProjectEConfig;
+import moze_intel.projecte.gameObjs.entity.EntityLavaProjectile;
+import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
+import moze_intel.projecte.utils.ClientKeyHelper;
+import moze_intel.projecte.utils.Constants;
+import moze_intel.projecte.utils.FluidHelper;
+import moze_intel.projecte.utils.MathUtils;
+import moze_intel.projecte.utils.PEKeybind;
+import moze_intel.projecte.utils.PlayerHelper;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
 public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBauble, IPedestalItem, IFireProtector {
@@ -49,7 +47,7 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
 
     @Override
     public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int sideHit,
-            float f1, float f2, float f3) {
+        float f1, float f2, float f3) {
         if (!world.isRemote && PlayerHelper.hasEditPermission(((EntityPlayerMP) player), x, y, z)) {
             TileEntity tile = world.getTileEntity(x, y, z);
 
@@ -128,7 +126,7 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
         int z = (int) Math.floor(player.posZ);
 
         if ((world.getBlock(x, y - 1, z) == Blocks.lava || world.getBlock(x, y - 1, z) == Blocks.flowing_lava)
-                && world.getBlock(x, y, z) == Blocks.air) {
+            && world.getBlock(x, y, z) == Blocks.air) {
             if (!player.isSneaking()) {
                 player.motionY = 0.0D;
                 player.fallDistance = 0.0F;
@@ -167,9 +165,9 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4) {
         list.add(
-                String.format(
-                        StatCollector.translateToLocal("pe.volcanite.tooltip1"),
-                        ClientKeyHelper.getKeyName(PEKeybind.FIRE_PROJECTILE)));
+            String.format(
+                StatCollector.translateToLocal("pe.volcanite.tooltip1"),
+                ClientKeyHelper.getKeyName(PEKeybind.FIRE_PROJECTILE)));
         list.add(StatCollector.translateToLocal("pe.volcanite.tooltip2"));
         list.add(StatCollector.translateToLocal("pe.volcanite.tooltip3"));
         list.add(StatCollector.translateToLocal("pe.volcanite.tooltip4"));
@@ -196,7 +194,7 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
         int z = (int) Math.floor(player.posZ);
 
         if ((world.getBlock(x, y - 1, z) == Blocks.lava || world.getBlock(x, y - 1, z) == Blocks.flowing_lava)
-                && world.getBlock(x, y, z) == Blocks.air) {
+            && world.getBlock(x, y, z) == Blocks.air) {
             if (!player.isSneaking()) {
                 player.motionY = 0.0D;
                 player.fallDistance = 0.0F;
@@ -238,10 +236,14 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
         if (!world.isRemote && ProjectEConfig.volcanitePedCooldown != -1) {
             DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(x, y, z));
             if (tile.getActivityCooldown() == 0) {
-                world.getWorldInfo().setRainTime(0);
-                world.getWorldInfo().setThunderTime(0);
-                world.getWorldInfo().setRaining(false);
-                world.getWorldInfo().setThundering(false);
+                world.getWorldInfo()
+                    .setRainTime(0);
+                world.getWorldInfo()
+                    .setThunderTime(0);
+                world.getWorldInfo()
+                    .setRaining(false);
+                world.getWorldInfo()
+                    .setThundering(false);
 
                 tile.setActivityCooldown(ProjectEConfig.volcanitePedCooldown);
             } else {
@@ -256,9 +258,9 @@ public class VolcaniteAmulet extends ItemPE implements IProjectileShooter, IBaub
         if (ProjectEConfig.volcanitePedCooldown != -1) {
             list.add(EnumChatFormatting.BLUE + StatCollector.translateToLocal("pe.volcanite.pedestal1"));
             list.add(
-                    EnumChatFormatting.BLUE + String.format(
-                            StatCollector.translateToLocal("pe.volcanite.pedestal2"),
-                            MathUtils.tickToSecFormatted(ProjectEConfig.volcanitePedCooldown)));
+                EnumChatFormatting.BLUE + String.format(
+                    StatCollector.translateToLocal("pe.volcanite.pedestal2"),
+                    MathUtils.tickToSecFormatted(ProjectEConfig.volcanitePedCooldown)));
         }
         return list;
     }

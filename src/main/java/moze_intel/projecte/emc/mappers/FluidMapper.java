@@ -3,12 +3,6 @@ package moze_intel.projecte.emc.mappers;
 import java.util.Arrays;
 import java.util.List;
 
-import moze_intel.projecte.emc.NormalizedSimpleStack;
-import moze_intel.projecte.emc.arithmetics.DoubleArithmetic;
-import moze_intel.projecte.emc.collector.IExtendedMappingCollector;
-import moze_intel.projecte.emc.collector.IMappingCollector;
-import moze_intel.projecte.utils.PELogger;
-
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -23,6 +17,12 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
+
+import moze_intel.projecte.emc.NormalizedSimpleStack;
+import moze_intel.projecte.emc.arithmetics.DoubleArithmetic;
+import moze_intel.projecte.emc.collector.IExtendedMappingCollector;
+import moze_intel.projecte.emc.collector.IMappingCollector;
+import moze_intel.projecte.utils.PELogger;
 
 public class FluidMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 
@@ -90,21 +90,21 @@ public class FluidMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
     @Override
     public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, Configuration config) {
         mapper.setValueBefore(
-                NormalizedSimpleStack.getFor(FluidRegistry.WATER),
-                Long.MIN_VALUE/* =Free. TODO: Use IntArithmetic */);
+            NormalizedSimpleStack.getFor(FluidRegistry.WATER),
+            Long.MIN_VALUE/* =Free. TODO: Use IntArithmetic */);
         // 1 Bucket of Lava = 1 Block of Obsidian
         mapper.addConversion(
-                1000,
-                NormalizedSimpleStack.getFor(FluidRegistry.LAVA),
-                Arrays.asList(NormalizedSimpleStack.getFor(Blocks.obsidian)));
+            1000,
+            NormalizedSimpleStack.getFor(FluidRegistry.LAVA),
+            Arrays.asList(NormalizedSimpleStack.getFor(Blocks.obsidian)));
 
         // Add Conversion in case MFR is not present and milk is not an actual fluid
         NormalizedSimpleStack fakeMilkFluid = NormalizedSimpleStack.createFake("fakeMilkFluid");
         mapper.setValueBefore(fakeMilkFluid, 16L);
         mapper.addConversion(
-                1,
-                NormalizedSimpleStack.getFor(Items.milk_bucket),
-                Arrays.asList(NormalizedSimpleStack.getFor(Items.bucket), fakeMilkFluid));
+            1,
+            NormalizedSimpleStack.getFor(Items.milk_bucket),
+            Arrays.asList(NormalizedSimpleStack.getFor(Items.bucket), fakeMilkFluid));
 
         Fluid milkFluid = FluidRegistry.getFluid("milk");
         if (milkFluid != null) {
@@ -118,23 +118,25 @@ public class FluidMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 
         for (Pair<NormalizedSimpleStack, FluidStack> pair : melting) {
             emapper.addConversion(
-                    pair.getValue().amount,
-                    NormalizedSimpleStack.getFor(pair.getValue().getFluid()),
-                    Arrays.asList(pair.getKey()),
-                    fluidArithmetic);
+                pair.getValue().amount,
+                NormalizedSimpleStack.getFor(
+                    pair.getValue()
+                        .getFluid()),
+                Arrays.asList(pair.getKey()),
+                fluidArithmetic);
         }
 
         for (FluidContainerRegistry.FluidContainerData data : FluidContainerRegistry
-                .getRegisteredFluidContainerData()) {
+            .getRegisteredFluidContainerData()) {
             Fluid fluid = data.fluid.getFluid();
             mapper.addConversion(
+                1,
+                NormalizedSimpleStack.getFor(data.filledContainer),
+                ImmutableMap.of(
+                    NormalizedSimpleStack.getFor(data.emptyContainer),
                     1,
-                    NormalizedSimpleStack.getFor(data.filledContainer),
-                    ImmutableMap.of(
-                            NormalizedSimpleStack.getFor(data.emptyContainer),
-                            1,
-                            NormalizedSimpleStack.getFor(fluid),
-                            data.fluid.amount));
+                    NormalizedSimpleStack.getFor(fluid),
+                    data.fluid.amount));
         }
     }
 

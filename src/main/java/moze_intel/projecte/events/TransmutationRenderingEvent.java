@@ -2,12 +2,6 @@ package moze_intel.projecte.events;
 
 import java.util.List;
 
-import moze_intel.projecte.config.ProjectEConfig;
-import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.gameObjs.items.ItemMode;
-import moze_intel.projecte.utils.MetaBlock;
-import moze_intel.projecte.utils.WorldTransmutations;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderItem;
@@ -31,6 +25,11 @@ import com.google.common.collect.Lists;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import moze_intel.projecte.config.ProjectEConfig;
+import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.gameObjs.items.ItemMode;
+import moze_intel.projecte.utils.MetaBlock;
+import moze_intel.projecte.utils.WorldTransmutations;
 
 @SideOnly(Side.CLIENT)
 public class TransmutationRenderingEvent {
@@ -46,7 +45,8 @@ public class TransmutationRenderingEvent {
     public void preDrawHud(RenderGameOverlayEvent.Pre event) {
         if (event.type == ElementType.CROSSHAIRS) {
             if (transmutationResult != null) {
-                RenderItem.getInstance().renderItemIntoGUI(
+                RenderItem.getInstance()
+                    .renderItemIntoGUI(
                         mc.fontRenderer,
                         mc.getTextureManager(),
                         transmutationResult.toItemStack(),
@@ -118,9 +118,9 @@ public class TransmutationRenderingEvent {
                     }
                     case 2: {
                         String dir = Direction.directions[MathHelper
-                                .floor_double((double) ((player.rotationYaw * 4F) / 360F) + 0.5D) & 3];
+                            .floor_double((double) ((player.rotationYaw * 4F) / 360F) + 0.5D) & 3];
                         int side = orientation.offsetX != 0 ? 0
-                                : orientation.offsetZ != 0 ? 1 : dir.equals("NORTH") || dir.equals("SOUTH") ? 0 : 1;
+                            : orientation.offsetZ != 0 ? 1 : dir.equals("NORTH") || dir.equals("SOUTH") ? 0 : 1;
 
                         if (side == 0) {
                             for (int z = mop.blockZ - charge; z <= mop.blockZ + charge; z++) {
@@ -215,7 +215,7 @@ public class TransmutationRenderingEvent {
     private void addBlockToRenderList(World world, MetaBlock current, int x, int y, int z) {
         if (new MetaBlock(world, x, y, z).equals(current)) {
             AxisAlignedBB box = AxisAlignedBB
-                    .getBoundingBox(x - 0.02f, y - 0.02f, z - 0.02f, x + 1.02f, y + 1.02f, z + 1.02f);
+                .getBoundingBox(x - 0.02f, y - 0.02f, z - 0.02f, x + 1.02f, y + 1.02f, z + 1.02f);
             box = box.offset(-playerX, -playerY, -playerZ);
             renderList.add(box);
         }

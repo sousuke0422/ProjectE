@@ -1,14 +1,14 @@
 package moze_intel.projecte.gameObjs.container;
 
-import moze_intel.projecte.gameObjs.container.inventory.MercurialEyeInventory;
-import moze_intel.projecte.gameObjs.container.slots.mercurial.SlotMercurialKlein;
-import moze_intel.projecte.gameObjs.container.slots.mercurial.SlotMercurialTarget;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+
+import moze_intel.projecte.gameObjs.container.inventory.MercurialEyeInventory;
+import moze_intel.projecte.gameObjs.container.slots.mercurial.SlotMercurialKlein;
+import moze_intel.projecte.gameObjs.container.slots.mercurial.SlotMercurialTarget;
 
 public class MercurialEyeContainer extends Container {
 
@@ -63,14 +63,14 @@ public class MercurialEyeContainer extends Container {
         } else // Moving from player inventory
         {
             if (((Slot) inventorySlots.get(0)).isItemValid(stack)
-                    && ((Slot) inventorySlots.get(0)).getStack() == null) { // Is a valid klein star and the slot is
-                                                                            // empty?
+                && ((Slot) inventorySlots.get(0)).getStack() == null) { // Is a valid klein star and the slot is
+                                                                        // empty?
                 ((Slot) inventorySlots.get(0)).putStack(stack.splitStack(1));
             } else if (((Slot) inventorySlots.get(1)).isItemValid(stack)
-                    && ((Slot) inventorySlots.get(1)).getStack() == null) { // Is a valid target block and the slot is
-                                                                            // empty?
-                        ((Slot) inventorySlots.get(1)).putStack(stack.splitStack(1));
-                    } else // Is neither, ignore
+                && ((Slot) inventorySlots.get(1)).getStack() == null) { // Is a valid target block and the slot is
+                                                                        // empty?
+                    ((Slot) inventorySlots.get(1)).putStack(stack.splitStack(1));
+                } else // Is neither, ignore
             {
                 return null;
             }

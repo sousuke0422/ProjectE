@@ -8,18 +8,6 @@ import java.io.OutputStream;
 import java.io.Reader;
 import java.util.Map;
 
-import moze_intel.projecte.PECore;
-import moze_intel.projecte.emc.NormalizedSimpleStack;
-import moze_intel.projecte.emc.collector.IMappingCollector;
-import moze_intel.projecte.emc.mappers.IEMCMapper;
-import moze_intel.projecte.emc.mappers.customConversions.json.ConversionGroup;
-import moze_intel.projecte.emc.mappers.customConversions.json.CustomConversion;
-import moze_intel.projecte.emc.mappers.customConversions.json.CustomConversionDeserializer;
-import moze_intel.projecte.emc.mappers.customConversions.json.CustomConversionFile;
-import moze_intel.projecte.emc.mappers.customConversions.json.FixedValues;
-import moze_intel.projecte.emc.mappers.customConversions.json.FixedValuesDeserializer;
-import moze_intel.projecte.utils.PELogger;
-
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fluids.Fluid;
@@ -32,6 +20,18 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
+import moze_intel.projecte.PECore;
+import moze_intel.projecte.emc.NormalizedSimpleStack;
+import moze_intel.projecte.emc.collector.IMappingCollector;
+import moze_intel.projecte.emc.mappers.IEMCMapper;
+import moze_intel.projecte.emc.mappers.customConversions.json.ConversionGroup;
+import moze_intel.projecte.emc.mappers.customConversions.json.CustomConversion;
+import moze_intel.projecte.emc.mappers.customConversions.json.CustomConversionDeserializer;
+import moze_intel.projecte.emc.mappers.customConversions.json.CustomConversionFile;
+import moze_intel.projecte.emc.mappers.customConversions.json.FixedValues;
+import moze_intel.projecte.emc.mappers.customConversions.json.FixedValuesDeserializer;
+import moze_intel.projecte.utils.PELogger;
 
 public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 
@@ -57,20 +57,26 @@ public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,
         File customConversionFolder = getCustomConversionFolder();
         if (customConversionFolder.isDirectory() || customConversionFolder.mkdir()) {
             if (config.getBoolean(
-                    "writeDefaultFiles",
-                    "",
-                    true,
-                    "Create the default files if they are not present, yet. Will not overwrite them, only create them when they are not present.")) {
+                "writeDefaultFiles",
+                "",
+                true,
+                "Create the default files if they are not present, yet. Will not overwrite them, only create them when they are not present.")) {
                 tryToWriteDefaultFiles();
             }
             for (File f : customConversionFolder.listFiles()) {
                 if (f.isFile() && f.canRead()) {
-                    if (f.getName().toLowerCase().endsWith(".json")) {
+                    if (f.getName()
+                        .toLowerCase()
+                        .endsWith(".json")) {
                         if (config.getBoolean(
-                                f.getName().substring(0, f.getName().length() - 5),
-                                "",
-                                true,
-                                String.format("Read file: %s?", f.getName()))) {
+                            f.getName()
+                                .substring(
+                                    0,
+                                    f.getName()
+                                        .length() - 5),
+                            "",
+                            true,
+                            String.format("Read file: %s?", f.getName()))) {
                             try {
                                 addMappingsFromFile(new FileReader(f), mapper);
                                 PELogger.logInfo("Collected Mappings from " + f.getName());
@@ -96,15 +102,15 @@ public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,
     }
 
     public static void addMappingsFromFile(CustomConversionFile file,
-            IMappingCollector<NormalizedSimpleStack, Long> mapper) {
+        IMappingCollector<NormalizedSimpleStack, Long> mapper) {
         Map<String, NormalizedSimpleStack> fakes = Maps.newHashMap();
         // TODO implement buffered IMappingCollector to recover from failures
         for (Map.Entry<String, ConversionGroup> entry : file.groups.entrySet()) {
             PELogger.logDebug(
-                    String.format(
-                            "Adding conversions from group '%s' with comment '%s'",
-                            entry.getKey(),
-                            entry.getValue().comment));
+                String.format(
+                    "Adding conversions from group '%s' with comment '%s'",
+                    entry.getKey(),
+                    entry.getValue().comment));
             try {
                 for (CustomConversion conversion : entry.getValue().conversions) {
                     NormalizedSimpleStack output = getNSSfromJsonString(conversion.output, fakes);
@@ -149,15 +155,15 @@ public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,
                             String odName = ((NormalizedSimpleStack.NSSOreDictionary) out).od;
                             for (ItemStack itemStack : OreDictionary.getOres(odName)) {
                                 mapper.setValueFromConversion(
-                                        conversion.count,
-                                        NormalizedSimpleStack.getFor(itemStack),
-                                        convertToNSSMap(conversion.ingredients, fakes));
+                                    conversion.count,
+                                    NormalizedSimpleStack.getFor(itemStack),
+                                    convertToNSSMap(conversion.ingredients, fakes));
                             }
                         }
                         mapper.setValueFromConversion(
-                                conversion.count,
-                                out,
-                                convertToNSSMap(conversion.ingredients, fakes));
+                            conversion.count,
+                            out,
+                            convertToNSSMap(conversion.ingredients, fakes));
                     }
                 }
             }
@@ -168,7 +174,7 @@ public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,
     }
 
     private static NormalizedSimpleStack getNSSfromJsonString(String s, Map<String, NormalizedSimpleStack> fakes)
-            throws Exception {
+        throws Exception {
         if (s.startsWith("OD|")) {
             return NormalizedSimpleStack.forOreDictionary(s.substring(3));
         } else if (s.startsWith("FAKE|")) {
@@ -191,7 +197,7 @@ public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,
     }
 
     private static <V> Map<NormalizedSimpleStack, V> convertToNSSMap(Map<String, V> m,
-            Map<String, NormalizedSimpleStack> fakes) throws Exception {
+        Map<String, NormalizedSimpleStack> fakes) throws Exception {
         Map<NormalizedSimpleStack, V> out = Maps.newHashMap();
         for (Map.Entry<String, V> e : m.entrySet()) {
             NormalizedSimpleStack nssItem = getNSSfromJsonString(e.getKey(), fakes);
@@ -223,7 +229,7 @@ public class CustomConversionMapper implements IEMCMapper<NormalizedSimpleStack,
         try {
             if (f.createNewFile() && f.canWrite()) {
                 InputStream stream = CustomConversionMapper.class.getClassLoader()
-                        .getResourceAsStream("defaultCustomConversions/" + filename + ".json");
+                    .getResourceAsStream("defaultCustomConversions/" + filename + ".json");
                 OutputStream outputStream = new FileOutputStream(f);
                 IOUtils.copy(stream, outputStream);
                 stream.close();

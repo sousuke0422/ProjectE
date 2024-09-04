@@ -3,9 +3,6 @@ package moze_intel.projecte.utils;
 import java.lang.reflect.Constructor;
 import java.util.*;
 
-import moze_intel.projecte.config.ProjectEConfig;
-import moze_intel.projecte.gameObjs.entity.EntityLootBall;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFlower;
 import net.minecraft.block.IGrowable;
@@ -59,6 +56,9 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
+import moze_intel.projecte.config.ProjectEConfig;
+import moze_intel.projecte.gameObjs.entity.EntityLootBall;
+
 /**
  * Helper class for anything that touches a World. Notice: Please try to keep methods tidy and alphabetically ordered.
  * Thanks!
@@ -66,31 +66,31 @@ import com.google.common.collect.Sets;
 public final class WorldHelper {
 
     public static final ImmutableList<Class<? extends EntityLiving>> peacefuls = ImmutableList
-            .<Class<? extends EntityLiving>>of(
-                    EntitySheep.class,
-                    EntityPig.class,
-                    EntityCow.class,
-                    EntityMooshroom.class,
-                    EntityChicken.class,
-                    EntityBat.class,
-                    EntityVillager.class,
-                    EntitySquid.class,
-                    EntityOcelot.class,
-                    EntityWolf.class,
-                    EntityHorse.class);
+        .<Class<? extends EntityLiving>>of(
+            EntitySheep.class,
+            EntityPig.class,
+            EntityCow.class,
+            EntityMooshroom.class,
+            EntityChicken.class,
+            EntityBat.class,
+            EntityVillager.class,
+            EntitySquid.class,
+            EntityOcelot.class,
+            EntityWolf.class,
+            EntityHorse.class);
     public static final ImmutableList<Class<? extends EntityLiving>> mobs = ImmutableList
-            .<Class<? extends EntityLiving>>of(
-                    EntityZombie.class,
-                    EntitySkeleton.class,
-                    EntityCreeper.class,
-                    EntitySpider.class,
-                    EntityEnderman.class,
-                    EntitySilverfish.class,
-                    EntityPigZombie.class,
-                    EntityGhast.class,
-                    EntityBlaze.class,
-                    EntitySlime.class,
-                    EntityWitch.class);
+        .<Class<? extends EntityLiving>>of(
+            EntityZombie.class,
+            EntitySkeleton.class,
+            EntityCreeper.class,
+            EntitySpider.class,
+            EntityEnderman.class,
+            EntitySilverfish.class,
+            EntityPigZombie.class,
+            EntityGhast.class,
+            EntityBlaze.class,
+            EntitySlime.class,
+            EntityWitch.class);
 
     public static Set<Class<? extends Entity>> interdictionBlacklist = Sets.newHashSet();
 
@@ -141,11 +141,11 @@ public final class WorldHelper {
 
     public static void extinguishNearby(World world, EntityPlayer player) {
         for (int x = (int) (player.posX - 1); x <= player.posX + 1; x++) for (int y = (int) (player.posY - 1); y
-                <= player.posY + 1; y++)
+            <= player.posY + 1; y++)
             for (int z = (int) (player.posZ - 1); z <= player.posZ + 1; z++) if (world.getBlock(x, y, z) == Blocks.fire
-                    && PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), x, y, z)) {
-                        world.setBlockToAir(x, y, z);
-                    }
+                && PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), x, y, z)) {
+                    world.setBlockToAir(x, y, z);
+                }
     }
 
     public static void freezeInBoundingBox(World world, AxisAlignedBB box, EntityPlayer player, boolean random) {
@@ -165,13 +165,8 @@ public final class WorldHelper {
 
                         if (b2 == Blocks.air && (!random || world.rand.nextInt(128) == 0)) {
                             if (player != null) {
-                                PlayerHelper.checkedReplaceBlock(
-                                        ((EntityPlayerMP) player),
-                                        x,
-                                        y + 1,
-                                        z,
-                                        Blocks.snow_layer,
-                                        0);
+                                PlayerHelper
+                                    .checkedReplaceBlock(((EntityPlayerMP) player), x, y + 1, z, Blocks.snow_layer, 0);
                             } else {
                                 world.setBlock(x, y + 1, z, Blocks.snow_layer);
                             }
@@ -187,12 +182,12 @@ public final class WorldHelper {
     }
 
     public static Map<ForgeDirection, TileEntity> getAdjacentTileEntitiesMapped(final World world,
-            final TileEntity tile) {
+        final TileEntity tile) {
         Map<ForgeDirection, TileEntity> ret = new EnumMap<>(ForgeDirection.class);
 
         for (ForgeDirection dir : ForgeDirection.VALID_DIRECTIONS) {
             TileEntity candidate = world
-                    .getTileEntity(tile.xCoord + dir.offsetX, tile.yCoord + dir.offsetY, tile.zCoord + dir.offsetZ);
+                .getTileEntity(tile.xCoord + dir.offsetX, tile.yCoord + dir.offsetY, tile.zCoord + dir.offsetZ);
             if (candidate != null) {
                 ret.put(dir, candidate);
             }
@@ -202,21 +197,16 @@ public final class WorldHelper {
     }
 
     public static ArrayList<ItemStack> getBlockDrops(World world, EntityPlayer player, Block block, ItemStack stack,
-            int x, int y, int z) {
+        int x, int y, int z) {
         int meta = world.getBlockMetadata(x, y, z);
 
         if (EnchantmentHelper.getEnchantmentLevel(Enchantment.silkTouch.effectId, stack) > 0
-                && block.canSilkHarvest(world, player, x, y, z, meta)) {
+            && block.canSilkHarvest(world, player, x, y, z, meta)) {
             return Lists.newArrayList(new ItemStack(block, 1, meta));
         }
 
-        return block.getDrops(
-                world,
-                x,
-                y,
-                z,
-                meta,
-                EnchantmentHelper.getEnchantmentLevel(Enchantment.fortune.effectId, stack));
+        return block
+            .getDrops(world, x, y, z, meta, EnchantmentHelper.getEnchantmentLevel(Enchantment.fortune.effectId, stack));
     }
 
     /**
@@ -225,52 +215,52 @@ public final class WorldHelper {
     public static AxisAlignedBB getBroadDeepBox(Coordinates coords, ForgeDirection direction, int offset) {
         if (direction.offsetX > 0) {
             return AxisAlignedBB.getBoundingBox(
-                    coords.x - offset,
-                    coords.y - offset,
-                    coords.z - offset,
-                    coords.x,
-                    coords.y + offset,
-                    coords.z + offset);
+                coords.x - offset,
+                coords.y - offset,
+                coords.z - offset,
+                coords.x,
+                coords.y + offset,
+                coords.z + offset);
         } else if (direction.offsetX < 0) {
             return AxisAlignedBB.getBoundingBox(
-                    coords.x,
-                    coords.y - offset,
-                    coords.z - offset,
-                    coords.x + offset,
-                    coords.y + offset,
-                    coords.z + offset);
+                coords.x,
+                coords.y - offset,
+                coords.z - offset,
+                coords.x + offset,
+                coords.y + offset,
+                coords.z + offset);
         } else if (direction.offsetY > 0) {
             return AxisAlignedBB.getBoundingBox(
-                    coords.x - offset,
-                    coords.y - offset,
-                    coords.z - offset,
-                    coords.x + offset,
-                    coords.y,
-                    coords.z + offset);
+                coords.x - offset,
+                coords.y - offset,
+                coords.z - offset,
+                coords.x + offset,
+                coords.y,
+                coords.z + offset);
         } else if (direction.offsetY < 0) {
             return AxisAlignedBB.getBoundingBox(
-                    coords.x - offset,
-                    coords.y,
-                    coords.z - offset,
-                    coords.x + offset,
-                    coords.y + offset,
-                    coords.z + offset);
+                coords.x - offset,
+                coords.y,
+                coords.z - offset,
+                coords.x + offset,
+                coords.y + offset,
+                coords.z + offset);
         } else if (direction.offsetZ > 0) {
             return AxisAlignedBB.getBoundingBox(
-                    coords.x - offset,
-                    coords.y - offset,
-                    coords.z - offset,
-                    coords.x + offset,
-                    coords.y + offset,
-                    coords.z);
+                coords.x - offset,
+                coords.y - offset,
+                coords.z - offset,
+                coords.x + offset,
+                coords.y + offset,
+                coords.z);
         } else if (direction.offsetZ < 0) {
             return AxisAlignedBB.getBoundingBox(
-                    coords.x - offset,
-                    coords.y - offset,
-                    coords.z,
-                    coords.x + offset,
-                    coords.y + offset,
-                    coords.z + offset);
+                coords.x - offset,
+                coords.y - offset,
+                coords.z,
+                coords.x + offset,
+                coords.y + offset,
+                coords.z + offset);
         }
         return AxisAlignedBB.getBoundingBox(0, 0, 0, 0, 0, 0);
     }
@@ -282,37 +272,22 @@ public final class WorldHelper {
     public static AxisAlignedBB getDeepBox(Coordinates coords, ForgeDirection direction, int depth) {
         if (direction.offsetX != 0) {
             if (direction.offsetX > 0) {
-                return AxisAlignedBB.getBoundingBox(
-                        coords.x - depth,
-                        coords.y - 1,
-                        coords.z - 1,
-                        coords.x,
-                        coords.y + 1,
-                        coords.z + 1);
+                return AxisAlignedBB
+                    .getBoundingBox(coords.x - depth, coords.y - 1, coords.z - 1, coords.x, coords.y + 1, coords.z + 1);
             } else return AxisAlignedBB
-                    .getBoundingBox(coords.x, coords.y - 1, coords.z - 1, coords.x + depth, coords.y + 1, coords.z + 1);
+                .getBoundingBox(coords.x, coords.y - 1, coords.z - 1, coords.x + depth, coords.y + 1, coords.z + 1);
         } else if (direction.offsetY != 0) {
             if (direction.offsetY > 0) {
-                return AxisAlignedBB.getBoundingBox(
-                        coords.x - 1,
-                        coords.y - depth,
-                        coords.z - 1,
-                        coords.x + 1,
-                        coords.y,
-                        coords.z + 1);
+                return AxisAlignedBB
+                    .getBoundingBox(coords.x - 1, coords.y - depth, coords.z - 1, coords.x + 1, coords.y, coords.z + 1);
             } else return AxisAlignedBB
-                    .getBoundingBox(coords.x - 1, coords.y, coords.z - 1, coords.x + 1, coords.y + depth, coords.z + 1);
+                .getBoundingBox(coords.x - 1, coords.y, coords.z - 1, coords.x + 1, coords.y + depth, coords.z + 1);
         } else {
             if (direction.offsetZ > 0) {
-                return AxisAlignedBB.getBoundingBox(
-                        coords.x - 1,
-                        coords.y - 1,
-                        coords.z - depth,
-                        coords.x + 1,
-                        coords.y + 1,
-                        coords.z);
+                return AxisAlignedBB
+                    .getBoundingBox(coords.x - 1, coords.y - 1, coords.z - depth, coords.x + 1, coords.y + 1, coords.z);
             } else return AxisAlignedBB
-                    .getBoundingBox(coords.x - 1, coords.y - 1, coords.z, coords.x + 1, coords.y + 1, coords.z + depth);
+                .getBoundingBox(coords.x - 1, coords.y - 1, coords.z, coords.x + 1, coords.y + 1, coords.z + depth);
         }
     }
 
@@ -322,12 +297,12 @@ public final class WorldHelper {
      */
     public static AxisAlignedBB getFlatYBox(Coordinates coords, int offset) {
         return AxisAlignedBB.getBoundingBox(
-                coords.x - offset,
-                coords.y,
-                coords.z - offset,
-                coords.x + offset,
-                coords.y,
-                coords.z + offset);
+            coords.x - offset,
+            coords.y,
+            coords.z - offset,
+            coords.x + offset,
+            coords.y,
+            coords.z + offset);
     }
 
     public static <T extends Entity> T getNewEntityInstance(Class<T> c, World world) {
@@ -404,7 +379,7 @@ public final class WorldHelper {
     }
 
     public static void growNearbyRandomly(boolean harvest, World world, double xCoord, double yCoord, double zCoord,
-            EntityPlayer player) {
+        EntityPlayer player) {
         int chance = harvest ? 16 : 32;
 
         for (int x = (int) (xCoord - 5); x <= xCoord + 5; x++) for (int y = (int) (yCoord - 3); y <= yCoord + 3; y++)
@@ -432,8 +407,9 @@ public final class WorldHelper {
                             world.func_147480_a(x, y, z, true);
                         }
                     } else if (world.rand.nextInt(chance) == 0) {
-                        if (ProjectEConfig.harvBandGrass
-                                || !crop.getUnlocalizedName().toLowerCase(Locale.ROOT).contains("grass")) {
+                        if (ProjectEConfig.harvBandGrass || !crop.getUnlocalizedName()
+                            .toLowerCase(Locale.ROOT)
+                            .contains("grass")) {
                             growable.func_149853_b(world, world.rand, x, y, z);
                         }
                     }
@@ -467,8 +443,8 @@ public final class WorldHelper {
 
                             if (shouldHarvest) {
                                 for (int i = crop == Blocks.reeds ? 1 : 0; i < 3; i++) {
-                                    if (player != null && PlayerHelper
-                                            .hasBreakPermission(((EntityPlayerMP) player), x, y + i, z)) {
+                                    if (player != null
+                                        && PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), x, y + i, z)) {
                                         world.func_147480_a(x, y + i, z, true);
                                     } else if (player == null) {
                                         world.func_147480_a(x, y + i, z, true);
@@ -480,7 +456,7 @@ public final class WorldHelper {
                             int meta = ((IPlantable) crop).getPlantMetadata(world, x, y, z);
                             if (meta == 3) {
                                 if (player != null
-                                        && PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), x, y, z)) {
+                                    && PlayerHelper.hasBreakPermission(((EntityPlayerMP) player), x, y, z)) {
                                     world.func_147480_a(x, y, z, true);
                                 } else if (player == null) {
                                     world.func_147480_a(x, y, z, true);
@@ -496,13 +472,13 @@ public final class WorldHelper {
      * Recursively mines out a vein of the given Block, starting from the provided coordinates
      */
     public static void harvestVein(World world, EntityPlayer player, ItemStack stack, Coordinates coords, Block target,
-            List<ItemStack> currentDrops, int numMined) {
+        List<ItemStack> currentDrops, int numMined) {
         if (numMined >= Constants.MAX_VEIN_SIZE) {
             return;
         }
 
         AxisAlignedBB b = AxisAlignedBB
-                .getBoundingBox(coords.x - 1, coords.y - 1, coords.z - 1, coords.x + 1, coords.y + 1, coords.z + 1);
+            .getBoundingBox(coords.x - 1, coords.y - 1, coords.z - 1, coords.x + 1, coords.y + 1, coords.z + 1);
 
         for (int x = (int) b.minX; x <= b.maxX; x++)
             for (int y = (int) b.minY; y <= b.maxY; y++) for (int z = (int) b.minZ; z <= b.maxZ; z++) {
@@ -536,15 +512,15 @@ public final class WorldHelper {
      * Repels projectiles and mobs in the given AABB away from a given point
      */
     public static void repelEntitiesInAABBFromPoint(World world, AxisAlignedBB effectBounds, double x, double y,
-            double z, boolean isSWRG) {
+        double z, boolean isSWRG) {
         List<Entity> list = world.getEntitiesWithinAABB(Entity.class, effectBounds);
 
         for (Entity ent : list) {
             if ((isSWRG && !swrgBlacklist.contains(ent.getClass()))
-                    || (!isSWRG && !interdictionBlacklist.contains(ent.getClass()))) {
+                || (!isSWRG && !interdictionBlacklist.contains(ent.getClass()))) {
                 if ((ent instanceof EntityLiving) || (ent instanceof IProjectile)) {
                     if (!isSWRG && ProjectEConfig.interdictionMode
-                            && !(ent instanceof IMob || ent instanceof IProjectile)) {
+                        && !(ent instanceof IMob || ent instanceof IProjectile)) {
                         continue;
                     } else {
                         if (ent instanceof EntityArrow && ((EntityArrow) ent).onGround) {
@@ -571,25 +547,28 @@ public final class WorldHelper {
         EntityItem entityitem;
 
         for (float f2 = world.rand.nextFloat() * 0.8F + 0.1F; stack.stackSize > 0; world
-                .spawnEntityInWorld(entityitem)) {
+            .spawnEntityInWorld(entityitem)) {
             int j1 = world.rand.nextInt(21) + 10;
 
             if (j1 > stack.stackSize) j1 = stack.stackSize;
 
             stack.stackSize -= j1;
             entityitem = new EntityItem(
-                    world,
-                    (double) ((float) x + f),
-                    (double) ((float) y + f1),
-                    (double) ((float) z + f2),
-                    new ItemStack(stack.getItem(), j1, stack.getItemDamage()));
+                world,
+                (double) ((float) x + f),
+                (double) ((float) y + f1),
+                (double) ((float) z + f2),
+                new ItemStack(stack.getItem(), j1, stack.getItemDamage()));
             float f3 = 0.05F;
             entityitem.motionX = (double) ((float) world.rand.nextGaussian() * f3);
             entityitem.motionY = (double) ((float) world.rand.nextGaussian() * f3 + 0.2F);
             entityitem.motionZ = (double) ((float) world.rand.nextGaussian() * f3);
 
             if (stack.hasTagCompound()) {
-                entityitem.getEntityItem().setTagCompound((NBTTagCompound) stack.getTagCompound().copy());
+                entityitem.getEntityItem()
+                    .setTagCompound(
+                        (NBTTagCompound) stack.getTagCompound()
+                            .copy());
             }
         }
 

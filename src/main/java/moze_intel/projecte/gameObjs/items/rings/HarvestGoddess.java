@@ -2,12 +2,6 @@ package moze_intel.projecte.gameObjs.items.rings;
 
 import java.util.List;
 
-import moze_intel.projecte.api.item.IPedestalItem;
-import moze_intel.projecte.config.ProjectEConfig;
-import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
-import moze_intel.projecte.utils.MathUtils;
-import moze_intel.projecte.utils.WorldHelper;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.IGrowable;
 import net.minecraft.entity.Entity;
@@ -23,6 +17,12 @@ import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import com.google.common.collect.Lists;
+
+import moze_intel.projecte.api.item.IPedestalItem;
+import moze_intel.projecte.config.ProjectEConfig;
+import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
+import moze_intel.projecte.utils.MathUtils;
+import moze_intel.projecte.utils.WorldHelper;
 
 public class HarvestGoddess extends RingToggle implements IPedestalItem {
 
@@ -56,7 +56,7 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem {
     }
 
     public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int par7,
-            float par8, float par9, float par10) {
+        float par8, float par9, float par10) {
         if (world.isRemote || !player.canPlayerEdit(x, y, z, par7, stack)) {
             return false;
         }
@@ -131,7 +131,7 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem {
                 }
 
                 if (block.canSustainPlant(world, x, yCoord, z, ForgeDirection.UP, plant)
-                        && world.isAirBlock(x, yCoord + 1, z)) {
+                    && world.isAirBlock(x, yCoord + 1, z)) {
                     world.setBlock(x, yCoord + 1, z, plant.getPlant(world, x, yCoord + 1, z));
                     player.inventory.decrStackSize(s.slot, 1);
                     player.inventoryContainer.detectAndSendChanges();
@@ -182,8 +182,8 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem {
             ItemStack stack = inv[i];
 
             if (stack != null && stack.stackSize >= minAmount
-                    && stack.getItem() == item
-                    && stack.getItemDamage() == meta) {
+                && stack.getItem() == item
+                && stack.getItemDamage() == meta) {
                 obj[0] = i;
                 obj[1] = stack;
                 return obj;
@@ -226,9 +226,9 @@ public class HarvestGoddess extends RingToggle implements IPedestalItem {
             list.add(EnumChatFormatting.BLUE + StatCollector.translateToLocal("pe.harvestgod.pedestal1"));
             list.add(EnumChatFormatting.BLUE + StatCollector.translateToLocal("pe.harvestgod.pedestal2"));
             list.add(
-                    EnumChatFormatting.BLUE + String.format(
-                            StatCollector.translateToLocal("pe.harvestgod.pedestal3"),
-                            MathUtils.tickToSecFormatted(ProjectEConfig.harvestPedCooldown)));
+                EnumChatFormatting.BLUE + String.format(
+                    StatCollector.translateToLocal("pe.harvestgod.pedestal3"),
+                    MathUtils.tickToSecFormatted(ProjectEConfig.harvestPedCooldown)));
         }
         return list;
     }

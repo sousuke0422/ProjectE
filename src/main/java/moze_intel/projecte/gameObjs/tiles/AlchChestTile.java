@@ -1,13 +1,13 @@
 package moze_intel.projecte.gameObjs.tiles;
 
-import moze_intel.projecte.api.item.IAlchChestItem;
-import moze_intel.projecte.gameObjs.ObjHandler;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+
+import moze_intel.projecte.api.item.IAlchChestItem;
+import moze_intel.projecte.gameObjs.ObjHandler;
 
 public class AlchChestTile extends TileEmcDirection implements IInventory {
 
@@ -121,10 +121,8 @@ public class AlchChestTile extends TileEmcDirection implements IInventory {
     @Override
     public boolean isUseableByPlayer(EntityPlayer var1) {
         return this.worldObj.getTileEntity(this.xCoord, this.yCoord, this.zCoord) != this ? false
-                : var1.getDistanceSq(
-                        (double) this.xCoord + 0.5D,
-                        (double) this.yCoord + 0.5D,
-                        (double) this.zCoord + 0.5D) <= 64.0D;
+            : var1.getDistanceSq((double) this.xCoord + 0.5D, (double) this.yCoord + 0.5D, (double) this.zCoord + 0.5D)
+                <= 64.0D;
     }
 
     @Override
@@ -143,12 +141,12 @@ public class AlchChestTile extends TileEmcDirection implements IInventory {
             adjustedXCoord = xCoord + 0.5D;
             adjustedZCoord = zCoord + 0.5D;
             worldObj.playSoundEffect(
-                    adjustedXCoord,
-                    yCoord + 0.5D,
-                    adjustedZCoord,
-                    "random.chestopen",
-                    0.5F,
-                    worldObj.rand.nextFloat() * 0.1F + 0.9F);
+                adjustedXCoord,
+                yCoord + 0.5D,
+                adjustedZCoord,
+                "random.chestopen",
+                0.5F,
+                worldObj.rand.nextFloat() * 0.1F + 0.9F);
         }
 
         if (numPlayersUsing == 0 && lidAngle > 0.0F || numPlayersUsing > 0 && lidAngle < 1.0F) {
@@ -168,12 +166,12 @@ public class AlchChestTile extends TileEmcDirection implements IInventory {
                 adjustedXCoord = xCoord + 0.5D;
                 adjustedZCoord = zCoord + 0.5D;
                 worldObj.playSoundEffect(
-                        adjustedXCoord,
-                        yCoord + 0.5D,
-                        adjustedZCoord,
-                        "random.chestclosed",
-                        0.5F,
-                        worldObj.rand.nextFloat() * 0.1F + 0.9F);
+                    adjustedXCoord,
+                    yCoord + 0.5D,
+                    adjustedZCoord,
+                    "random.chestclosed",
+                    0.5F,
+                    worldObj.rand.nextFloat() * 0.1F + 0.9F);
             }
 
             if (lidAngle < 0.0F) {
@@ -182,7 +180,8 @@ public class AlchChestTile extends TileEmcDirection implements IInventory {
         }
 
         if (worldObj.isRemote) {
-            if (worldObj.getChunkFromBlockCoords(xCoord, zCoord).isEmpty()) {
+            if (worldObj.getChunkFromBlockCoords(xCoord, zCoord)
+                .isEmpty()) {
                 // Handle condition where this method is called even after the clientside chunk has unloaded.
                 // This will make IAlchChestItems below crash with an NPE since the TE they get back is null
                 // Don't you love vanilla???

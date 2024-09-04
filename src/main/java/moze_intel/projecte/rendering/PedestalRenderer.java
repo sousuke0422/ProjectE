@@ -1,9 +1,5 @@
 package moze_intel.projecte.rendering;
 
-import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
-import moze_intel.projecte.rendering.model.ModelPedestal;
-import moze_intel.projecte.utils.Constants;
-
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
@@ -11,6 +7,10 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.tileentity.TileEntity;
 
 import org.lwjgl.opengl.GL11;
+
+import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
+import moze_intel.projecte.rendering.model.ModelPedestal;
+import moze_intel.projecte.utils.Constants;
 
 public class PedestalRenderer extends TileEntitySpecialRenderer {
 

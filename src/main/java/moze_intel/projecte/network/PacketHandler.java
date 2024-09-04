@@ -3,6 +3,18 @@ package moze_intel.projecte.network;
 import java.util.ArrayList;
 import java.util.Map;
 
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.network.Packet;
+import net.minecraftforge.common.util.FakePlayer;
+
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+
+import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
+import cpw.mods.fml.relauncher.Side;
 import moze_intel.projecte.emc.EMCMapper;
 import moze_intel.projecte.emc.SimpleStack;
 import moze_intel.projecte.network.packets.CheckUpdatePKT;
@@ -23,19 +35,6 @@ import moze_intel.projecte.network.packets.SyncEmcPKT;
 import moze_intel.projecte.network.packets.SyncPedestalPKT;
 import moze_intel.projecte.network.packets.UpdateGemModePKT;
 import moze_intel.projecte.utils.PELogger;
-
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.network.Packet;
-import net.minecraftforge.common.util.FakePlayer;
-
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-
-import cpw.mods.fml.common.network.NetworkRegistry;
-import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
-import cpw.mods.fml.relauncher.Side;
 
 public final class PacketHandler {
 
@@ -70,10 +69,11 @@ public final class PacketHandler {
         ArrayList<Long[]> list = Lists.newArrayList();
         int counter = 0;
 
-        for (Map.Entry<SimpleStack, Long> entry : Maps.newLinkedHashMap(EMCMapper.emc).entrySet()) // Copy constructor
-                                                                                                   // to prevent race
-                                                                                                   // condition CME in
-                                                                                                   // SP
+        for (Map.Entry<SimpleStack, Long> entry : Maps.newLinkedHashMap(EMCMapper.emc)
+            .entrySet()) // Copy constructor
+                         // to prevent race
+                         // condition CME in
+                         // SP
         {
             SimpleStack stack = entry.getKey();
 
@@ -110,10 +110,11 @@ public final class PacketHandler {
         ArrayList<Long[]> list = Lists.newArrayList();
         int counter = 0;
 
-        for (Map.Entry<SimpleStack, Long> entry : Maps.newLinkedHashMap(EMCMapper.emc).entrySet()) // Copy constructor
-                                                                                                   // to prevent race
-                                                                                                   // condition CME in
-                                                                                                   // SP
+        for (Map.Entry<SimpleStack, Long> entry : Maps.newLinkedHashMap(EMCMapper.emc)
+            .entrySet()) // Copy constructor
+                         // to prevent race
+                         // condition CME in
+                         // SP
         {
             SimpleStack stack = entry.getKey();
 

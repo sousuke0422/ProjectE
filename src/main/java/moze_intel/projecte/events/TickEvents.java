@@ -1,13 +1,12 @@
 package moze_intel.projecte.events;
 
-import moze_intel.projecte.handlers.PlayerChecks;
-import moze_intel.projecte.handlers.PlayerTimers;
-
 import net.minecraft.entity.player.EntityPlayerMP;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.relauncher.Side;
+import moze_intel.projecte.handlers.PlayerChecks;
+import moze_intel.projecte.handlers.PlayerTimers;
 
 public class TickEvents {
 

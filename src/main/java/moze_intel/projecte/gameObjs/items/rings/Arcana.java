@@ -2,17 +2,6 @@ package moze_intel.projecte.gameObjs.items.rings;
 
 import java.util.List;
 
-import moze_intel.projecte.api.item.IExtraFunction;
-import moze_intel.projecte.api.item.IModeChanger;
-import moze_intel.projecte.api.item.IProjectileShooter;
-import moze_intel.projecte.gameObjs.entity.EntityFireProjectile;
-import moze_intel.projecte.gameObjs.entity.EntitySWRGProjectile;
-import moze_intel.projecte.gameObjs.items.IFireProtector;
-import moze_intel.projecte.gameObjs.items.IFlightProvider;
-import moze_intel.projecte.gameObjs.items.ItemPE;
-import moze_intel.projecte.utils.PlayerHelper;
-import moze_intel.projecte.utils.WorldHelper;
-
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -31,10 +20,20 @@ import net.minecraft.world.World;
 import baubles.api.BaubleType;
 import baubles.api.IBauble;
 import cpw.mods.fml.common.Optional;
+import moze_intel.projecte.api.item.IExtraFunction;
+import moze_intel.projecte.api.item.IModeChanger;
+import moze_intel.projecte.api.item.IProjectileShooter;
+import moze_intel.projecte.gameObjs.entity.EntityFireProjectile;
+import moze_intel.projecte.gameObjs.entity.EntitySWRGProjectile;
+import moze_intel.projecte.gameObjs.items.IFireProtector;
+import moze_intel.projecte.gameObjs.items.IFlightProvider;
+import moze_intel.projecte.gameObjs.items.ItemPE;
+import moze_intel.projecte.utils.PlayerHelper;
+import moze_intel.projecte.utils.WorldHelper;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
 public class Arcana extends ItemPE
-        implements IBauble, IModeChanger, IFlightProvider, IFireProtector, IExtraFunction, IProjectileShooter {
+    implements IBauble, IModeChanger, IFlightProvider, IFireProtector, IExtraFunction, IProjectileShooter {
 
     private IIcon[] icons = new IIcon[4];
     private IIcon[] iconsOn = new IIcon[4];
@@ -63,7 +62,8 @@ public class Arcana extends ItemPE
     }
 
     private void tick(ItemStack stack, World world, EntityPlayerMP player) {
-        if (stack.getTagCompound().getBoolean("Active")) {
+        if (stack.getTagCompound()
+            .getBoolean("Active")) {
             switch (stack.getItemDamage()) {
                 case 0:
                     WorldHelper.freezeInBoundingBox(world, player.boundingBox.expand(5, 5, 5), player, true);
@@ -76,12 +76,12 @@ public class Arcana extends ItemPE
                     break;
                 case 3:
                     WorldHelper.repelEntitiesInAABBFromPoint(
-                            world,
-                            player.boundingBox.expand(5, 5, 5),
-                            player.posX,
-                            player.posY,
-                            player.posZ,
-                            true);
+                        world,
+                        player.boundingBox.expand(5, 5, 5),
+                        player.posX,
+                        player.posY,
+                        player.posZ,
+                        true);
                     break;
             }
         }
@@ -139,7 +139,8 @@ public class Arcana extends ItemPE
 
     @Override
     public IIcon getIconIndex(ItemStack stack) {
-        boolean active = stack.hasTagCompound() && stack.getTagCompound().getBoolean("Active");
+        boolean active = stack.hasTagCompound() && stack.getTagCompound()
+            .getBoolean("Active");
         return (active ? iconsOn : icons)[MathHelper.clamp_int(stack.getItemDamage(), 0, 3)];
     }
 
@@ -163,8 +164,8 @@ public class Arcana extends ItemPE
                 list.add(EnumChatFormatting.RED + StatCollector.translateToLocal("pe.arcana.inactive"));
             } else {
                 list.add(
-                        StatCollector.translateToLocal("pe.arcana.mode") + EnumChatFormatting.AQUA
-                                + StatCollector.translateToLocal("pe.arcana.mode." + stack.getItemDamage()));
+                    StatCollector.translateToLocal("pe.arcana.mode") + EnumChatFormatting.AQUA
+                        + StatCollector.translateToLocal("pe.arcana.mode." + stack.getItemDamage()));
             }
         }
     }
@@ -197,7 +198,7 @@ public class Arcana extends ItemPE
                                 for (int z = (int) (player.posZ - 3); z <= player.posZ + 3; z++)
                                     if (world.isAirBlock(x, y, z)) {
                                         PlayerHelper
-                                                .checkedPlaceBlock(((EntityPlayerMP) player), x, y, z, Blocks.fire, 0);
+                                            .checkedPlaceBlock(((EntityPlayerMP) player), x, y, z, Blocks.fire, 0);
                                     }
                         break;
                     case 1: // west, -x
@@ -207,7 +208,7 @@ public class Arcana extends ItemPE
                                 for (int z = (int) (player.posZ - 30); z <= player.posZ + 30; z++) {
                                     if (world.isAirBlock(x, y, z)) {
                                         PlayerHelper
-                                                .checkedPlaceBlock(((EntityPlayerMP) player), x, y, z, Blocks.fire, 0);
+                                            .checkedPlaceBlock(((EntityPlayerMP) player), x, y, z, Blocks.fire, 0);
                                     }
                                 }
                         break;

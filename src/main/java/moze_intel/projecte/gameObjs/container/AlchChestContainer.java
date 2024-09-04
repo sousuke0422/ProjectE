@@ -1,7 +1,5 @@
 package moze_intel.projecte.gameObjs.container;
 
-import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
@@ -9,6 +7,7 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
 import invtweaks.api.container.ChestContainer;
+import moze_intel.projecte.gameObjs.tiles.AlchChestTile;
 
 @ChestContainer(isLargeChest = true, rowSize = 13)
 public class AlchChestContainer extends Container {

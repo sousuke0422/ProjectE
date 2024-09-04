@@ -3,11 +3,6 @@ package moze_intel.projecte.utils;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import moze_intel.projecte.api.item.IItemEmc;
-import moze_intel.projecte.emc.EMCMapper;
-import moze_intel.projecte.emc.FuelMapper;
-import moze_intel.projecte.emc.SimpleStack;
-
 import net.minecraft.block.Block;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -17,6 +12,11 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 import com.google.common.collect.Maps;
+
+import moze_intel.projecte.api.item.IItemEmc;
+import moze_intel.projecte.emc.EMCMapper;
+import moze_intel.projecte.emc.FuelMapper;
+import moze_intel.projecte.emc.SimpleStack;
 
 /**
  * Helper class for EMC. Notice: Please try to keep methods tidy and alphabetically ordered. Thanks!

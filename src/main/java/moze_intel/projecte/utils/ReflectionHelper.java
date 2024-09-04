@@ -17,7 +17,7 @@ public final class ReflectionHelper {
 
     protected static boolean getArrowInGround(EntityArrow instance) {
         return cpw.mods.fml.relauncher.ReflectionHelper
-                .getPrivateValue(EntityArrow.class, instance, arrowInGroundNames);
+            .getPrivateValue(EntityArrow.class, instance, arrowInGroundNames);
     }
 
     protected static void setEntityFireImmunity(Entity instance, boolean value) {
@@ -26,6 +26,6 @@ public final class ReflectionHelper {
 
     protected static void setPlayerCapabilityWalkspeed(PlayerCapabilities instance, float value) {
         cpw.mods.fml.relauncher.ReflectionHelper
-                .setPrivateValue(PlayerCapabilities.class, instance, value, playerCapaWalkSpeedNames);
+            .setPrivateValue(PlayerCapabilities.class, instance, value, playerCapaWalkSpeedNames);
     }
 }

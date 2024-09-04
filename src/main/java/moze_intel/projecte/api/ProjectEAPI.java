@@ -1,10 +1,10 @@
 package moze_intel.projecte.api;
 
+import cpw.mods.fml.common.FMLLog;
 import moze_intel.projecte.api.proxy.IBlacklistProxy;
 import moze_intel.projecte.api.proxy.IConversionProxy;
 import moze_intel.projecte.api.proxy.IEMCProxy;
 import moze_intel.projecte.api.proxy.ITransmutationProxy;
-import cpw.mods.fml.common.FMLLog;
 
 public final class ProjectEAPI {
 
@@ -24,10 +24,11 @@ public final class ProjectEAPI {
         if (emcProxy == null) {
             try {
                 Class<?> clazz = Class.forName("moze_intel.projecte.impl.EMCProxyImpl");
-                emcProxy = (IEMCProxy) clazz.getField("instance").get(null);
+                emcProxy = (IEMCProxy) clazz.getField("instance")
+                    .get(null);
             } catch (ReflectiveOperationException ex) {
                 FMLLog.warning(
-                        "[ProjectEAPI] Error retrieving EMCProxyImpl, ProjectE may be absent, damaged, or outdated.");
+                    "[ProjectEAPI] Error retrieving EMCProxyImpl, ProjectE may be absent, damaged, or outdated.");
             }
         }
         return emcProxy;
@@ -42,10 +43,11 @@ public final class ProjectEAPI {
         if (recipeProxy == null) {
             try {
                 Class<?> clazz = Class.forName("moze_intel.projecte.impl.ConversionProxyImpl");
-                recipeProxy = (IConversionProxy) clazz.getField("instance").get(null);
+                recipeProxy = (IConversionProxy) clazz.getField("instance")
+                    .get(null);
             } catch (ReflectiveOperationException ex) {
                 FMLLog.warning(
-                        "[ProjectEAPI] Error retrieving ConversionProxyImpl, ProjectE may be absent, damaged, or outdated.");
+                    "[ProjectEAPI] Error retrieving ConversionProxyImpl, ProjectE may be absent, damaged, or outdated.");
             }
         }
         return recipeProxy;
@@ -60,10 +62,11 @@ public final class ProjectEAPI {
         if (transProxy == null) {
             try {
                 Class<?> clazz = Class.forName("moze_intel.projecte.impl.TransmutationProxyImpl");
-                transProxy = (ITransmutationProxy) clazz.getField("instance").get(null);
+                transProxy = (ITransmutationProxy) clazz.getField("instance")
+                    .get(null);
             } catch (ReflectiveOperationException ex) {
                 FMLLog.warning(
-                        "[ProjectEAPI] Error retrieving TransmutationProxyImpl, ProjectE may be absent, damaged, or outdated.");
+                    "[ProjectEAPI] Error retrieving TransmutationProxyImpl, ProjectE may be absent, damaged, or outdated.");
             }
         }
         return transProxy;
@@ -78,10 +81,11 @@ public final class ProjectEAPI {
         if (blacklistProxy == null) {
             try {
                 Class<?> clazz = Class.forName("moze_intel.projecte.impl.BlacklistProxyImpl");
-                blacklistProxy = (IBlacklistProxy) clazz.getField("instance").get(null);
+                blacklistProxy = (IBlacklistProxy) clazz.getField("instance")
+                    .get(null);
             } catch (ReflectiveOperationException ex) {
                 FMLLog.warning(
-                        "[ProjectEAPI] Error retrieving BlacklistProxyImpl, ProjectE may be absent, damaged, or outdated.");
+                    "[ProjectEAPI] Error retrieving BlacklistProxyImpl, ProjectE may be absent, damaged, or outdated.");
             }
         }
         return blacklistProxy;

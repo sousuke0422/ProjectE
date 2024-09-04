@@ -2,19 +2,20 @@ package moze_intel.projecte.emc.mappers;
 
 import java.util.Map;
 
-import moze_intel.projecte.emc.IngredientMap;
-import moze_intel.projecte.emc.NormalizedSimpleStack;
-import moze_intel.projecte.emc.collector.IMappingCollector;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraftforge.common.config.Configuration;
+
+import moze_intel.projecte.emc.IngredientMap;
+import moze_intel.projecte.emc.NormalizedSimpleStack;
+import moze_intel.projecte.emc.collector.IMappingCollector;
 
 public class SmeltingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 
     @Override
     public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, Configuration config) {
-        Map<ItemStack, ItemStack> smelting = FurnaceRecipes.smelting().getSmeltingList();
+        Map<ItemStack, ItemStack> smelting = FurnaceRecipes.smelting()
+            .getSmeltingList();
         for (Map.Entry<ItemStack, ItemStack> entry : smelting.entrySet()) {
             ItemStack input = entry.getKey();
             ItemStack output = entry.getValue();
@@ -27,10 +28,10 @@ public class SmeltingMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
             map.addIngredient(normInput, input.stackSize);
             mapper.addConversion(output.stackSize, normOutput, map.getMap());
             if (config.getBoolean(
-                    "doBackwardsMapping",
-                    "",
-                    false,
-                    "If X has a value and is smelted from Y, Y will get a value too. This is an experimental thing and might result in Mappings you did not expect/want to happen.")) {
+                "doBackwardsMapping",
+                "",
+                false,
+                "If X has a value and is smelted from Y, Y will get a value too. This is an experimental thing and might result in Mappings you did not expect/want to happen.")) {
                 map = new IngredientMap<>();
                 map.addIngredient(normOutput, output.stackSize);
                 mapper.addConversion(input.stackSize, normInput, map.getMap());

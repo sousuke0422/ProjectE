@@ -1,9 +1,5 @@
 package moze_intel.projecte.gameObjs.gui;
 
-import moze_intel.projecte.PECore;
-import moze_intel.projecte.gameObjs.container.RMFurnaceContainer;
-import moze_intel.projecte.gameObjs.tiles.RMFurnaceTile;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -12,11 +8,15 @@ import net.minecraft.util.StatCollector;
 
 import org.lwjgl.opengl.GL11;
 
+import moze_intel.projecte.PECore;
+import moze_intel.projecte.gameObjs.container.RMFurnaceContainer;
+import moze_intel.projecte.gameObjs.tiles.RMFurnaceTile;
+
 public class GUIRMFurnace extends GuiContainer {
 
     private static final ResourceLocation texture = new ResourceLocation(
-            PECore.MODID.toLowerCase(),
-            "textures/gui/rmfurnace.png");
+        PECore.MODID.toLowerCase(),
+        "textures/gui/rmfurnace.png");
     private RMFurnaceTile tile;
 
     public GUIRMFurnace(InventoryPlayer invPlayer, RMFurnaceTile tile) {
@@ -51,6 +51,6 @@ public class GUIRMFurnace extends GuiContainer {
     protected void drawGuiContainerForegroundLayer(int var1, int var2) {
         this.fontRendererObj.drawString(StatCollector.translateToLocal("pe.rmfurnace.shortname"), 76, 5, 4210752);
         this.fontRendererObj
-                .drawString(StatCollector.translateToLocal("container.inventory"), 76, ySize - 96 + 2, 4210752);
+            .drawString(StatCollector.translateToLocal("container.inventory"), 76, ySize - 96 + 2, 4210752);
     }
 }

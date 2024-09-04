@@ -1,15 +1,5 @@
 package moze_intel.projecte.gameObjs.tiles;
 
-import moze_intel.projecte.api.tile.IEmcAcceptor;
-import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.handlers.TileEntityHandler;
-import moze_intel.projecte.network.PacketHandler;
-import moze_intel.projecte.network.packets.CondenserSyncPKT;
-import moze_intel.projecte.utils.Constants;
-import moze_intel.projecte.utils.EMCHelper;
-import moze_intel.projecte.utils.ItemHelper;
-import moze_intel.projecte.utils.NBTWhitelist;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
@@ -19,6 +9,15 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
+import moze_intel.projecte.api.tile.IEmcAcceptor;
+import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.handlers.TileEntityHandler;
+import moze_intel.projecte.network.PacketHandler;
+import moze_intel.projecte.network.packets.CondenserSyncPKT;
+import moze_intel.projecte.utils.Constants;
+import moze_intel.projecte.utils.EMCHelper;
+import moze_intel.projecte.utils.ItemHelper;
+import moze_intel.projecte.utils.NBTWhitelist;
 
 public class CondenserTile extends TileEmcDirection implements IInventory, ISidedInventory, IEmcAcceptor {
 
@@ -60,8 +59,8 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
 
         if (numPlayersUsing > 0) {
             PacketHandler.sendToAllAround(
-                    new CondenserSyncPKT(displayEmc, requiredEmc, this.xCoord, this.yCoord, this.zCoord),
-                    new TargetPoint(this.worldObj.provider.dimensionId, this.xCoord, this.yCoord, this.zCoord, 8));
+                new CondenserSyncPKT(displayEmc, requiredEmc, this.xCoord, this.yCoord, this.zCoord),
+                new TargetPoint(this.worldObj.provider.dimensionId, this.xCoord, this.yCoord, this.zCoord, 8));
         }
     }
 
@@ -302,10 +301,8 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
     @Override
     public boolean isUseableByPlayer(EntityPlayer var1) {
         return this.worldObj.getTileEntity(this.xCoord, this.yCoord, this.zCoord) != this ? false
-                : var1.getDistanceSq(
-                        (double) this.xCoord + 0.5D,
-                        (double) this.yCoord + 0.5D,
-                        (double) this.zCoord + 0.5D) <= 64.0D;
+            : var1.getDistanceSq((double) this.xCoord + 0.5D, (double) this.yCoord + 0.5D, (double) this.zCoord + 0.5D)
+                <= 64.0D;
     }
 
     public void updateChest() {
@@ -321,12 +318,12 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
             adjustedXCoord = xCoord + 0.5D;
             adjustedZCoord = zCoord + 0.5D;
             worldObj.playSoundEffect(
-                    adjustedXCoord,
-                    yCoord + 0.5D,
-                    adjustedZCoord,
-                    "random.chestopen",
-                    0.5F,
-                    worldObj.rand.nextFloat() * 0.1F + 0.9F);
+                adjustedXCoord,
+                yCoord + 0.5D,
+                adjustedZCoord,
+                "random.chestopen",
+                0.5F,
+                worldObj.rand.nextFloat() * 0.1F + 0.9F);
         }
 
         if (numPlayersUsing == 0 && lidAngle > 0.0F || numPlayersUsing > 0 && lidAngle < 1.0F) {
@@ -346,12 +343,12 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
                 adjustedXCoord = xCoord + 0.5D;
                 adjustedZCoord = zCoord + 0.5D;
                 worldObj.playSoundEffect(
-                        adjustedXCoord,
-                        yCoord + 0.5D,
-                        adjustedZCoord,
-                        "random.chestclosed",
-                        0.5F,
-                        worldObj.rand.nextFloat() * 0.1F + 0.9F);
+                    adjustedXCoord,
+                    yCoord + 0.5D,
+                    adjustedZCoord,
+                    "random.chestclosed",
+                    0.5F,
+                    worldObj.rand.nextFloat() * 0.1F + 0.9F);
             }
 
             if (lidAngle < 0.0F) {

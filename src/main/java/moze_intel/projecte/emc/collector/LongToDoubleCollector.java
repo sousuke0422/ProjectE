@@ -20,7 +20,7 @@ public class LongToDoubleCollector<T, A extends IValueArithmetic> extends Abstra
 
     @Override
     public void addConversion(int outnumber, T output, Map<T, Integer> ingredientsWithAmount,
-            A arithmeticForConversion) {
+        A arithmeticForConversion) {
         inner.addConversion(outnumber, output, ingredientsWithAmount, arithmeticForConversion);
     }
 

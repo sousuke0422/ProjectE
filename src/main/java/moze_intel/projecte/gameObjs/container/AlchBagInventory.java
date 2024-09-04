@@ -1,10 +1,10 @@
 package moze_intel.projecte.gameObjs.container;
 
-import moze_intel.projecte.playerData.AlchemicalBags;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+
+import moze_intel.projecte.playerData.AlchemicalBags;
 
 public class AlchBagInventory implements IInventory {
 

@@ -3,9 +3,6 @@ package moze_intel.projecte.playerData;
 import java.util.Arrays;
 import java.util.Map;
 
-import moze_intel.projecte.utils.ItemHelper;
-import moze_intel.projecte.utils.PELogger;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -16,6 +13,9 @@ import net.minecraftforge.common.IExtendedEntityProperties;
 import net.minecraftforge.common.util.Constants;
 
 import com.google.common.collect.Maps;
+
+import moze_intel.projecte.utils.ItemHelper;
+import moze_intel.projecte.utils.PELogger;
 
 public class AlchBagProps implements IExtendedEntityProperties {
 
@@ -40,7 +40,7 @@ public class AlchBagProps implements IExtendedEntityProperties {
         if (bagData.get(color) == null) {
             bagData.put(color, new ItemStack[104]);
             PELogger.logInfo(
-                    "Created new inventory array for color " + color + " and player " + player.getCommandSenderName());
+                "Created new inventory array for color " + color + " and player " + player.getCommandSenderName());
         }
         ItemStack[] inv = bagData.get(color);
         return Arrays.copyOf(inv, inv.length);
@@ -88,10 +88,10 @@ public class AlchBagProps implements IExtendedEntityProperties {
         for (int i = 0; i < listOfInventoies.tagCount(); i++) {
             NBTTagCompound inventory = listOfInventoies.getCompoundTagAt(i);
             bagData.put(
-                    inventory.getInteger("color"),
-                    ItemHelper.copyIndexedNBTToArray(
-                            inventory.getTagList("inv", Constants.NBT.TAG_COMPOUND),
-                            new ItemStack[104]));
+                inventory.getInteger("color"),
+                ItemHelper.copyIndexedNBTToArray(
+                    inventory.getTagList("inv", Constants.NBT.TAG_COMPOUND),
+                    new ItemStack[104]));
         }
     }
 
@@ -122,10 +122,10 @@ public class AlchBagProps implements IExtendedEntityProperties {
         for (int i = 0; i < listOfInventoies.tagCount(); i++) {
             NBTTagCompound inventory = listOfInventoies.getCompoundTagAt(i);
             bagData.put(
-                    inventory.getInteger("color"),
-                    ItemHelper.copyIndexedNBTToArray(
-                            inventory.getTagList("inv", Constants.NBT.TAG_COMPOUND),
-                            new ItemStack[104]));
+                inventory.getInteger("color"),
+                ItemHelper.copyIndexedNBTToArray(
+                    inventory.getTagList("inv", Constants.NBT.TAG_COMPOUND),
+                    new ItemStack[104]));
         }
     }
 

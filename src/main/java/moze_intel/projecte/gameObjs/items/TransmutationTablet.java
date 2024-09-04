@@ -1,9 +1,5 @@
 package moze_intel.projecte.gameObjs.items;
 
-import moze_intel.projecte.PECore;
-import moze_intel.projecte.utils.AchievementHandler;
-import moze_intel.projecte.utils.Constants;
-
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -11,6 +7,9 @@ import net.minecraft.world.World;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import moze_intel.projecte.PECore;
+import moze_intel.projecte.utils.AchievementHandler;
+import moze_intel.projecte.utils.Constants;
 
 public class TransmutationTablet extends ItemPE {
 
@@ -23,12 +22,12 @@ public class TransmutationTablet extends ItemPE {
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
         if (!world.isRemote) {
             player.openGui(
-                    PECore.instance,
-                    Constants.TRANSMUTATION_GUI,
-                    world,
-                    (int) player.posX,
-                    (int) player.posY,
-                    (int) player.posZ);
+                PECore.instance,
+                Constants.TRANSMUTATION_GUI,
+                world,
+                (int) player.posX,
+                (int) player.posY,
+                (int) player.posZ);
         }
 
         return stack;

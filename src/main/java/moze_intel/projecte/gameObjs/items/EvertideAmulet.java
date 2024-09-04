@@ -2,18 +2,6 @@ package moze_intel.projecte.gameObjs.items;
 
 import java.util.List;
 
-import moze_intel.projecte.api.item.IPedestalItem;
-import moze_intel.projecte.api.item.IProjectileShooter;
-import moze_intel.projecte.config.ProjectEConfig;
-import moze_intel.projecte.gameObjs.entity.EntityWaterProjectile;
-import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
-import moze_intel.projecte.utils.ClientKeyHelper;
-import moze_intel.projecte.utils.Constants;
-import moze_intel.projecte.utils.FluidHelper;
-import moze_intel.projecte.utils.MathUtils;
-import moze_intel.projecte.utils.PEKeybind;
-import moze_intel.projecte.utils.PlayerHelper;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockCauldron;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -34,14 +22,24 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fluids.IFluidHandler;
 
-import baubles.api.BaubleType;
-import baubles.api.IBauble;
-
 import com.google.common.collect.Lists;
 
+import baubles.api.BaubleType;
+import baubles.api.IBauble;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import moze_intel.projecte.api.item.IPedestalItem;
+import moze_intel.projecte.api.item.IProjectileShooter;
+import moze_intel.projecte.config.ProjectEConfig;
+import moze_intel.projecte.gameObjs.entity.EntityWaterProjectile;
+import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
+import moze_intel.projecte.utils.ClientKeyHelper;
+import moze_intel.projecte.utils.Constants;
+import moze_intel.projecte.utils.FluidHelper;
+import moze_intel.projecte.utils.MathUtils;
+import moze_intel.projecte.utils.PEKeybind;
+import moze_intel.projecte.utils.PlayerHelper;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
 public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBauble, IPedestalItem, IFluidContainerItem {
@@ -55,7 +53,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 
     @Override
     public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int sideHit,
-            float f1, float f2, float f3) {
+        float f1, float f2, float f3) {
         if (!world.isRemote && PlayerHelper.hasEditPermission(((EntityPlayerMP) player), x, y, z)) {
             TileEntity tile = world.getTileEntity(x, y, z);
 
@@ -127,22 +125,22 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
     private void placeWater(World world, EntityPlayer player, int i, int j, int k) {
         if (world.provider.isHellWorld) {
             world.playSoundEffect(
-                    (double) ((float) i + 0.5F),
-                    (double) ((float) j + 0.5F),
-                    (double) ((float) k + 0.5F),
-                    "random.fizz",
-                    0.5F,
-                    2.6F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.8F);
+                (double) ((float) i + 0.5F),
+                (double) ((float) j + 0.5F),
+                (double) ((float) k + 0.5F),
+                "random.fizz",
+                0.5F,
+                2.6F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.8F);
 
             for (int l = 0; l < 8; ++l) {
                 world.spawnParticle(
-                        "largesmoke",
-                        (double) i + Math.random(),
-                        (double) j + Math.random(),
-                        (double) k + Math.random(),
-                        0.0D,
-                        0.0D,
-                        0.0D);
+                    "largesmoke",
+                    (double) i + Math.random(),
+                    (double) j + Math.random(),
+                    (double) k + Math.random(),
+                    0.0D,
+                    0.0D,
+                    0.0D);
             }
         } else {
             PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) player), i, j, k, Blocks.flowing_water, 0);
@@ -163,7 +161,7 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
         int z = (int) Math.floor(player.posZ);
 
         if ((world.getBlock(x, y - 1, z) == Blocks.water || world.getBlock(x, y - 1, z) == Blocks.flowing_water)
-                && world.getBlock(x, y, z) == Blocks.air) {
+            && world.getBlock(x, y, z) == Blocks.air) {
             if (!player.isSneaking()) {
                 player.motionY = 0.0D;
                 player.fallDistance = 0.0F;
@@ -230,9 +228,9 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4) {
         list.add(
-                String.format(
-                        StatCollector.translateToLocal("pe.evertide.tooltip1"),
-                        ClientKeyHelper.getKeyName(PEKeybind.FIRE_PROJECTILE)));
+            String.format(
+                StatCollector.translateToLocal("pe.evertide.tooltip1"),
+                ClientKeyHelper.getKeyName(PEKeybind.FIRE_PROJECTILE)));
 
         list.add(StatCollector.translateToLocal("pe.evertide.tooltip2"));
         list.add(StatCollector.translateToLocal("pe.evertide.tooltip3"));
@@ -278,9 +276,12 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
 
             if (tile.getActivityCooldown() == 0) {
                 int i = (300 + world.rand.nextInt(600)) * 20;
-                world.getWorldInfo().setRainTime(i);
-                world.getWorldInfo().setThunderTime(i);
-                world.getWorldInfo().setRaining(true);
+                world.getWorldInfo()
+                    .setRainTime(i);
+                world.getWorldInfo()
+                    .setThunderTime(i);
+                world.getWorldInfo()
+                    .setRaining(true);
 
                 tile.setActivityCooldown(ProjectEConfig.evertidePedCooldown);
             } else {
@@ -295,9 +296,9 @@ public class EvertideAmulet extends ItemPE implements IProjectileShooter, IBaubl
         if (ProjectEConfig.evertidePedCooldown != -1) {
             list.add(EnumChatFormatting.BLUE + StatCollector.translateToLocal("pe.evertide.pedestal1"));
             list.add(
-                    EnumChatFormatting.BLUE + String.format(
-                            StatCollector.translateToLocal("pe.evertide.pedestal2"),
-                            MathUtils.tickToSecFormatted(ProjectEConfig.evertidePedCooldown)));
+                EnumChatFormatting.BLUE + String.format(
+                    StatCollector.translateToLocal("pe.evertide.pedestal2"),
+                    MathUtils.tickToSecFormatted(ProjectEConfig.evertidePedCooldown)));
         }
         return list;
     }

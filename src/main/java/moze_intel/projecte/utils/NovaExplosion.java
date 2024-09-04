@@ -62,21 +62,21 @@ public class NovaExplosion extends Explosion {
 
                     if (block.getMaterial() != Material.air) {
                         float f3 = this.exploder != null
-                                ? this.exploder.func_145772_a(this, this.worldObj, j1, k1, l1, block)
-                                : block.getExplosionResistance(
-                                        this.exploder,
-                                        worldObj,
-                                        j1,
-                                        k1,
-                                        l1,
-                                        explosionX,
-                                        explosionY,
-                                        explosionZ);
+                            ? this.exploder.func_145772_a(this, this.worldObj, j1, k1, l1, block)
+                            : block.getExplosionResistance(
+                                this.exploder,
+                                worldObj,
+                                j1,
+                                k1,
+                                l1,
+                                explosionX,
+                                explosionY,
+                                explosionZ);
                         f1 -= (f3 + 0.3F) * f2;
                     }
 
                     if (f1 > 0.0F && (this.exploder == null
-                            || this.exploder.func_145774_a(this, this.worldObj, j1, k1, l1, block, f1)))
+                        || this.exploder.func_145774_a(this, this.worldObj, j1, k1, l1, block, f1)))
                         hashset.add(new ChunkPosition(j1, k1, l1));
 
                     d5 += d0 * (double) f2;
@@ -88,23 +88,23 @@ public class NovaExplosion extends Explosion {
         this.affectedBlockPositions.addAll(hashset);
         this.explosionSize = f;
         net.minecraftforge.event.ForgeEventFactory
-                .onExplosionDetonate(this.worldObj, this, Collections.<Entity>emptyList(), this.explosionSize);
+            .onExplosionDetonate(this.worldObj, this, Collections.<Entity>emptyList(), this.explosionSize);
     }
 
     @Override
     public void doExplosionB(boolean spawnParticles) {
         worldObj.playSoundEffect(
-                this.explosionX,
-                this.explosionY,
-                this.explosionZ,
-                "random.explode",
-                4.0F,
-                (1.0F + (this.worldObj.rand.nextFloat() - this.worldObj.rand.nextFloat()) * 0.2F) * 0.7F);
+            this.explosionX,
+            this.explosionY,
+            this.explosionZ,
+            "random.explode",
+            4.0F,
+            (1.0F + (this.worldObj.rand.nextFloat() - this.worldObj.rand.nextFloat()) * 0.2F) * 0.7F);
 
         if (this.explosionSize >= 2.0F && this.isSmoking) worldObj
-                .spawnParticle("hugeexplosion", this.explosionX, this.explosionY, this.explosionZ, 1.0D, 0.0D, 0.0D);
+            .spawnParticle("hugeexplosion", this.explosionX, this.explosionY, this.explosionZ, 1.0D, 0.0D, 0.0D);
         else worldObj
-                .spawnParticle("largeexplode", this.explosionX, this.explosionY, this.explosionZ, 1.0D, 0.0D, 0.0D);
+            .spawnParticle("largeexplode", this.explosionX, this.explosionY, this.explosionZ, 1.0D, 0.0D, 0.0D);
 
         Iterator iterator;
         ChunkPosition chunkposition;
@@ -141,19 +141,19 @@ public class NovaExplosion extends Explosion {
                     d4 *= d7;
                     d5 *= d7;
                     worldObj.spawnParticle(
-                            "explode",
-                            (d0 + this.explosionX * 1.0D) / 2.0D,
-                            (d1 + this.explosionY * 1.0D) / 2.0D,
-                            (d2 + this.explosionZ * 1.0D) / 2.0D,
-                            d3,
-                            d4,
-                            d5);
+                        "explode",
+                        (d0 + this.explosionX * 1.0D) / 2.0D,
+                        (d1 + this.explosionY * 1.0D) / 2.0D,
+                        (d2 + this.explosionZ * 1.0D) / 2.0D,
+                        d3,
+                        d4,
+                        d5);
                     worldObj.spawnParticle("smoke", d0, d1, d2, d3, d4, d5);
                 }
 
                 if (block.getMaterial() != Material.air) {
                     ArrayList<ItemStack> drops = block
-                            .getDrops(worldObj, i, j, k, worldObj.getBlockMetadata(i, j, k), 0);
+                        .getDrops(worldObj, i, j, k, worldObj.getBlockMetadata(i, j, k), 0);
                     if (drops != null && drops.size() > 0) list.addAll(drops);
 
                     block.onBlockExploded(worldObj, i, j, k, this);

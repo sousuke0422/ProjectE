@@ -24,67 +24,67 @@ public final class WorldTransmutations {
         register(Blocks.melon_block, Blocks.pumpkin);
 
         register(
-                new MetaBlock(Blocks.log, 0),
-                new MetaBlock[] { new MetaBlock(Blocks.log, 1), new MetaBlock(Blocks.log2, 1) });
+            new MetaBlock(Blocks.log, 0),
+            new MetaBlock[] { new MetaBlock(Blocks.log, 1), new MetaBlock(Blocks.log2, 1) });
         register(
-                new MetaBlock(Blocks.leaves, 0),
-                new MetaBlock[] { new MetaBlock(Blocks.leaves, 1), new MetaBlock(Blocks.leaves, 1) });
+            new MetaBlock(Blocks.leaves, 0),
+            new MetaBlock[] { new MetaBlock(Blocks.leaves, 1), new MetaBlock(Blocks.leaves, 1) });
 
         for (int i = 1; i < 3; i++) {
             register(
-                    new MetaBlock(Blocks.log, i),
-                    new MetaBlock[] { new MetaBlock(Blocks.log, i + 1), new MetaBlock(Blocks.log, i - 1) });
+                new MetaBlock(Blocks.log, i),
+                new MetaBlock[] { new MetaBlock(Blocks.log, i + 1), new MetaBlock(Blocks.log, i - 1) });
             register(
-                    new MetaBlock(Blocks.leaves, i),
-                    new MetaBlock[] { new MetaBlock(Blocks.leaves, i + 1), new MetaBlock(Blocks.leaves, i - 1) });
+                new MetaBlock(Blocks.leaves, i),
+                new MetaBlock[] { new MetaBlock(Blocks.leaves, i + 1), new MetaBlock(Blocks.leaves, i - 1) });
         }
 
         register(
-                new MetaBlock(Blocks.log, 3),
-                new MetaBlock[] { new MetaBlock(Blocks.log2, 0), new MetaBlock(Blocks.log, 2) });
+            new MetaBlock(Blocks.log, 3),
+            new MetaBlock[] { new MetaBlock(Blocks.log2, 0), new MetaBlock(Blocks.log, 2) });
         register(
-                new MetaBlock(Blocks.leaves, 3),
-                new MetaBlock[] { new MetaBlock(Blocks.leaves2, 0), new MetaBlock(Blocks.leaves, 2) });
+            new MetaBlock(Blocks.leaves, 3),
+            new MetaBlock[] { new MetaBlock(Blocks.leaves2, 0), new MetaBlock(Blocks.leaves, 2) });
         register(
-                new MetaBlock(Blocks.log2, 0),
-                new MetaBlock[] { new MetaBlock(Blocks.log2, 1), new MetaBlock(Blocks.log, 3) });
+            new MetaBlock(Blocks.log2, 0),
+            new MetaBlock[] { new MetaBlock(Blocks.log2, 1), new MetaBlock(Blocks.log, 3) });
         register(
-                new MetaBlock(Blocks.leaves2, 0),
-                new MetaBlock[] { new MetaBlock(Blocks.leaves2, 1), new MetaBlock(Blocks.leaves, 3) });
+            new MetaBlock(Blocks.leaves2, 0),
+            new MetaBlock[] { new MetaBlock(Blocks.leaves2, 1), new MetaBlock(Blocks.leaves, 3) });
         register(
-                new MetaBlock(Blocks.log2, 1),
-                new MetaBlock[] { new MetaBlock(Blocks.log, 0), new MetaBlock(Blocks.log2, 0) });
+            new MetaBlock(Blocks.log2, 1),
+            new MetaBlock[] { new MetaBlock(Blocks.log, 0), new MetaBlock(Blocks.log2, 0) });
         register(
-                new MetaBlock(Blocks.leaves2, 1),
-                new MetaBlock[] { new MetaBlock(Blocks.leaves, 0), new MetaBlock(Blocks.leaves2, 0) });
+            new MetaBlock(Blocks.leaves2, 1),
+            new MetaBlock[] { new MetaBlock(Blocks.leaves, 0), new MetaBlock(Blocks.leaves2, 0) });
 
         register(
-                new MetaBlock(Blocks.sapling, 0),
-                new MetaBlock[] { new MetaBlock(Blocks.sapling, 1), new MetaBlock(Blocks.sapling, 5) });
+            new MetaBlock(Blocks.sapling, 0),
+            new MetaBlock[] { new MetaBlock(Blocks.sapling, 1), new MetaBlock(Blocks.sapling, 5) });
 
         for (int i = 1; i < 5; i++) {
             register(
-                    new MetaBlock(Blocks.sapling, i),
-                    new MetaBlock[] { new MetaBlock(Blocks.sapling, i + 1), new MetaBlock(Blocks.sapling, i - 1) });
+                new MetaBlock(Blocks.sapling, i),
+                new MetaBlock[] { new MetaBlock(Blocks.sapling, i + 1), new MetaBlock(Blocks.sapling, i - 1) });
         }
 
         register(
-                new MetaBlock(Blocks.sapling, 5),
-                new MetaBlock[] { new MetaBlock(Blocks.sapling, 0), new MetaBlock(Blocks.sapling, 4) });
+            new MetaBlock(Blocks.sapling, 5),
+            new MetaBlock[] { new MetaBlock(Blocks.sapling, 0), new MetaBlock(Blocks.sapling, 4) });
 
         register(
-                new MetaBlock(Blocks.wool, 0),
-                new MetaBlock[] { new MetaBlock(Blocks.wool, 1), new MetaBlock(Blocks.wool, 15) });
+            new MetaBlock(Blocks.wool, 0),
+            new MetaBlock[] { new MetaBlock(Blocks.wool, 1), new MetaBlock(Blocks.wool, 15) });
 
         for (int i = 1; i < 15; i++) {
             register(
-                    new MetaBlock(Blocks.wool, i),
-                    new MetaBlock[] { new MetaBlock(Blocks.wool, i + 1), new MetaBlock(Blocks.wool, i - 1) });
+                new MetaBlock(Blocks.wool, i),
+                new MetaBlock[] { new MetaBlock(Blocks.wool, i + 1), new MetaBlock(Blocks.wool, i - 1) });
         }
 
         register(
-                new MetaBlock(Blocks.wool, 15),
-                new MetaBlock[] { new MetaBlock(Blocks.wool, 0), new MetaBlock(Blocks.wool, 14) });
+            new MetaBlock(Blocks.wool, 15),
+            new MetaBlock[] { new MetaBlock(Blocks.wool, 0), new MetaBlock(Blocks.wool, 14) });
     }
 
     public static MetaBlock getWorldTransmutation(World world, int x, int y, int z, boolean isSneaking) {

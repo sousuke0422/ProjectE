@@ -2,15 +2,6 @@ package moze_intel.projecte.gameObjs.items;
 
 import java.util.List;
 
-import moze_intel.projecte.PECore;
-import moze_intel.projecte.api.item.IAlchBagItem;
-import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.gameObjs.container.AlchBagContainer;
-import moze_intel.projecte.playerData.AlchemicalBags;
-import moze_intel.projecte.utils.AchievementHandler;
-import moze_intel.projecte.utils.Constants;
-import moze_intel.projecte.utils.ItemHelper;
-
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
@@ -24,19 +15,27 @@ import net.minecraft.world.World;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import moze_intel.projecte.PECore;
+import moze_intel.projecte.api.item.IAlchBagItem;
+import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.gameObjs.container.AlchBagContainer;
+import moze_intel.projecte.playerData.AlchemicalBags;
+import moze_intel.projecte.utils.AchievementHandler;
+import moze_intel.projecte.utils.Constants;
+import moze_intel.projecte.utils.ItemHelper;
 
 public class AlchemicalBag extends ItemPE {
 
     private final String[] colors = new String[] { "white", "orange", "magenta", "lightBlue", "yellow", "lime", "pink",
-            "gray", "silver", "cyan", "purple", "blue", "brown", "green", "red", "black" };
+        "gray", "silver", "cyan", "purple", "blue", "brown", "green", "red", "black" };
 
     // MC Lang files have these unlocalized names mapped to raw color names
     private final String[] unlocalizedColors = new String[] { "item.fireworksCharge.white",
-            "item.fireworksCharge.orange", "item.fireworksCharge.magenta", "item.fireworksCharge.lightBlue",
-            "item.fireworksCharge.yellow", "item.fireworksCharge.lime", "item.fireworksCharge.pink",
-            "item.fireworksCharge.gray", "item.fireworksCharge.silver", "item.fireworksCharge.cyan",
-            "item.fireworksCharge.purple", "item.fireworksCharge.blue", "item.fireworksCharge.brown",
-            "item.fireworksCharge.green", "item.fireworksCharge.red", "item.fireworksCharge.black" };
+        "item.fireworksCharge.orange", "item.fireworksCharge.magenta", "item.fireworksCharge.lightBlue",
+        "item.fireworksCharge.yellow", "item.fireworksCharge.lime", "item.fireworksCharge.pink",
+        "item.fireworksCharge.gray", "item.fireworksCharge.silver", "item.fireworksCharge.cyan",
+        "item.fireworksCharge.purple", "item.fireworksCharge.blue", "item.fireworksCharge.brown",
+        "item.fireworksCharge.green", "item.fireworksCharge.red", "item.fireworksCharge.black" };
 
     @SideOnly(Side.CLIENT)
     private IIcon[] icons;
@@ -52,12 +51,12 @@ public class AlchemicalBag extends ItemPE {
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
         if (!world.isRemote) {
             player.openGui(
-                    PECore.instance,
-                    Constants.ALCH_BAG_GUI,
-                    world,
-                    (int) player.posX,
-                    (int) player.posY,
-                    (int) player.posZ);
+                PECore.instance,
+                Constants.ALCH_BAG_GUI,
+                world,
+                (int) player.posX,
+                (int) player.posY,
+                (int) player.posZ);
         }
 
         return stack;
@@ -155,8 +154,7 @@ public class AlchemicalBag extends ItemPE {
             if (stack.getItem() == ObjHandler.alchBag) {
                 ItemStack[] inv = AlchemicalBags.get(player, ((byte) stack.getItemDamage()));
                 if (ItemHelper.invContainsItem(inv, new ItemStack(ObjHandler.blackHole, 1, 1))
-                        || ItemHelper.invContainsItem(inv, new ItemStack(ObjHandler.voidRing, 1, 1)))
-                    return stack;
+                    || ItemHelper.invContainsItem(inv, new ItemStack(ObjHandler.voidRing, 1, 1))) return stack;
             }
         }
 

@@ -50,7 +50,7 @@ public interface IItemTree {
     void addCategory(String parentCategory, IItemTreeCategory newCategory) throws NullPointerException;
 
     IItemTreeItem addItem(String parentCategory, String name, String id, int damage, int order)
-            throws NullPointerException;
+        throws NullPointerException;
 
     void addItem(String parentCategory, IItemTreeItem newItem) throws NullPointerException;
 

@@ -1,8 +1,5 @@
 package moze_intel.projecte.gameObjs.items.tools;
 
-import moze_intel.projecte.api.item.IExtraFunction;
-import moze_intel.projecte.config.ProjectEConfig;
-
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityLivingBase;
@@ -17,14 +14,17 @@ import net.minecraft.world.World;
 
 import com.google.common.collect.Multimap;
 
+import moze_intel.projecte.api.item.IExtraFunction;
+import moze_intel.projecte.config.ProjectEConfig;
+
 public class RedKatar extends PEToolBase implements IExtraFunction {
 
     public RedKatar() {
         super(
-                "rm_katar",
-                (byte) 4,
-                new String[] { StatCollector.translateToLocal("pe.katar.mode1"),
-                        StatCollector.translateToLocal("pe.katar.mode2"), });
+            "rm_katar",
+            (byte) 4,
+            new String[] { StatCollector.translateToLocal("pe.katar.mode1"),
+                StatCollector.translateToLocal("pe.katar.mode2"), });
         this.setNoRepair();
         this.peToolMaterial = "rm_tools";
         this.pePrimaryToolClass = "katar";
@@ -67,14 +67,14 @@ public class RedKatar extends PEToolBase implements IExtraFunction {
                 if (blockHit instanceof BlockGrass || blockHit instanceof BlockDirt) {
                     // Hoe
                     tillAOE(
-                            stack,
-                            player,
-                            world,
-                            mop.blockX,
-                            mop.blockY,
-                            mop.blockZ,
-                            world.getBlockMetadata(mop.blockX, mop.blockY, mop.blockZ),
-                            0);
+                        stack,
+                        player,
+                        world,
+                        mop.blockX,
+                        mop.blockY,
+                        mop.blockZ,
+                        world.getBlockMetadata(mop.blockX, mop.blockY, mop.blockZ),
+                        0);
                 } else if (blockHit instanceof BlockLog) {
                     // Axe
                     clearOdAOE(world, stack, player, "logWood", 0);
@@ -117,8 +117,8 @@ public class RedKatar extends PEToolBase implements IExtraFunction {
 
         Multimap multimap = super.getAttributeModifiers(stack);
         multimap.put(
-                SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName(),
-                new AttributeModifier(field_111210_e, "Weapon modifier", damage, 0));
+            SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName(),
+            new AttributeModifier(field_111210_e, "Weapon modifier", damage, 0));
         return multimap;
     }
 

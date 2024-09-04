@@ -1,12 +1,12 @@
 package moze_intel.projecte.gameObjs.customRecipes;
 
-import moze_intel.projecte.gameObjs.ObjHandler;
-
 import net.minecraft.init.Items;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
+
+import moze_intel.projecte.gameObjs.ObjHandler;
 
 public class RecipeAlchemyBag implements IRecipe {
 

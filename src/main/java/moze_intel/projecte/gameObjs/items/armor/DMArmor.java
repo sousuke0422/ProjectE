@@ -2,9 +2,6 @@ package moze_intel.projecte.gameObjs.items.armor;
 
 import java.util.Locale;
 
-import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.utils.EnumArmorType;
-
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -16,6 +13,8 @@ import net.minecraftforge.common.ISpecialArmor;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.utils.EnumArmorType;
 
 public class DMArmor extends ItemArmor implements ISpecialArmor {
 
@@ -33,7 +32,7 @@ public class DMArmor extends ItemArmor implements ISpecialArmor {
 
     @Override
     public ArmorProperties getProperties(EntityLivingBase player, ItemStack armor, DamageSource source, double damage,
-            int slot) {
+        int slot) {
         EnumArmorType type = ((DMArmor) armor.getItem()).armorPiece;
         if (source.isExplosion()) {
             return new ArmorProperties(1, 1.0D, 350);

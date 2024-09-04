@@ -1,14 +1,14 @@
 package moze_intel.projecte.gameObjs.container.inventory;
 
-import moze_intel.projecte.network.PacketHandler;
-import moze_intel.projecte.network.packets.UpdateGemModePKT;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.util.Constants.NBT;
+
+import moze_intel.projecte.network.PacketHandler;
+import moze_intel.projecte.network.packets.UpdateGemModePKT;
 
 public class EternalDensityInventory implements IInventory {
 

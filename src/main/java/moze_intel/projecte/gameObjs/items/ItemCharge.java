@@ -1,12 +1,12 @@
 package moze_intel.projecte.gameObjs.items;
 
-import moze_intel.projecte.api.item.IItemCharge;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
+
+import moze_intel.projecte.api.item.IItemCharge;
 
 public class ItemCharge extends ItemPE implements IItemCharge {
 
@@ -57,18 +57,18 @@ public class ItemCharge extends ItemPE implements IItemCharge {
         if (player.isSneaking()) {
             if (currentCharge > 0) {
                 player.worldObj.playSoundAtEntity(
-                        player,
-                        "projecte:item.peuncharge",
-                        1.0F,
-                        0.5F + ((0.5F / (float) numCharges) * currentCharge));
+                    player,
+                    "projecte:item.peuncharge",
+                    1.0F,
+                    0.5F + ((0.5F / (float) numCharges) * currentCharge));
                 stack.stackTagCompound.setByte("Charge", (byte) (currentCharge - 1));
             }
         } else if (currentCharge < numCharges) {
             player.worldObj.playSoundAtEntity(
-                    player,
-                    "projecte:item.pecharge",
-                    1.0F,
-                    0.5F + ((0.5F / (float) numCharges) * currentCharge));
+                player,
+                "projecte:item.pecharge",
+                1.0F,
+                0.5F + ((0.5F / (float) numCharges) * currentCharge));
             stack.stackTagCompound.setByte("Charge", (byte) (currentCharge + 1));
         }
     }

@@ -2,12 +2,12 @@ package moze_intel.projecte.utils;
 
 import java.text.DecimalFormat;
 
-import moze_intel.projecte.PECore;
-
 import net.minecraft.util.ResourceLocation;
 
 import com.google.common.collect.ImmutableMap;
+
 import cpw.mods.fml.client.registry.RenderingRegistry;
+import moze_intel.projecte.PECore;
 
 public final class Constants {
 
@@ -20,7 +20,7 @@ public final class Constants {
     public static final float[] COLLECTOR_LIGHT_VALS = new float[] { 0.4375F, 0.6875F, 1.0F };
 
     public static final float[] EXPLOSIVE_LENS_RADIUS = new float[] { 4.0F, 8.0F, 12.0F, 16.0F, 16.0F, 16.0F, 16.0F,
-            16.0F };
+        16.0F };
     public static final int[] EXPLOSIVE_LENS_COST = new int[] { 384, 768, 1536, 2304, 2304, 2304, 2304, 2304 };
 
     public static final long TILE_MAX_EMC = Long.MAX_VALUE;
@@ -72,8 +72,8 @@ public final class Constants {
     public static final int CONDENSER_MK2_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
     public static final int PEDESTAL_RENDER_ID = RenderingRegistry.getNextAvailableRenderId();
     public static final ResourceLocation PEDESTAL_MODELTEX_LOCATION = new ResourceLocation(
-            PECore.MODID.toLowerCase(),
-            "textures/models/pedestaltexmap.png");
+        PECore.MODID.toLowerCase(),
+        "textures/models/pedestaltexmap.png");
 
     public static final int MAX_VEIN_SIZE = 250;
 

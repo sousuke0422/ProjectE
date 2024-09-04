@@ -2,14 +2,6 @@ package moze_intel.projecte.events;
 
 import java.util.List;
 
-import moze_intel.projecte.api.item.IItemEmc;
-import moze_intel.projecte.api.item.IPedestalItem;
-import moze_intel.projecte.config.ProjectEConfig;
-import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.gameObjs.gui.GUIPedestal;
-import moze_intel.projecte.utils.Constants;
-import moze_intel.projecte.utils.EMCHelper;
-
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
@@ -26,6 +18,13 @@ import com.google.common.math.LongMath;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import moze_intel.projecte.api.item.IItemEmc;
+import moze_intel.projecte.api.item.IPedestalItem;
+import moze_intel.projecte.config.ProjectEConfig;
+import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.gameObjs.gui.GUIPedestal;
+import moze_intel.projecte.utils.Constants;
+import moze_intel.projecte.utils.EMCHelper;
 
 @SideOnly(Side.CLIENT)
 public class ToolTipEvent {
@@ -53,8 +52,8 @@ public class ToolTipEvent {
             if (ProjectEConfig.showPedestalTooltipInGUI) {
                 if (Minecraft.getMinecraft().currentScreen instanceof GUIPedestal) {
                     event.toolTip.add(
-                            EnumChatFormatting.DARK_PURPLE + StatCollector.translateToLocal("pe.pedestal.on_pedestal")
-                                    + " ");
+                        EnumChatFormatting.DARK_PURPLE + StatCollector.translateToLocal("pe.pedestal.on_pedestal")
+                            + " ");
                     List<String> description = ((IPedestalItem) currentItem).getPedestalDescription();
                     if (description.isEmpty()) {
                         event.toolTip.add(IPedestalItem.TOOLTIPDISABLED);
@@ -64,8 +63,7 @@ public class ToolTipEvent {
                 }
             } else {
                 event.toolTip.add(
-                        EnumChatFormatting.DARK_PURPLE + StatCollector.translateToLocal("pe.pedestal.on_pedestal")
-                                + " ");
+                    EnumChatFormatting.DARK_PURPLE + StatCollector.translateToLocal("pe.pedestal.on_pedestal") + " ");
                 List<String> description = ((IPedestalItem) currentItem).getPedestalDescription();
                 if (description.isEmpty()) {
                     event.toolTip.add(IPedestalItem.TOOLTIPDISABLED);
@@ -85,7 +83,9 @@ public class ToolTipEvent {
                 event.toolTip.add("OD: " + OreDictionary.getOreName(id));
             }
             if (currentBlock instanceof BlockFluidBase) {
-                event.toolTip.add("Fluid: " + ((BlockFluidBase) currentBlock).getFluid().getName());
+                event.toolTip.add(
+                    "Fluid: " + ((BlockFluidBase) currentBlock).getFluid()
+                        .getName());
             }
         }
 
@@ -94,10 +94,10 @@ public class ToolTipEvent {
                 long value = EMCHelper.getEmcValue(current);
 
                 event.toolTip.add(
-                        EnumChatFormatting.YELLOW + StatCollector.translateToLocal("pe.emc.emc_tooltip_prefix")
-                                + " "
-                                + EnumChatFormatting.WHITE
-                                + String.format("%,d", value));
+                    EnumChatFormatting.YELLOW + StatCollector.translateToLocal("pe.emc.emc_tooltip_prefix")
+                        + " "
+                        + EnumChatFormatting.WHITE
+                        + String.format("%,d", value));
 
                 if (current.stackSize > 1) {
                     long total;
@@ -105,18 +105,18 @@ public class ToolTipEvent {
                         total = LongMath.checkedMultiply(value, current.stackSize);
                         if (total < 0 || total <= value) {
                             event.toolTip.add(
-                                    EnumChatFormatting.YELLOW + I18n.format("pe.emc.stackemc_tooltip_prefix")
-                                            + " "
-                                            + EnumChatFormatting.OBFUSCATED
-                                            + I18n.format("pe.emc.too_much"));
+                                EnumChatFormatting.YELLOW + I18n.format("pe.emc.stackemc_tooltip_prefix")
+                                    + " "
+                                    + EnumChatFormatting.OBFUSCATED
+                                    + I18n.format("pe.emc.too_much"));
                         } else {
                             event.toolTip.add(
-                                    EnumChatFormatting.YELLOW + I18n.format("pe.emc.stackemc_tooltip_prefix")
-                                            + " "
-                                            + EnumChatFormatting.WHITE
-                                            + Constants.EMC_FORMATTER.format(value * current.stackSize)
-                                            + EnumChatFormatting.BLUE
-                                            + EMCHelper.getEmcSellString(current, current.stackSize));
+                                EnumChatFormatting.YELLOW + I18n.format("pe.emc.stackemc_tooltip_prefix")
+                                    + " "
+                                    + EnumChatFormatting.WHITE
+                                    + Constants.EMC_FORMATTER.format(value * current.stackSize)
+                                    + EnumChatFormatting.BLUE
+                                    + EMCHelper.getEmcSellString(current, current.stackSize));
                         }
                     } catch (ArithmeticException e) {
                         // total = Long.MAX_VALUE;
@@ -124,11 +124,10 @@ public class ToolTipEvent {
                         // if (total < 0 || total <= value || total > Constants.TILE_MAX_EMC)
                         // {
                         event.toolTip.add(
-                                EnumChatFormatting.YELLOW
-                                        + StatCollector.translateToLocal("pe.emc.stackemc_tooltip_prefix")
-                                        + " "
-                                        + EnumChatFormatting.OBFUSCATED
-                                        + StatCollector.translateToLocal("pe.emc.too_much"));
+                            EnumChatFormatting.YELLOW + StatCollector.translateToLocal("pe.emc.stackemc_tooltip_prefix")
+                                + " "
+                                + EnumChatFormatting.OBFUSCATED
+                                + StatCollector.translateToLocal("pe.emc.too_much"));
                     } /*
                        * else { event.toolTip.add(EnumChatFormatting.YELLOW +
                        * StatCollector.translateToLocal("pe.emc.stackemc_tooltip_prefix") + " " +
@@ -148,47 +147,47 @@ public class ToolTipEvent {
 
             if (currentBlock == ObjHandler.energyCollector) {
                 event.toolTip.add(
-                        EnumChatFormatting.DARK_PURPLE + String.format(
-                                StatCollector.translateToLocal("pe.emc.maxgenrate_tooltip") + EnumChatFormatting.BLUE
-                                        + " %d "
-                                        + rate,
-                                Constants.COLLECTOR_MK1_GEN));
+                    EnumChatFormatting.DARK_PURPLE + String.format(
+                        StatCollector.translateToLocal("pe.emc.maxgenrate_tooltip") + EnumChatFormatting.BLUE
+                            + " %d "
+                            + rate,
+                        Constants.COLLECTOR_MK1_GEN));
                 event.toolTip.add(
-                        EnumChatFormatting.DARK_PURPLE + String.format(
-                                StatCollector.translateToLocal("pe.emc.maxstorage_tooltip") + EnumChatFormatting.BLUE
-                                        + " %d "
-                                        + unit,
-                                Constants.COLLECTOR_MK1_MAX));
+                    EnumChatFormatting.DARK_PURPLE + String.format(
+                        StatCollector.translateToLocal("pe.emc.maxstorage_tooltip") + EnumChatFormatting.BLUE
+                            + " %d "
+                            + unit,
+                        Constants.COLLECTOR_MK1_MAX));
             }
 
             if (currentBlock == ObjHandler.collectorMK2) {
                 event.toolTip.add(
-                        EnumChatFormatting.DARK_PURPLE + String.format(
-                                StatCollector.translateToLocal("pe.emc.maxgenrate_tooltip") + EnumChatFormatting.BLUE
-                                        + " %d "
-                                        + rate,
-                                Constants.COLLECTOR_MK2_GEN));
+                    EnumChatFormatting.DARK_PURPLE + String.format(
+                        StatCollector.translateToLocal("pe.emc.maxgenrate_tooltip") + EnumChatFormatting.BLUE
+                            + " %d "
+                            + rate,
+                        Constants.COLLECTOR_MK2_GEN));
                 event.toolTip.add(
-                        EnumChatFormatting.DARK_PURPLE + String.format(
-                                StatCollector.translateToLocal("pe.emc.maxstorage_tooltip") + EnumChatFormatting.BLUE
-                                        + " %d "
-                                        + unit,
-                                Constants.COLLECTOR_MK2_MAX));
+                    EnumChatFormatting.DARK_PURPLE + String.format(
+                        StatCollector.translateToLocal("pe.emc.maxstorage_tooltip") + EnumChatFormatting.BLUE
+                            + " %d "
+                            + unit,
+                        Constants.COLLECTOR_MK2_MAX));
             }
 
             if (currentBlock == ObjHandler.collectorMK3) {
                 event.toolTip.add(
-                        EnumChatFormatting.DARK_PURPLE + String.format(
-                                StatCollector.translateToLocal("pe.emc.maxgenrate_tooltip") + EnumChatFormatting.BLUE
-                                        + " %d "
-                                        + rate,
-                                Constants.COLLECTOR_MK3_GEN));
+                    EnumChatFormatting.DARK_PURPLE + String.format(
+                        StatCollector.translateToLocal("pe.emc.maxgenrate_tooltip") + EnumChatFormatting.BLUE
+                            + " %d "
+                            + rate,
+                        Constants.COLLECTOR_MK3_GEN));
                 event.toolTip.add(
-                        EnumChatFormatting.DARK_PURPLE + String.format(
-                                StatCollector.translateToLocal("pe.emc.maxstorage_tooltip") + EnumChatFormatting.BLUE
-                                        + " %d "
-                                        + unit,
-                                Constants.COLLECTOR_MK3_MAX));
+                    EnumChatFormatting.DARK_PURPLE + String.format(
+                        StatCollector.translateToLocal("pe.emc.maxstorage_tooltip") + EnumChatFormatting.BLUE
+                            + " %d "
+                            + unit,
+                        Constants.COLLECTOR_MK3_MAX));
             }
 
             /**
@@ -196,47 +195,47 @@ public class ToolTipEvent {
              */
             if (currentBlock == ObjHandler.relay) {
                 event.toolTip.add(
-                        EnumChatFormatting.DARK_PURPLE + String.format(
-                                StatCollector.translateToLocal("pe.emc.maxoutrate_tooltip") + EnumChatFormatting.BLUE
-                                        + " %d "
-                                        + rate,
-                                Constants.RELAY_MK1_OUTPUT));
+                    EnumChatFormatting.DARK_PURPLE + String.format(
+                        StatCollector.translateToLocal("pe.emc.maxoutrate_tooltip") + EnumChatFormatting.BLUE
+                            + " %d "
+                            + rate,
+                        Constants.RELAY_MK1_OUTPUT));
                 event.toolTip.add(
-                        EnumChatFormatting.DARK_PURPLE + String.format(
-                                StatCollector.translateToLocal("pe.emc.maxstorage_tooltip") + EnumChatFormatting.BLUE
-                                        + " %d "
-                                        + unit,
-                                Constants.RELAY_MK1_MAX));
+                    EnumChatFormatting.DARK_PURPLE + String.format(
+                        StatCollector.translateToLocal("pe.emc.maxstorage_tooltip") + EnumChatFormatting.BLUE
+                            + " %d "
+                            + unit,
+                        Constants.RELAY_MK1_MAX));
             }
 
             if (currentBlock == ObjHandler.relayMK2) {
                 event.toolTip.add(
-                        EnumChatFormatting.DARK_PURPLE + String.format(
-                                StatCollector.translateToLocal("pe.emc.maxoutrate_tooltip") + EnumChatFormatting.BLUE
-                                        + " %d "
-                                        + rate,
-                                Constants.RELAY_MK2_OUTPUT));
+                    EnumChatFormatting.DARK_PURPLE + String.format(
+                        StatCollector.translateToLocal("pe.emc.maxoutrate_tooltip") + EnumChatFormatting.BLUE
+                            + " %d "
+                            + rate,
+                        Constants.RELAY_MK2_OUTPUT));
                 event.toolTip.add(
-                        EnumChatFormatting.DARK_PURPLE + String.format(
-                                StatCollector.translateToLocal("pe.emc.maxstorage_tooltip") + EnumChatFormatting.BLUE
-                                        + " %d "
-                                        + unit,
-                                Constants.RELAY_MK2_MAX));
+                    EnumChatFormatting.DARK_PURPLE + String.format(
+                        StatCollector.translateToLocal("pe.emc.maxstorage_tooltip") + EnumChatFormatting.BLUE
+                            + " %d "
+                            + unit,
+                        Constants.RELAY_MK2_MAX));
             }
 
             if (currentBlock == ObjHandler.relayMK3) {
                 event.toolTip.add(
-                        EnumChatFormatting.DARK_PURPLE + String.format(
-                                StatCollector.translateToLocal("pe.emc.maxoutrate_tooltip") + EnumChatFormatting.BLUE
-                                        + " %d "
-                                        + rate,
-                                Constants.RELAY_MK3_OUTPUT));
+                    EnumChatFormatting.DARK_PURPLE + String.format(
+                        StatCollector.translateToLocal("pe.emc.maxoutrate_tooltip") + EnumChatFormatting.BLUE
+                            + " %d "
+                            + rate,
+                        Constants.RELAY_MK3_OUTPUT));
                 event.toolTip.add(
-                        EnumChatFormatting.DARK_PURPLE + String.format(
-                                StatCollector.translateToLocal("pe.emc.maxstorage_tooltip") + EnumChatFormatting.BLUE
-                                        + " %d "
-                                        + unit,
-                                Constants.RELAY_MK3_MAX));
+                    EnumChatFormatting.DARK_PURPLE + String.format(
+                        StatCollector.translateToLocal("pe.emc.maxstorage_tooltip") + EnumChatFormatting.BLUE
+                            + " %d "
+                            + unit,
+                        Constants.RELAY_MK3_MAX));
             }
         }
 
@@ -246,11 +245,11 @@ public class ToolTipEvent {
 
                 if (current.stackTagCompound.getDouble("EMC") > 0) {
                     event.toolTip.add(
-                            EnumChatFormatting.YELLOW + String.format(
-                                    StatCollector.translateToLocal("pe.emc.storedemc_tooltip") + " "
-                                            + EnumChatFormatting.RESET
-                                            + "%,d",
-                                    (int) current.stackTagCompound.getDouble("EMC")));
+                        EnumChatFormatting.YELLOW + String.format(
+                            StatCollector.translateToLocal("pe.emc.storedemc_tooltip") + " "
+                                + EnumChatFormatting.RESET
+                                + "%,d",
+                            (int) current.stackTagCompound.getDouble("EMC")));
                 }
             }
             if (current.getItem() instanceof IItemEmc || current.stackTagCompound.hasKey("StoredEMC")) {
@@ -262,17 +261,19 @@ public class ToolTipEvent {
                 }
 
                 event.toolTip.add(
-                        EnumChatFormatting.YELLOW + StatCollector.translateToLocal("pe.emc.storedemc_tooltip")
-                                + " "
-                                + EnumChatFormatting.RESET
-                                + Constants.EMC_FORMATTER.format(value));
+                    EnumChatFormatting.YELLOW + StatCollector.translateToLocal("pe.emc.storedemc_tooltip")
+                        + " "
+                        + EnumChatFormatting.RESET
+                        + Constants.EMC_FORMATTER.format(value));
             }
 
             if (current.stackTagCompound.hasKey("StoredXP")) {
-                event.toolTip.add(
-                        String.format(
+                event.toolTip
+                    .add(
+                        String
+                            .format(
                                 EnumChatFormatting.DARK_GREEN + StatCollector.translateToLocal(
-                                        "pe.misc.storedxp_tooltip") + " " + EnumChatFormatting.GREEN + "%,d",
+                                    "pe.misc.storedxp_tooltip") + " " + EnumChatFormatting.GREEN + "%,d",
                                 current.stackTagCompound.getInteger("StoredXP")));
             }
         }

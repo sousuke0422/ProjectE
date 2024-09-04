@@ -2,11 +2,6 @@ package moze_intel.projecte.gameObjs.gui;
 
 import java.util.Locale;
 
-import moze_intel.projecte.PECore;
-import moze_intel.projecte.gameObjs.container.TransmutationContainer;
-import moze_intel.projecte.gameObjs.container.inventory.TransmutationInventory;
-import moze_intel.projecte.utils.TransmutationEMCFormatter;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
@@ -17,11 +12,16 @@ import net.minecraft.util.StatCollector;
 
 import org.lwjgl.opengl.GL11;
 
+import moze_intel.projecte.PECore;
+import moze_intel.projecte.gameObjs.container.TransmutationContainer;
+import moze_intel.projecte.gameObjs.container.inventory.TransmutationInventory;
+import moze_intel.projecte.utils.TransmutationEMCFormatter;
+
 public class GUITransmutation extends GuiContainer {
 
     private static final ResourceLocation texture = new ResourceLocation(
-            PECore.MODID.toLowerCase(),
-            "textures/gui/transmute.png");
+        PECore.MODID.toLowerCase(),
+        "textures/gui/transmute.png");
     TransmutationInventory inv;
     private GuiTextField textBoxFilter;
 
@@ -68,44 +68,44 @@ public class GUITransmutation extends GuiContainer {
 
         if (inv.learnFlag > 0) {
             this.fontRendererObj
-                    .drawString(StatCollector.translateToLocal("pe.transmutation.learned0"), 98, 30, 4210752);
+                .drawString(StatCollector.translateToLocal("pe.transmutation.learned0"), 98, 30, 4210752);
             this.fontRendererObj
-                    .drawString(StatCollector.translateToLocal("pe.transmutation.learned1"), 99, 38, 4210752);
+                .drawString(StatCollector.translateToLocal("pe.transmutation.learned1"), 99, 38, 4210752);
             this.fontRendererObj
-                    .drawString(StatCollector.translateToLocal("pe.transmutation.learned2"), 100, 46, 4210752);
+                .drawString(StatCollector.translateToLocal("pe.transmutation.learned2"), 100, 46, 4210752);
             this.fontRendererObj
-                    .drawString(StatCollector.translateToLocal("pe.transmutation.learned3"), 101, 54, 4210752);
+                .drawString(StatCollector.translateToLocal("pe.transmutation.learned3"), 101, 54, 4210752);
             this.fontRendererObj
-                    .drawString(StatCollector.translateToLocal("pe.transmutation.learned4"), 102, 62, 4210752);
+                .drawString(StatCollector.translateToLocal("pe.transmutation.learned4"), 102, 62, 4210752);
             this.fontRendererObj
-                    .drawString(StatCollector.translateToLocal("pe.transmutation.learned5"), 103, 70, 4210752);
+                .drawString(StatCollector.translateToLocal("pe.transmutation.learned5"), 103, 70, 4210752);
             this.fontRendererObj
-                    .drawString(StatCollector.translateToLocal("pe.transmutation.learned6"), 104, 78, 4210752);
+                .drawString(StatCollector.translateToLocal("pe.transmutation.learned6"), 104, 78, 4210752);
             this.fontRendererObj
-                    .drawString(StatCollector.translateToLocal("pe.transmutation.learned7"), 107, 86, 4210752);
+                .drawString(StatCollector.translateToLocal("pe.transmutation.learned7"), 107, 86, 4210752);
 
             inv.learnFlag--;
         }
 
         if (inv.unlearnFlag > 0) {
             this.fontRendererObj
-                    .drawString(StatCollector.translateToLocal("pe.transmutation.unlearned0"), 97, 22, 4210752);
+                .drawString(StatCollector.translateToLocal("pe.transmutation.unlearned0"), 97, 22, 4210752);
             this.fontRendererObj
-                    .drawString(StatCollector.translateToLocal("pe.transmutation.unlearned1"), 98, 30, 4210752);
+                .drawString(StatCollector.translateToLocal("pe.transmutation.unlearned1"), 98, 30, 4210752);
             this.fontRendererObj
-                    .drawString(StatCollector.translateToLocal("pe.transmutation.unlearned2"), 99, 38, 4210752);
+                .drawString(StatCollector.translateToLocal("pe.transmutation.unlearned2"), 99, 38, 4210752);
             this.fontRendererObj
-                    .drawString(StatCollector.translateToLocal("pe.transmutation.unlearned3"), 100, 46, 4210752);
+                .drawString(StatCollector.translateToLocal("pe.transmutation.unlearned3"), 100, 46, 4210752);
             this.fontRendererObj
-                    .drawString(StatCollector.translateToLocal("pe.transmutation.unlearned4"), 101, 54, 4210752);
+                .drawString(StatCollector.translateToLocal("pe.transmutation.unlearned4"), 101, 54, 4210752);
             this.fontRendererObj
-                    .drawString(StatCollector.translateToLocal("pe.transmutation.unlearned5"), 102, 62, 4210752);
+                .drawString(StatCollector.translateToLocal("pe.transmutation.unlearned5"), 102, 62, 4210752);
             this.fontRendererObj
-                    .drawString(StatCollector.translateToLocal("pe.transmutation.unlearned6"), 103, 70, 4210752);
+                .drawString(StatCollector.translateToLocal("pe.transmutation.unlearned6"), 103, 70, 4210752);
             this.fontRendererObj
-                    .drawString(StatCollector.translateToLocal("pe.transmutation.unlearned7"), 104, 78, 4210752);
+                .drawString(StatCollector.translateToLocal("pe.transmutation.unlearned7"), 104, 78, 4210752);
             this.fontRendererObj
-                    .drawString(StatCollector.translateToLocal("pe.transmutation.unlearned8"), 107, 86, 4210752);
+                .drawString(StatCollector.translateToLocal("pe.transmutation.unlearned8"), 107, 86, 4210752);
 
             inv.unlearnFlag--;
         }
@@ -122,7 +122,8 @@ public class GUITransmutation extends GuiContainer {
         if (this.textBoxFilter.isFocused()) {
             this.textBoxFilter.textboxKeyTyped(par1, par2);
 
-            String srch = this.textBoxFilter.getText().toLowerCase();
+            String srch = this.textBoxFilter.getText()
+                .toLowerCase();
 
             if (!inv.filter.equals(srch)) {
                 inv.filter = srch;
@@ -132,7 +133,7 @@ public class GUITransmutation extends GuiContainer {
         }
 
         if (par2 == 1
-                || par2 == this.mc.gameSettings.keyBindInventory.getKeyCode() && !this.textBoxFilter.isFocused()) {
+            || par2 == this.mc.gameSettings.keyBindInventory.getKeyCode() && !this.textBoxFilter.isFocused()) {
             this.mc.thePlayer.closeScreen();
         }
     }
@@ -165,7 +166,8 @@ public class GUITransmutation extends GuiContainer {
 
     @Override
     protected void actionPerformed(GuiButton button) {
-        String srch = this.textBoxFilter.getText().toLowerCase(Locale.ROOT);
+        String srch = this.textBoxFilter.getText()
+            .toLowerCase(Locale.ROOT);
 
         if (button.id == 1) {
             if (inv.searchpage != 0) {

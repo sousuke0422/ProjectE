@@ -53,10 +53,10 @@ public final class MathUtils {
         double result = tickToSec(ticks);
         if (result == 0.0D) {
             return result + " "
-                    + StatCollector.translateToLocal("pe.misc.seconds")
-                    + " ("
-                    + StatCollector.translateToLocal("pe.misc.every_tick")
-                    + ")";
+                + StatCollector.translateToLocal("pe.misc.seconds")
+                + " ("
+                + StatCollector.translateToLocal("pe.misc.every_tick")
+                + ")";
         } else {
             return result + " " + StatCollector.translateToLocal("pe.misc.seconds");
         }

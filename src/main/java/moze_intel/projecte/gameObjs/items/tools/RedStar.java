@@ -1,9 +1,5 @@
 package moze_intel.projecte.gameObjs.items.tools;
 
-import moze_intel.projecte.config.ProjectEConfig;
-import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.utils.ItemHelper;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockClay;
 import net.minecraft.block.BlockDirt;
@@ -23,16 +19,20 @@ import net.minecraft.world.World;
 
 import com.google.common.collect.Multimap;
 
+import moze_intel.projecte.config.ProjectEConfig;
+import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.utils.ItemHelper;
+
 public class RedStar extends PEToolBase {
 
     public RedStar() {
         super(
-                "rm_morning_star",
-                (byte) 4,
-                new String[] { StatCollector.translateToLocal("pe.morningstar.mode1"),
-                        StatCollector.translateToLocal("pe.morningstar.mode2"),
-                        StatCollector.translateToLocal("pe.morningstar.mode3"),
-                        StatCollector.translateToLocal("pe.morningstar.mode4"), });
+            "rm_morning_star",
+            (byte) 4,
+            new String[] { StatCollector.translateToLocal("pe.morningstar.mode1"),
+                StatCollector.translateToLocal("pe.morningstar.mode2"),
+                StatCollector.translateToLocal("pe.morningstar.mode3"),
+                StatCollector.translateToLocal("pe.morningstar.mode4"), });
         this.setNoRepair();
         this.peToolMaterial = "rm_tools";
         this.pePrimaryToolClass = "morning_star";
@@ -66,7 +66,7 @@ public class RedStar extends PEToolBase {
 
     @Override
     public boolean onBlockDestroyed(ItemStack stack, World world, Block block, int x, int y, int z,
-            EntityLivingBase eLiving) {
+        EntityLivingBase eLiving) {
         digBasedOnMode(stack, world, block, x, y, z, eLiving);
         return true;
     }
@@ -109,9 +109,9 @@ public class RedStar extends PEToolBase {
     @Override
     public float getDigSpeed(ItemStack stack, Block block, int metadata) {
         if (block == ObjHandler.matterBlock || block == ObjHandler.dmFurnaceOff
-                || block == ObjHandler.dmFurnaceOn
-                || block == ObjHandler.rmFurnaceOff
-                || block == ObjHandler.rmFurnaceOn) {
+            || block == ObjHandler.dmFurnaceOn
+            || block == ObjHandler.rmFurnaceOff
+            || block == ObjHandler.rmFurnaceOn) {
             return 1200000.0F;
         }
 
@@ -129,8 +129,8 @@ public class RedStar extends PEToolBase {
 
         Multimap multimap = super.getAttributeModifiers(stack);
         multimap.put(
-                SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName(),
-                new AttributeModifier(field_111210_e, "Weapon modifier", damage, 0));
+            SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName(),
+            new AttributeModifier(field_111210_e, "Weapon modifier", damage, 0));
         return multimap;
     }
 }

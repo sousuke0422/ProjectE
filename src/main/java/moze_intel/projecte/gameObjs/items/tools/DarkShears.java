@@ -30,12 +30,12 @@ public class DarkShears extends PEToolBase {
 
     @Override
     public boolean onBlockDestroyed(ItemStack stack, World world, Block block, int x, int y, int z,
-            EntityLivingBase ent) {
+        EntityLivingBase ent) {
         if (block.getMaterial() != Material.leaves && block != Blocks.web
-                && block != Blocks.tallgrass
-                && block != Blocks.vine
-                && block != Blocks.tripwire
-                && !(block instanceof IShearable)) {
+            && block != Blocks.tallgrass
+            && block != Blocks.vine
+            && block != Blocks.tripwire
+            && !(block instanceof IShearable)) {
             return super.onBlockDestroyed(stack, world, block, x, y, z, ent);
         } else {
             return true;

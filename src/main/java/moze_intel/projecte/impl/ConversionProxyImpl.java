@@ -3,10 +3,6 @@ package moze_intel.projecte.impl;
 import java.util.List;
 import java.util.Map;
 
-import moze_intel.projecte.api.proxy.IConversionProxy;
-import moze_intel.projecte.emc.IngredientMap;
-import moze_intel.projecte.emc.NormalizedSimpleStack;
-
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -20,6 +16,9 @@ import com.google.common.collect.Maps;
 
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.ModContainer;
+import moze_intel.projecte.api.proxy.IConversionProxy;
+import moze_intel.projecte.emc.IngredientMap;
+import moze_intel.projecte.emc.NormalizedSimpleStack;
 
 public class ConversionProxyImpl implements IConversionProxy {
 
@@ -61,23 +60,26 @@ public class ConversionProxyImpl implements IConversionProxy {
             return NormalizedSimpleStack.getFor(((FluidStack) object).getFluid());
         } else if (object instanceof String) {
             return NormalizedSimpleStack.forOreDictionary((String) object);
-        } else if (object != null && object.getClass().equals(Object.class)) {
-            if (fakes.containsKey(object)) return fakes.get(object);
+        } else if (object != null && object.getClass()
+            .equals(Object.class)) {
+                if (fakes.containsKey(object)) return fakes.get(object);
 
-            NormalizedSimpleStack nss = NormalizedSimpleStack.createFake("" + fakes.size() + " by " + getActiveMod());
-            fakes.put(object, nss);
-            return nss;
-        } else {
-            throw new IllegalArgumentException(
+                NormalizedSimpleStack nss = NormalizedSimpleStack
+                    .createFake("" + fakes.size() + " by " + getActiveMod());
+                fakes.put(object, nss);
+                return nss;
+            } else {
+                throw new IllegalArgumentException(
                     "Can not turn " + object
-                            + " ("
-                            + ClassUtils.getPackageCanonicalName(object, "")
-                            + ") into NormalizedSimpleStack. need ItemStack, FluidStack, String or 'Object'");
-        }
+                        + " ("
+                        + ClassUtils.getPackageCanonicalName(object, "")
+                        + ") into NormalizedSimpleStack. need ItemStack, FluidStack, String or 'Object'");
+            }
     }
 
     private String getActiveMod() {
-        ModContainer activeMod = Loader.instance().activeModContainer();
+        ModContainer activeMod = Loader.instance()
+            .activeModContainer();
         return activeMod == null ? "unknown Mod" : activeMod.getModId();
     }
 
@@ -88,7 +90,7 @@ public class ConversionProxyImpl implements IConversionProxy {
         public final ImmutableMap<NormalizedSimpleStack, Integer> ingredients;
 
         private APIConversion(int amount, NormalizedSimpleStack output,
-                ImmutableMap<NormalizedSimpleStack, Integer> ingredients) {
+            ImmutableMap<NormalizedSimpleStack, Integer> ingredients) {
             this.amount = amount;
             this.output = output;
             this.ingredients = ingredients;

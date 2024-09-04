@@ -4,6 +4,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import net.minecraft.init.Items;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.CraftingManager;
+import net.minecraft.item.crafting.IRecipe;
+import net.minecraftforge.oredict.OreDictionary;
+
+import cpw.mods.fml.common.registry.GameRegistry;
 import minetweaker.IUndoableAction;
 import minetweaker.MineTweakerAPI;
 import minetweaker.api.item.IItemStack;
@@ -12,16 +19,8 @@ import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.customRecipes.RecipeShapelessHidden;
 import moze_intel.projecte.utils.MetaBlock;
 import moze_intel.projecte.utils.WorldTransmutations;
-
-import net.minecraft.init.Items;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.CraftingManager;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraftforge.oredict.OreDictionary;
-
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
-import cpw.mods.fml.common.registry.GameRegistry;
 
 @ZenClass("mods.projecte.PhiloStone")
 public class PhiloStone {
@@ -78,16 +77,16 @@ public class PhiloStone {
             this.input = MineTweakerMC.getItemStack(input);
             this.fuel = new ItemStack(Items.coal, 1, OreDictionary.WILDCARD_VALUE);
             this.recipe = new RecipeShapelessHidden(
-                    this.output,
-                    new ItemStack(ObjHandler.philosStone),
-                    this.input,
-                    this.input,
-                    this.input,
-                    this.input,
-                    this.input,
-                    this.input,
-                    this.input,
-                    this.fuel);
+                this.output,
+                new ItemStack(ObjHandler.philosStone),
+                this.input,
+                this.input,
+                this.input,
+                this.input,
+                this.input,
+                this.input,
+                this.input,
+                this.fuel);
         }
 
         public AddRecipeAction(IItemStack output, IItemStack input, IItemStack fuel) {
@@ -95,16 +94,16 @@ public class PhiloStone {
             this.input = MineTweakerMC.getItemStack(input);
             this.fuel = MineTweakerMC.getItemStack(fuel);
             this.recipe = new RecipeShapelessHidden(
-                    this.output,
-                    new ItemStack(ObjHandler.philosStone),
-                    this.input,
-                    this.input,
-                    this.input,
-                    this.input,
-                    this.input,
-                    this.input,
-                    this.input,
-                    this.fuel);
+                this.output,
+                new ItemStack(ObjHandler.philosStone),
+                this.input,
+                this.input,
+                this.input,
+                this.input,
+                this.input,
+                this.input,
+                this.input,
+                this.fuel);
         }
 
         @Override
@@ -119,7 +118,9 @@ public class PhiloStone {
 
         @Override
         public void undo() {
-            CraftingManager.getInstance().getRecipeList().remove(recipe);
+            CraftingManager.getInstance()
+                .getRecipeList()
+                .remove(recipe);
         }
 
         @Override
@@ -146,7 +147,8 @@ public class PhiloStone {
         public RemoveRecipeAction(IItemStack rem) {
             remove = MineTweakerMC.getItemStack(rem);
 
-            List<IRecipe> allrecipes = CraftingManager.getInstance().getRecipeList();
+            List<IRecipe> allrecipes = CraftingManager.getInstance()
+                .getRecipeList();
             for (IRecipe irecipe : allrecipes) {
                 if (irecipe instanceof RecipeShapelessHidden) {
                     if (remove.isItemEqual(irecipe.getRecipeOutput())) {
@@ -158,7 +160,9 @@ public class PhiloStone {
 
         @Override
         public void apply() {
-            CraftingManager.getInstance().getRecipeList().remove(recipe);
+            CraftingManager.getInstance()
+                .getRecipeList()
+                .remove(recipe);
         }
 
         @Override
@@ -168,17 +172,21 @@ public class PhiloStone {
 
         @Override
         public void undo() {
-            CraftingManager.getInstance().getRecipeList().add(recipe);
+            CraftingManager.getInstance()
+                .getRecipeList()
+                .add(recipe);
         }
 
         @Override
         public String describe() {
-            return "Removing Philosopher's Stone Smelting Recipe for " + recipe.getRecipeOutput().getDisplayName();
+            return "Removing Philosopher's Stone Smelting Recipe for " + recipe.getRecipeOutput()
+                .getDisplayName();
         }
 
         @Override
         public String describeUndo() {
-            return "Un-removing Philosopher's Stone Smelting Recipe for " + recipe.getRecipeOutput().getDisplayName();
+            return "Un-removing Philosopher's Stone Smelting Recipe for " + recipe.getRecipeOutput()
+                .getDisplayName();
         }
 
         @Override
@@ -219,12 +227,14 @@ public class PhiloStone {
 
         @Override
         public void undo() {
-            Iterator<Map.Entry<MetaBlock, MetaBlock[]>> it = WorldTransmutations.MAP.entrySet().iterator();
+            Iterator<Map.Entry<MetaBlock, MetaBlock[]>> it = WorldTransmutations.MAP.entrySet()
+                .iterator();
 
             while (it.hasNext()) {
                 Map.Entry<MetaBlock, MetaBlock[]> entry = it.next();
 
-                if (entry.getKey().equals(this.input) && entry.getValue()[0].equals(this.output)) {
+                if (entry.getKey()
+                    .equals(this.input) && entry.getValue()[0].equals(this.output)) {
                     if (entry.getValue().length > 1 && !entry.getValue()[1].equals(this.sneakOutput)) {
                         continue;
                     } else {
@@ -272,12 +282,14 @@ public class PhiloStone {
         @Override
         public void apply() {
 
-            Iterator<Map.Entry<MetaBlock, MetaBlock[]>> it = WorldTransmutations.MAP.entrySet().iterator();
+            Iterator<Map.Entry<MetaBlock, MetaBlock[]>> it = WorldTransmutations.MAP.entrySet()
+                .iterator();
 
             while (it.hasNext()) {
                 Map.Entry<MetaBlock, MetaBlock[]> entry = it.next();
 
-                if (entry.getKey().equals(this.input) && entry.getValue()[0].equals(this.output)) {
+                if (entry.getKey()
+                    .equals(this.input) && entry.getValue()[0].equals(this.output)) {
                     if (entry.getValue().length > 1 && !entry.getValue()[1].equals(this.sneakOutput)) {
                         continue;
                     } else {

@@ -2,17 +2,6 @@ package moze_intel.projecte.gameObjs.tiles;
 
 import java.util.Map;
 
-import moze_intel.projecte.api.item.IItemEmc;
-import moze_intel.projecte.api.tile.IEmcProvider;
-import moze_intel.projecte.emc.FuelMapper;
-import moze_intel.projecte.gameObjs.items.ItemPE;
-import moze_intel.projecte.network.PacketHandler;
-import moze_intel.projecte.network.packets.CollectorSyncPKT;
-import moze_intel.projecte.utils.Constants;
-import moze_intel.projecte.utils.EMCHelper;
-import moze_intel.projecte.utils.ItemHelper;
-import moze_intel.projecte.utils.WorldHelper;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
@@ -23,6 +12,16 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
+import moze_intel.projecte.api.item.IItemEmc;
+import moze_intel.projecte.api.tile.IEmcProvider;
+import moze_intel.projecte.emc.FuelMapper;
+import moze_intel.projecte.gameObjs.items.ItemPE;
+import moze_intel.projecte.network.PacketHandler;
+import moze_intel.projecte.network.packets.CollectorSyncPKT;
+import moze_intel.projecte.utils.Constants;
+import moze_intel.projecte.utils.EMCHelper;
+import moze_intel.projecte.utils.ItemHelper;
+import moze_intel.projecte.utils.WorldHelper;
 
 public class CollectorMK1Tile extends TileEmc implements IInventory, ISidedInventory, IEmcProvider {
 
@@ -99,15 +98,15 @@ public class CollectorMK1Tile extends TileEmc implements IInventory, ISidedInven
 
         if (numUsing > 0) {
             PacketHandler.sendToAllAround(
-                    new CollectorSyncPKT(displayEmc, displayItemCharge, this.xCoord, this.yCoord, this.zCoord),
-                    new TargetPoint(this.worldObj.provider.dimensionId, this.xCoord, this.yCoord, this.zCoord, 8));
+                new CollectorSyncPKT(displayEmc, displayItemCharge, this.xCoord, this.yCoord, this.zCoord),
+                new TargetPoint(this.worldObj.provider.dimensionId, this.xCoord, this.yCoord, this.zCoord, 8));
         }
     }
 
     private void sortInventory() {
         if (inventory[upgradedSlot] != null) {
             if (!(inventory[lockSlot] != null && inventory[upgradedSlot].getItem() == inventory[lockSlot].getItem()
-                    && inventory[upgradedSlot].stackSize < inventory[upgradedSlot].getMaxStackSize())) {
+                && inventory[upgradedSlot].stackSize < inventory[upgradedSlot].getMaxStackSize())) {
                 for (int i = 1; i < invBufferSize; i++) {
                     if (inventory[i] == null) {
                         inventory[i] = inventory[upgradedSlot];
@@ -146,19 +145,19 @@ public class CollectorMK1Tile extends TileEmc implements IInventory, ISidedInven
 
                 continue;
             } else if (ItemHelper.areItemStacksEqual(current, following)
-                    && following.stackSize < following.getMaxStackSize()) {
-                        int missingForFullStack = following.getMaxStackSize() - following.stackSize;
+                && following.stackSize < following.getMaxStackSize()) {
+                    int missingForFullStack = following.getMaxStackSize() - following.stackSize;
 
-                        if (current.stackSize <= missingForFullStack) {
-                            inventory[nextIndex].stackSize += current.stackSize;
-                            inventory[i] = null;
-                        } else {
-                            inventory[nextIndex].stackSize += missingForFullStack;
-                            decrStackSize(i, missingForFullStack);
-                        }
-
-                        continue;
+                    if (current.stackSize <= missingForFullStack) {
+                        inventory[nextIndex].stackSize += current.stackSize;
+                        inventory[i] = null;
+                    } else {
+                        inventory[nextIndex].stackSize += missingForFullStack;
+                        decrStackSize(i, missingForFullStack);
                     }
+
+                    continue;
+                }
         }
     }
 
@@ -198,7 +197,7 @@ public class CollectorMK1Tile extends TileEmc implements IInventory, ISidedInven
             }
 
             ItemStack result = inventory[lockSlot] == null ? FuelMapper.getFuelUpgrade(inventory[0])
-                    : inventory[lockSlot].copy();
+                : inventory[lockSlot].copy();
 
             long upgradeCost = EMCHelper.getEmcValue(result) - EMCHelper.getEmcValue(inventory[0]);
 
@@ -210,11 +209,11 @@ public class CollectorMK1Tile extends TileEmc implements IInventory, ISidedInven
                     this.setInventorySlotContents(upgradedSlot, result);
                     this.decrStackSize(0, 1);
                 } else if (ItemHelper.basicAreStacksEqual(result, upgrade)
-                        && upgrade.stackSize < upgrade.getMaxStackSize()) {
-                            this.removeEMC(upgradeCost);
-                            inventory[upgradedSlot].stackSize++;
-                            this.decrStackSize(0, 1);
-                        }
+                    && upgrade.stackSize < upgrade.getMaxStackSize()) {
+                        this.removeEMC(upgradeCost);
+                        inventory[upgradedSlot].stackSize++;
+                        this.decrStackSize(0, 1);
+                    }
             }
         } else {
             double toSend = this.getStoredEmc() < emcGen ? this.getStoredEmc() : emcGen;
@@ -253,7 +252,7 @@ public class CollectorMK1Tile extends TileEmc implements IInventory, ISidedInven
         }
 
         return ((int) Math
-                .round(displayItemCharge * i / ((IItemEmc) inventory[0].getItem()).getMaximumEmc(inventory[0])));
+            .round(displayItemCharge * i / ((IItemEmc) inventory[0].getItem()).getMaximumEmc(inventory[0])));
     }
 
     public int getSunLevel() {
@@ -293,7 +292,7 @@ public class CollectorMK1Tile extends TileEmc implements IInventory, ISidedInven
                 return 0;
             } else {
                 reqEmc = EMCHelper.getEmcValue(FuelMapper.getFuelUpgrade(inventory[0]))
-                        - EMCHelper.getEmcValue(inventory[0]);
+                    - EMCHelper.getEmcValue(inventory[0]);
             }
 
         }
@@ -404,10 +403,8 @@ public class CollectorMK1Tile extends TileEmc implements IInventory, ISidedInven
     @Override
     public boolean isUseableByPlayer(EntityPlayer var1) {
         return this.worldObj.getTileEntity(this.xCoord, this.yCoord, this.zCoord) != this ? false
-                : var1.getDistanceSq(
-                        (double) this.xCoord + 0.5D,
-                        (double) this.yCoord + 0.5D,
-                        (double) this.zCoord + 0.5D) <= 64.0D;
+            : var1.getDistanceSq((double) this.xCoord + 0.5D, (double) this.yCoord + 0.5D, (double) this.zCoord + 0.5D)
+                <= 64.0D;
     }
 
     @Override
@@ -454,7 +451,7 @@ public class CollectorMK1Tile extends TileEmc implements IInventory, ISidedInven
 
     private void sendRelayBonus() {
         for (Map.Entry<ForgeDirection, TileEntity> entry : WorldHelper.getAdjacentTileEntitiesMapped(worldObj, this)
-                .entrySet()) {
+            .entrySet()) {
             ForgeDirection dir = entry.getKey();
             TileEntity tile = entry.getValue();
 

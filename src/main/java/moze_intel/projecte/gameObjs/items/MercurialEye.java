@@ -1,11 +1,5 @@
 package moze_intel.projecte.gameObjs.items;
 
-import moze_intel.projecte.PECore;
-import moze_intel.projecte.api.item.IExtraFunction;
-import moze_intel.projecte.utils.Constants;
-import moze_intel.projecte.utils.EMCHelper;
-import moze_intel.projecte.utils.PlayerHelper;
-
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
@@ -24,6 +18,11 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import moze_intel.projecte.PECore;
+import moze_intel.projecte.api.item.IExtraFunction;
+import moze_intel.projecte.utils.Constants;
+import moze_intel.projecte.utils.EMCHelper;
+import moze_intel.projecte.utils.PlayerHelper;
 
 public class MercurialEye extends ItemMode implements IExtraFunction {
 
@@ -71,7 +70,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
             Vec3 look = player.getLookVec();
 
             AxisAlignedBB box = AxisAlignedBB
-                    .getBoundingBox(mop.blockX, mop.blockY, mop.blockZ, mop.blockX, mop.blockY, mop.blockZ);
+                .getBoundingBox(mop.blockX, mop.blockY, mop.blockZ, mop.blockX, mop.blockY, mop.blockZ);
 
             int dX = 0, dY = 0, dZ = 0;
 
@@ -85,8 +84,10 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
                     if (lookingDown || mode == TRANSMUTATION_MODE) {
                         box = box.expand(charge, 0, charge);
                         dY = 1;
-                    } else if (lookingAlongZ) box = box.expand(charge, charge * 2, 0).offset(0, charge, 0);
-                    else box = box.expand(0, charge * 2, charge).offset(0, charge, 0);
+                    } else if (lookingAlongZ) box = box.expand(charge, charge * 2, 0)
+                        .offset(0, charge, 0);
+                    else box = box.expand(0, charge * 2, charge)
+                        .offset(0, charge, 0);
 
                     break;
 
@@ -95,8 +96,10 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
                         box = box.expand(charge, 0, charge);
                         dY = -1;
 
-                    } else if (lookingAlongZ) box = box.expand(charge, charge * 2, 0).offset(0, -charge, 0);
-                    else box = box.expand(0, charge * 2, charge).offset(0, -charge, 0);
+                    } else if (lookingAlongZ) box = box.expand(charge, charge * 2, 0)
+                        .offset(0, -charge, 0);
+                    else box = box.expand(0, charge * 2, charge)
+                        .offset(0, -charge, 0);
 
                     break;
 
@@ -133,30 +136,25 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
                             if (mode == NORMAL_MODE && oldBlock == Blocks.air) {
                                 if (kleinEmc < reqEmc) break;
                                 if (PlayerHelper
-                                        .checkedPlaceBlock(((EntityPlayerMP) player), x, y, z, newBlock, newMeta)) {
+                                    .checkedPlaceBlock(((EntityPlayerMP) player), x, y, z, newBlock, newMeta)) {
                                     removeKleinEMC(stack, reqEmc);
                                     kleinEmc -= reqEmc;
                                 }
                             } else if (mode == TRANSMUTATION_MODE) {
                                 if ((oldBlock == newBlock && oldMeta == newMeta) || oldBlock == Blocks.air
-                                        || world.getTileEntity(x, y, z) != null
-                                        || !EMCHelper.doesItemHaveEmc(new ItemStack(oldBlock, 1, oldMeta))) {
+                                    || world.getTileEntity(x, y, z) != null
+                                    || !EMCHelper.doesItemHaveEmc(new ItemStack(oldBlock, 1, oldMeta))) {
                                     continue;
                                 }
 
                                 long emc = EMCHelper.getEmcValue(new ItemStack(oldBlock, 1, oldMeta));
 
                                 if (emc > reqEmc) {
-                                    if (PlayerHelper.checkedReplaceBlock(
-                                            ((EntityPlayerMP) player),
-                                            x,
-                                            y,
-                                            z,
-                                            newBlock,
-                                            newMeta)) {
+                                    if (PlayerHelper
+                                        .checkedReplaceBlock(((EntityPlayerMP) player), x, y, z, newBlock, newMeta)) {
                                         long difference = emc - reqEmc;
                                         kleinEmc += MathHelper
-                                                .clamp_double(kleinEmc, 0, EMCHelper.getKleinStarMaxEmc(inventory[0]));
+                                            .clamp_double(kleinEmc, 0, EMCHelper.getKleinStarMaxEmc(inventory[0]));
                                         addKleinEMC(stack, difference);
                                     }
                                 } else if (emc < reqEmc) {
@@ -164,29 +162,29 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
 
                                     if (kleinEmc >= difference) {
                                         if (PlayerHelper.checkedReplaceBlock(
-                                                ((EntityPlayerMP) player),
-                                                x,
-                                                y,
-                                                z,
-                                                newBlock,
-                                                newMeta)) {
+                                            ((EntityPlayerMP) player),
+                                            x,
+                                            y,
+                                            z,
+                                            newBlock,
+                                            newMeta)) {
                                             kleinEmc -= difference;
                                             removeKleinEMC(stack, difference);
                                         }
                                     }
                                 } else {
                                     PlayerHelper
-                                            .checkedReplaceBlock(((EntityPlayerMP) player), x, y, z, newBlock, newMeta);
+                                        .checkedReplaceBlock(((EntityPlayerMP) player), x, y, z, newBlock, newMeta);
                                 }
                             }
                         }
                     }
                 }
                 player.worldObj.playSoundAtEntity(
-                        player,
-                        "projecte:item.pepower",
-                        1.0F,
-                        0.80F + ((0.20F / (float) numCharges) * charge));
+                    player,
+                    "projecte:item.pepower",
+                    1.0F,
+                    0.80F + ((0.20F / (float) numCharges) * charge));
             }
         }
 
@@ -205,7 +203,7 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
                 NBTTagCompound tag = nbt.getCompoundTag("tag");
 
                 double newEmc = MathHelper
-                        .clamp_double(tag.getDouble("StoredEMC") + amount, 0, EMCHelper.getKleinStarMaxEmc(kleinStar));
+                    .clamp_double(tag.getDouble("StoredEMC") + amount, 0, EMCHelper.getKleinStarMaxEmc(kleinStar));
 
                 tag.setDouble("StoredEMC", newEmc);
                 break;
@@ -245,12 +243,12 @@ public class MercurialEye extends ItemMode implements IExtraFunction {
     @Override
     public void doExtraFunction(ItemStack stack, EntityPlayer player) {
         player.openGui(
-                PECore.instance,
-                Constants.MERCURIAL_GUI,
-                player.worldObj,
-                (int) player.posX,
-                (int) player.posY,
-                (int) player.posZ);
+            PECore.instance,
+            Constants.MERCURIAL_GUI,
+            player.worldObj,
+            (int) player.posX,
+            (int) player.posY,
+            (int) player.posZ);
     }
 
     @Override

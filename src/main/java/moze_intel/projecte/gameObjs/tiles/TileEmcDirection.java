@@ -1,8 +1,5 @@
 package moze_intel.projecte.gameObjs.tiles;
 
-import moze_intel.projecte.network.PacketHandler;
-import moze_intel.projecte.network.packets.OrientationSyncPKT;
-
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
@@ -10,6 +7,9 @@ import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.util.MathHelper;
 import net.minecraftforge.common.util.ForgeDirection;
+
+import moze_intel.projecte.network.PacketHandler;
+import moze_intel.projecte.network.packets.OrientationSyncPKT;
 
 public abstract class TileEmcDirection extends TileEmc {
 

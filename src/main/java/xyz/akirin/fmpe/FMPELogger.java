@@ -1,10 +1,10 @@
 package xyz.akirin.fmpe;
 
-import moze_intel.projecte.config.ProjectEConfig;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import moze_intel.projecte.config.ProjectEConfig;
 
 public class FMPELogger {
 

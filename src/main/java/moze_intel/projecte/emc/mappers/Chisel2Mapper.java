@@ -4,9 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import moze_intel.projecte.emc.NormalizedSimpleStack;
-import moze_intel.projecte.emc.collector.IMappingCollector;
-
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
@@ -16,14 +13,17 @@ import com.cricketcraft.chisel.api.carving.CarvingUtils;
 import com.cricketcraft.chisel.api.carving.ICarvingGroup;
 import com.cricketcraft.chisel.api.carving.ICarvingRegistry;
 import com.cricketcraft.chisel.api.carving.ICarvingVariation;
+
 import cpw.mods.fml.common.Loader;
+import moze_intel.projecte.emc.NormalizedSimpleStack;
+import moze_intel.projecte.emc.collector.IMappingCollector;
 
 // Thanks to bdew for a first implementation of this:
 // https://github.com/bdew/ProjectE/blob/f1b08624ff47c6cc716576701024cdb38ff3d297/src/main/java/moze_intel/projecte/emc/ChiselMapper.java
 public class Chisel2Mapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 
     public final static String[] chiselBlockNames = new String[] { "marble", "limestone", "andesite", "granite",
-            "diorite" };
+        "diorite" };
 
     @Override
     public String getName() {
@@ -57,7 +57,7 @@ public class Chisel2Mapper implements IEMCMapper<NormalizedSimpleStack, Long> {
     }
 
     protected void handleCarvingGroup(IMappingCollector<NormalizedSimpleStack, Long> mapper, Configuration config,
-            ICarvingGroup group) {
+        ICarvingGroup group) {
         // XXX: Generates way too much Configs
         /*
          * if (!config.getBoolean(group.getName(), "enableCarvingGroups", true, "Enable ICarvingGroup with name=" +

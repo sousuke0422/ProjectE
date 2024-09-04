@@ -3,12 +3,6 @@ package moze_intel.projecte.gameObjs.entity;
 import java.util.Arrays;
 import java.util.List;
 
-import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.gameObjs.container.AlchBagContainer;
-import moze_intel.projecte.gameObjs.items.AlchemicalBag;
-import moze_intel.projecte.playerData.AlchemicalBags;
-import moze_intel.projecte.utils.ItemHelper;
-
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -20,6 +14,12 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
 import com.google.common.collect.Lists;
+
+import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.gameObjs.container.AlchBagContainer;
+import moze_intel.projecte.gameObjs.items.AlchemicalBag;
+import moze_intel.projecte.playerData.AlchemicalBags;
+import moze_intel.projecte.utils.ItemHelper;
 
 public class EntityLootBall extends Entity {
 
@@ -65,13 +65,15 @@ public class EntityLootBall extends Entity {
         this.noClip = this.func_145771_j(this.posX, (this.boundingBox.minY + this.boundingBox.maxY) / 2.0D, this.posZ);
         this.moveEntity(this.motionX, this.motionY, this.motionZ);
         boolean flag = (int) this.prevPosX != (int) this.posX || (int) this.prevPosY != (int) this.posY
-                || (int) this.prevPosZ != (int) this.posZ;
+            || (int) this.prevPosZ != (int) this.posZ;
 
         if (flag || this.ticksExisted % 25 == 0) {
-            if (this.worldObj.getBlock(
+            if (this.worldObj
+                .getBlock(
                     MathHelper.floor_double(this.posX),
                     MathHelper.floor_double(this.posY),
-                    MathHelper.floor_double(this.posZ)).getMaterial() == Material.lava) {
+                    MathHelper.floor_double(this.posZ))
+                .getMaterial() == Material.lava) {
                 this.motionY = 0.20000000298023224D;
                 this.motionX = (double) ((this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F);
                 this.motionZ = (double) ((this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F);
@@ -82,9 +84,9 @@ public class EntityLootBall extends Entity {
         float f = 0.98F;
 
         if (this.onGround) f = this.worldObj.getBlock(
-                MathHelper.floor_double(this.posX),
-                MathHelper.floor_double(this.boundingBox.minY) - 1,
-                MathHelper.floor_double(this.posZ)).slipperiness * 0.98F;
+            MathHelper.floor_double(this.posX),
+            MathHelper.floor_double(this.boundingBox.minY) - 1,
+            MathHelper.floor_double(this.posZ)).slipperiness * 0.98F;
 
         this.motionX *= (double) f;
         this.motionY *= 0.9800000190734863D;
@@ -100,7 +102,7 @@ public class EntityLootBall extends Entity {
             }
             if (ticksExisted % 60 == 0 && !isDead) {
                 List<EntityLootBall> nearby = worldObj
-                        .getEntitiesWithinAABB(EntityLootBall.class, this.boundingBox.expand(1.0F, 1.0F, 1.0F));
+                    .getEntitiesWithinAABB(EntityLootBall.class, this.boundingBox.expand(1.0F, 1.0F, 1.0F));
                 for (EntityLootBall e : nearby) {
                     mergeWith(e);
                 }
@@ -115,7 +117,8 @@ public class EntityLootBall extends Entity {
         }
         other.setDead();
         items.addAll(Lists.newArrayList(other.getItemList()));
-        other.getItemList().clear();
+        other.getItemList()
+            .clear();
         ItemHelper.compactItemList(items);
     }
 
@@ -162,10 +165,10 @@ public class EntityLootBall extends Entity {
 
                 if (playSound) {
                     this.worldObj.playSoundAtEntity(
-                            player,
-                            "random.pop",
-                            0.2F,
-                            ((this.rand.nextFloat() - this.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+                        player,
+                        "random.pop",
+                        0.2F,
+                        ((this.rand.nextFloat() - this.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
                 }
 
                 if (list.size() > 0) {
@@ -236,10 +239,10 @@ public class EntityLootBall extends Entity {
 
             if (playSound) {
                 this.worldObj.playSoundAtEntity(
-                        player,
-                        "random.pop",
-                        0.2F,
-                        ((this.rand.nextFloat() - this.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+                    player,
+                    "random.pop",
+                    0.2F,
+                    ((this.rand.nextFloat() - this.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
             }
 
             if (list.size() > 0) {

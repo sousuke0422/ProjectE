@@ -5,10 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import moze_intel.projecte.emc.collector.IMappingCollector;
-import moze_intel.projecte.utils.ItemHelper;
-import moze_intel.projecte.utils.PELogger;
-
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -16,7 +12,11 @@ import net.minecraftforge.oredict.OreDictionary;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+
 import cpw.mods.fml.common.registry.GameRegistry;
+import moze_intel.projecte.emc.collector.IMappingCollector;
+import moze_intel.projecte.utils.ItemHelper;
+import moze_intel.projecte.utils.PELogger;
 
 public abstract class NormalizedSimpleStack {
 
@@ -51,8 +51,9 @@ public abstract class NormalizedSimpleStack {
             identifier = GameRegistry.findUniqueIdentifierFor(block);
         } catch (Exception e) {
             PELogger.logFatal(
-                    "Could not findUniqueIdentifierFor(%s)",
-                    block != null ? block.getClass().getName() : "null");
+                "Could not findUniqueIdentifierFor(%s)",
+                block != null ? block.getClass()
+                    .getName() : "null");
             e.printStackTrace();
             return null;
         }
@@ -73,8 +74,9 @@ public abstract class NormalizedSimpleStack {
             identifier = GameRegistry.findUniqueIdentifierFor(item);
         } catch (Exception e) {
             PELogger.logFatal(
-                    "Could not findUniqueIdentifierFor(%s)",
-                    item != null ? item.getClass().getName() : "null");
+                "Could not findUniqueIdentifierFor(%s)",
+                item != null ? item.getClass()
+                    .getName() : "null");
             e.printStackTrace();
             return null;
         }
@@ -103,14 +105,16 @@ public abstract class NormalizedSimpleStack {
 
     public static <V extends Comparable<V>> void addMappings(IMappingCollector<NormalizedSimpleStack, V> mapper) {
         for (Map.Entry<String, Set<Integer>> entry : idWithUsedMetaData.entrySet()) {
-            entry.getValue().remove(OreDictionary.WILDCARD_VALUE);
-            entry.getValue().add(0);
+            entry.getValue()
+                .remove(OreDictionary.WILDCARD_VALUE);
+            entry.getValue()
+                .add(0);
             NormalizedSimpleStack stackWildcard = new NSSItem(entry.getKey(), OreDictionary.WILDCARD_VALUE);
             for (int metadata : entry.getValue()) {
                 mapper.addConversion(
-                        1,
-                        stackWildcard,
-                        Arrays.asList((NormalizedSimpleStack) new NSSItem(entry.getKey(), metadata)));
+                    1,
+                    stackWildcard,
+                    Arrays.asList((NormalizedSimpleStack) new NSSItem(entry.getKey(), metadata)));
             }
         }
 
@@ -181,10 +185,10 @@ public abstract class NormalizedSimpleStack {
 
             if (obj != null) {
                 return String.format(
-                        "%s(%s:%s)",
-                        itemName,
-                        Item.itemRegistry.getIDForObject(obj),
-                        damage == OreDictionary.WILDCARD_VALUE ? "*" : damage);
+                    "%s(%s:%s)",
+                    itemName,
+                    Item.itemRegistry.getIDForObject(obj),
+                    damage == OreDictionary.WILDCARD_VALUE ? "*" : damage);
             }
 
             return String.format("%s(???:%s)", itemName, damage == OreDictionary.WILDCARD_VALUE ? "*" : damage);
@@ -291,7 +295,7 @@ public abstract class NormalizedSimpleStack {
         int pipeIndex = serializedItem.lastIndexOf('|');
         if (pipeIndex < 0) {
             throw new IllegalArgumentException(
-                    String.format("Cannot parse '%s' as itemstack. Missing | to separate metadata.", serializedItem));
+                String.format("Cannot parse '%s' as itemstack. Missing | to separate metadata.", serializedItem));
         }
         String itemName = serializedItem.substring(0, pipeIndex);
         String itemDamageString = serializedItem.substring(pipeIndex + 1);
@@ -303,8 +307,8 @@ public abstract class NormalizedSimpleStack {
                 itemDamage = Integer.parseInt(itemDamageString);
             } catch (NumberFormatException e) {
                 throw new IllegalArgumentException(
-                        String.format("Could not parse '%s' to metadata-integer", itemDamageString),
-                        e);
+                    String.format("Could not parse '%s' to metadata-integer", itemDamageString),
+                    e);
             }
         }
 

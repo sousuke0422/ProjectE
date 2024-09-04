@@ -2,15 +2,6 @@ package moze_intel.projecte.gameObjs.items.rings;
 
 import java.util.List;
 
-import moze_intel.projecte.PECore;
-import moze_intel.projecte.api.item.IModeChanger;
-import moze_intel.projecte.api.item.IPedestalItem;
-import moze_intel.projecte.config.ProjectEConfig;
-import moze_intel.projecte.gameObjs.entity.EntityHomingArrow;
-import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
-import moze_intel.projecte.utils.EMCHelper;
-import moze_intel.projecte.utils.MathUtils;
-
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
@@ -29,6 +20,14 @@ import com.google.common.collect.Lists;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import moze_intel.projecte.PECore;
+import moze_intel.projecte.api.item.IModeChanger;
+import moze_intel.projecte.api.item.IPedestalItem;
+import moze_intel.projecte.config.ProjectEConfig;
+import moze_intel.projecte.gameObjs.entity.EntityHomingArrow;
+import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
+import moze_intel.projecte.utils.EMCHelper;
+import moze_intel.projecte.utils.MathUtils;
 
 public class ArchangelSmite extends RingToggle implements IPedestalItem, IModeChanger {
 
@@ -57,7 +56,7 @@ public class ArchangelSmite extends RingToggle implements IPedestalItem, IModeCh
         EntityHomingArrow arrow = new EntityHomingArrow(world, shooter, 2.0F);
 
         if (!(shooter instanceof EntityPlayer)
-                || consumeFuel(((EntityPlayer) shooter), ring, EMCHelper.getEmcValue(Items.arrow), true)) {
+            || consumeFuel(((EntityPlayer) shooter), ring, EMCHelper.getEmcValue(Items.arrow), true)) {
             world.playSoundAtEntity(shooter, "random.bow", 1.0F, 1.0F / (itemRand.nextFloat() * 0.4F + 1.2F) + 0.5F);
             world.spawnEntityInWorld(arrow);
         }
@@ -80,12 +79,13 @@ public class ArchangelSmite extends RingToggle implements IPedestalItem, IModeCh
         if (!world.isRemote && ProjectEConfig.archangelPedCooldown != -1) {
             DMPedestalTile tile = ((DMPedestalTile) world.getTileEntity(x, y, z));
             if (tile.getActivityCooldown() == 0) {
-                if (!world.getEntitiesWithinAABB(EntityLiving.class, tile.getEffectBounds()).isEmpty()) {
+                if (!world.getEntitiesWithinAABB(EntityLiving.class, tile.getEffectBounds())
+                    .isEmpty()) {
                     for (int i = 0; i < 3; i++) {
                         EntityHomingArrow arrow = new EntityHomingArrow(
-                                world,
-                                FakePlayerFactory.get(((WorldServer) world), PECore.FAKEPLAYER_GAMEPROFILE),
-                                2.0F);
+                            world,
+                            FakePlayerFactory.get(((WorldServer) world), PECore.FAKEPLAYER_GAMEPROFILE),
+                            2.0F);
                         arrow.posX = tile.centeredX;
                         arrow.posY = tile.centeredY + 2;
                         arrow.posZ = tile.centeredZ;
@@ -93,10 +93,10 @@ public class ArchangelSmite extends RingToggle implements IPedestalItem, IModeCh
                         arrow.motionZ = 0;
                         arrow.motionY = 1;
                         world.playSoundAtEntity(
-                                arrow,
-                                "random.bow",
-                                1.0F,
-                                1.0F / (itemRand.nextFloat() * 0.4F + 1.2F) + 0.5F);
+                            arrow,
+                            "random.bow",
+                            1.0F,
+                            1.0F / (itemRand.nextFloat() * 0.4F + 1.2F) + 0.5F);
                         world.spawnEntityInWorld(arrow);
                     }
                 }
@@ -113,9 +113,9 @@ public class ArchangelSmite extends RingToggle implements IPedestalItem, IModeCh
         if (ProjectEConfig.archangelPedCooldown != -1) {
             list.add(EnumChatFormatting.BLUE + StatCollector.translateToLocal("pe.archangel.pedestal1"));
             list.add(
-                    EnumChatFormatting.BLUE + String.format(
-                            StatCollector.translateToLocal("pe.archangel.pedestal2"),
-                            MathUtils.tickToSecFormatted(ProjectEConfig.archangelPedCooldown)));
+                EnumChatFormatting.BLUE + String.format(
+                    StatCollector.translateToLocal("pe.archangel.pedestal2"),
+                    MathUtils.tickToSecFormatted(ProjectEConfig.archangelPedCooldown)));
         }
         return list;
     }

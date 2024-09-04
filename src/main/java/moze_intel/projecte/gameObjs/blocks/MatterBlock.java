@@ -2,8 +2,6 @@ package moze_intel.projecte.gameObjs.blocks;
 
 import java.util.List;
 
-import moze_intel.projecte.gameObjs.ObjHandler;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -16,6 +14,7 @@ import net.minecraft.world.World;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import moze_intel.projecte.gameObjs.ObjHandler;
 
 public class MatterBlock extends Block {
 
@@ -50,7 +49,7 @@ public class MatterBlock extends Block {
                 return stack.getItem() == ObjHandler.rmPick || stack.getItem() == ObjHandler.rmStar;
             } else {
                 return stack.getItem() == ObjHandler.rmPick || stack.getItem() == ObjHandler.dmPick
-                        || stack.getItem() == ObjHandler.rmStar;
+                    || stack.getItem() == ObjHandler.rmStar;
             }
         }
 

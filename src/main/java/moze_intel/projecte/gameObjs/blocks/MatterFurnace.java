@@ -2,15 +2,6 @@ package moze_intel.projecte.gameObjs.blocks;
 
 import java.util.Random;
 
-import moze_intel.projecte.PECore;
-import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.gameObjs.tiles.DMFurnaceTile;
-import moze_intel.projecte.gameObjs.tiles.RMFurnaceTile;
-import moze_intel.projecte.gameObjs.tiles.TileEmc;
-import moze_intel.projecte.utils.ComparatorHelper;
-import moze_intel.projecte.utils.Constants;
-import moze_intel.projecte.utils.WorldHelper;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -25,6 +16,14 @@ import net.minecraft.world.World;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import moze_intel.projecte.PECore;
+import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.gameObjs.tiles.DMFurnaceTile;
+import moze_intel.projecte.gameObjs.tiles.RMFurnaceTile;
+import moze_intel.projecte.gameObjs.tiles.TileEmc;
+import moze_intel.projecte.utils.ComparatorHelper;
+import moze_intel.projecte.utils.Constants;
+import moze_intel.projecte.utils.WorldHelper;
 
 public class MatterFurnace extends BlockDirection {
 
@@ -58,12 +57,12 @@ public class MatterFurnace extends BlockDirection {
     @Override
     public Item getItemDropped(int no, Random rand, int clue) {
         return isHighTier ? Item.getItemFromBlock(ObjHandler.rmFurnaceOff)
-                : Item.getItemFromBlock(ObjHandler.dmFurnaceOff);
+            : Item.getItemFromBlock(ObjHandler.dmFurnaceOff);
     }
 
     @Override
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX,
-            float hitY, float hitZ) {
+        float hitY, float hitZ) {
         if (!world.isRemote) {
             if (isHighTier) {
                 player.openGui(PECore.instance, Constants.RM_FURNACE_GUI, world, x, y, z);
@@ -166,7 +165,7 @@ public class MatterFurnace extends BlockDirection {
     public void registerBlockIcons(IIconRegister register) {
         this.blockIcon = register.registerIcon("projecte:" + textureName);
         front = register
-                .registerIcon("projecte:matter_furnace/" + (isActive ? (textureName + "_on") : (textureName + "_off")));
+            .registerIcon("projecte:matter_furnace/" + (isActive ? (textureName + "_on") : (textureName + "_off")));
     }
 
     @SideOnly(Side.CLIENT)
@@ -181,7 +180,7 @@ public class MatterFurnace extends BlockDirection {
     @SideOnly(Side.CLIENT)
     public Item getItem(World world, int x, int y, int z) {
         return isHighTier ? Item.getItemFromBlock(ObjHandler.rmFurnaceOff)
-                : Item.getItemFromBlock(ObjHandler.dmFurnaceOff);
+            : Item.getItemFromBlock(ObjHandler.dmFurnaceOff);
     }
 
     @Override

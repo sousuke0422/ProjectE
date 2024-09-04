@@ -3,11 +3,11 @@ package moze_intel.projecte.emc.mappers;
 import java.util.List;
 import java.util.Map;
 
+import net.minecraftforge.common.config.Configuration;
+
 import moze_intel.projecte.emc.NormalizedSimpleStack;
 import moze_intel.projecte.emc.collector.IMappingCollector;
 import moze_intel.projecte.impl.ConversionProxyImpl;
-
-import net.minecraftforge.common.config.Configuration;
 
 public class APICustomConversionMapper implements IEMCMapper<NormalizedSimpleStack, Long> {
 
@@ -29,15 +29,16 @@ public class APICustomConversionMapper implements IEMCMapper<NormalizedSimpleSta
     @Override
     public void addMappings(IMappingCollector<NormalizedSimpleStack, Long> mapper, Configuration config) {
         for (Map.Entry<String, List<ConversionProxyImpl.APIConversion>> entry : ConversionProxyImpl.instance.storedConversions
-                .entrySet()) {
+            .entrySet()) {
             if (config.getBoolean(
+                entry.getKey(),
+                "allow",
+                true,
+                String.format(
+                    "Allow Mod %s to add its %d Recipes to the EMC Calculation",
                     entry.getKey(),
-                    "allow",
-                    true,
-                    String.format(
-                            "Allow Mod %s to add its %d Recipes to the EMC Calculation",
-                            entry.getKey(),
-                            entry.getValue().size()))) {
+                    entry.getValue()
+                        .size()))) {
                 for (ConversionProxyImpl.APIConversion apiConversion : entry.getValue()) {
                     mapper.addConversion(apiConversion.amount, apiConversion.output, apiConversion.ingredients);
                 }

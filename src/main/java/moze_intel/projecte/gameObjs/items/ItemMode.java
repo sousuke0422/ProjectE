@@ -2,8 +2,6 @@ package moze_intel.projecte.gameObjs.items;
 
 import java.util.List;
 
-import moze_intel.projecte.api.item.IModeChanger;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChatComponentTranslation;
@@ -12,6 +10,7 @@ import net.minecraft.util.StatCollector;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import moze_intel.projecte.api.item.IModeChanger;
 
 public abstract class ItemMode extends ItemCharge implements IModeChanger {
 
@@ -51,9 +50,9 @@ public abstract class ItemMode extends ItemCharge implements IModeChanger {
     public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4) {
         if (stack.hasTagCompound() && this.numModes > 0) {
             list.add(
-                    StatCollector.translateToLocal("pe.item.mode") + ": "
-                            + EnumChatFormatting.AQUA
-                            + getModeDescription(stack));
+                StatCollector.translateToLocal("pe.item.mode") + ": "
+                    + EnumChatFormatting.AQUA
+                    + getModeDescription(stack));
         }
     }
 }

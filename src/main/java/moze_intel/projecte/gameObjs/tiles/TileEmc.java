@@ -2,17 +2,17 @@ package moze_intel.projecte.gameObjs.tiles;
 
 import java.util.Map;
 
-import moze_intel.projecte.api.tile.IEmcAcceptor;
-import moze_intel.projecte.api.tile.IEmcProvider;
-import moze_intel.projecte.api.tile.TileEmcBase;
-import moze_intel.projecte.utils.Constants;
-import moze_intel.projecte.utils.WorldHelper;
-
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import com.google.common.base.Predicates;
 import com.google.common.collect.Maps;
+
+import moze_intel.projecte.api.tile.IEmcAcceptor;
+import moze_intel.projecte.api.tile.IEmcProvider;
+import moze_intel.projecte.api.tile.TileEmcBase;
+import moze_intel.projecte.utils.Constants;
+import moze_intel.projecte.utils.WorldHelper;
 
 public abstract class TileEmc extends TileEmcBase {
 
@@ -41,15 +41,18 @@ public abstract class TileEmc extends TileEmcBase {
         }
 
         Map<ForgeDirection, TileEntity> tiles = Maps.filterValues(
-                WorldHelper.getAdjacentTileEntitiesMapped(worldObj, this),
-                Predicates.instanceOf(IEmcAcceptor.class));
+            WorldHelper.getAdjacentTileEntitiesMapped(worldObj, this),
+            Predicates.instanceOf(IEmcAcceptor.class));
 
         double emcPer = emc / tiles.size();
         for (Map.Entry<ForgeDirection, TileEntity> entry : tiles.entrySet()) {
             if (this instanceof RelayMK1Tile && entry.getValue() instanceof RelayMK1Tile) {
                 continue;
             }
-            double provide = ((IEmcProvider) this).provideEMC(entry.getKey().getOpposite(), emcPer);
+            double provide = ((IEmcProvider) this).provideEMC(
+                entry.getKey()
+                    .getOpposite(),
+                emcPer);
             double remain = provide - ((IEmcAcceptor) entry.getValue()).acceptEMC(entry.getKey(), provide);
             this.addEMC(remain);
         }

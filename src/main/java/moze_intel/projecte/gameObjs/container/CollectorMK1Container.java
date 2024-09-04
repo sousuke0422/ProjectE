@@ -2,11 +2,6 @@ package moze_intel.projecte.gameObjs.container;
 
 import javax.annotation.Nonnull;
 
-import moze_intel.projecte.emc.FuelMapper;
-import moze_intel.projecte.gameObjs.container.slots.collector.SlotCollectorInv;
-import moze_intel.projecte.gameObjs.container.slots.collector.SlotCollectorLock;
-import moze_intel.projecte.gameObjs.tiles.CollectorMK1Tile;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.ICrafting;
@@ -15,6 +10,10 @@ import net.minecraft.item.ItemStack;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import moze_intel.projecte.emc.FuelMapper;
+import moze_intel.projecte.gameObjs.container.slots.collector.SlotCollectorInv;
+import moze_intel.projecte.gameObjs.container.slots.collector.SlotCollectorLock;
+import moze_intel.projecte.gameObjs.tiles.CollectorMK1Tile;
 
 public class CollectorMK1Container extends LongContainer {
 
@@ -129,7 +128,7 @@ public class CollectorMK1Container extends LongContainer {
             }
         } else if (slotIndex >= 11 && slotIndex <= 46) {
             if (!FuelMapper.isStackFuel(stack) || FuelMapper.isStackMaxFuel(stack)
-                    || !this.mergeItemStack(stack, 1, 8, false)) {
+                || !this.mergeItemStack(stack, 1, 8, false)) {
                 return null;
             }
         } else {

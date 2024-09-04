@@ -4,8 +4,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import moze_intel.projecte.gameObjs.entity.EntityLootBall;
-
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Blocks;
@@ -17,6 +15,8 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.oredict.OreDictionary;
 
 import com.google.common.collect.Lists;
+
+import moze_intel.projecte.gameObjs.entity.EntityLootBall;
 
 /**
  * Helpers for Inventories, ItemStacks, Items, and the Ore Dictionary Notice: Please try to keep methods tidy and
@@ -37,7 +37,7 @@ public final class ItemHelper {
         }
 
         if (stack1.getItemDamage() == OreDictionary.WILDCARD_VALUE
-                || stack2.getItemDamage() == OreDictionary.WILDCARD_VALUE) {
+            || stack2.getItemDamage() == OreDictionary.WILDCARD_VALUE) {
             return true;
         }
 
@@ -94,7 +94,8 @@ public final class ItemHelper {
                 continue;
             }
 
-            if (stack.getItem().equals(toSearch.getItem())) {
+            if (stack.getItem()
+                .equals(toSearch.getItem())) {
                 if (!stack.getHasSubtypes() || stack.getItemDamage() == toSearch.getItemDamage()) {
                     return true;
                 }
@@ -164,7 +165,8 @@ public final class ItemHelper {
                     try {
                         copy.setItemDamage(i);
 
-                        if (copy.getUnlocalizedName() == null || copy.getUnlocalizedName().equals(startName)) {
+                        if (copy.getUnlocalizedName() == null || copy.getUnlocalizedName()
+                            .equals(startName)) {
                             result.addAll(list);
                             break;
                         }
@@ -352,7 +354,7 @@ public final class ItemHelper {
             }
 
             if (inv.isItemValidForSlot(i, stack) && areItemStacksEqual(stack, invStack)
-                    && invStack.stackSize < invStack.getMaxStackSize()) {
+                && invStack.stackSize < invStack.getMaxStackSize()) {
                 int remaining = invStack.getMaxStackSize() - invStack.stackSize;
 
                 if (remaining >= stack.stackSize) {

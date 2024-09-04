@@ -2,10 +2,6 @@ package moze_intel.projecte.gameObjs.items;
 
 import java.util.List;
 
-import moze_intel.projecte.api.item.IItemEmc;
-import moze_intel.projecte.utils.AchievementHandler;
-import moze_intel.projecte.utils.EMCHelper;
-
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
@@ -19,6 +15,9 @@ import net.minecraft.world.World;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import moze_intel.projecte.api.item.IItemEmc;
+import moze_intel.projecte.utils.AchievementHandler;
+import moze_intel.projecte.utils.EMCHelper;
 
 public class KleinStar extends ItemPE implements IItemEmc {
 

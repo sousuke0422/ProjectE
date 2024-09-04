@@ -3,6 +3,11 @@ package moze_intel.projecte.integration.MineTweaker;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.CraftingManager;
+import net.minecraft.item.crafting.IRecipe;
+
+import cpw.mods.fml.common.registry.GameRegistry;
 import minetweaker.IUndoableAction;
 import minetweaker.MineTweakerAPI;
 import minetweaker.api.item.IItemStack;
@@ -10,14 +15,8 @@ import minetweaker.api.minecraft.MineTweakerMC;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.customRecipes.RecipeShapedKleinStar;
 import moze_intel.projecte.gameObjs.customRecipes.RecipeShapelessHidden;
-
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.CraftingManager;
-import net.minecraft.item.crafting.IRecipe;
-
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
-import cpw.mods.fml.common.registry.GameRegistry;
 
 @ZenClass("mods.projecte.KleinStar")
 public class KleinStar {
@@ -76,7 +75,7 @@ public class KleinStar {
         @Override
         public void apply() {
             recipe = shaped ? new RecipeShapedKleinStar(3, 3, inputs, output)
-                    : new RecipeShapelessHidden(output, (Object) inputs);
+                : new RecipeShapelessHidden(output, (Object) inputs);
             GameRegistry.addRecipe(recipe);
         }
 
@@ -87,7 +86,9 @@ public class KleinStar {
 
         @Override
         public void undo() {
-            CraftingManager.getInstance().getRecipeList().remove(recipe);
+            CraftingManager.getInstance()
+                .getRecipeList()
+                .remove(recipe);
         }
 
         @Override
@@ -114,7 +115,8 @@ public class KleinStar {
         public RemoveRecipeAction(IItemStack rem) {
             remove = MineTweakerMC.getItemStack(rem);
 
-            List<IRecipe> allrecipes = CraftingManager.getInstance().getRecipeList();
+            List<IRecipe> allrecipes = CraftingManager.getInstance()
+                .getRecipeList();
             for (IRecipe irecipe : allrecipes) {
                 if (irecipe instanceof RecipeShapelessHidden) {
                     if (remove.isItemEqual(irecipe.getRecipeOutput())) {
@@ -126,7 +128,9 @@ public class KleinStar {
 
         @Override
         public void apply() {
-            CraftingManager.getInstance().getRecipeList().remove(recipe);
+            CraftingManager.getInstance()
+                .getRecipeList()
+                .remove(recipe);
         }
 
         @Override
@@ -136,17 +140,21 @@ public class KleinStar {
 
         @Override
         public void undo() {
-            CraftingManager.getInstance().getRecipeList().add(recipe);
+            CraftingManager.getInstance()
+                .getRecipeList()
+                .add(recipe);
         }
 
         @Override
         public String describe() {
-            return "Removing recipe for " + recipe.getRecipeOutput().getDisplayName() + " in a " + recipe.getClass();
+            return "Removing recipe for " + recipe.getRecipeOutput()
+                .getDisplayName() + " in a " + recipe.getClass();
         }
 
         @Override
         public String describeUndo() {
-            return "Un-removing recipe for " + recipe.getRecipeOutput().getDisplayName() + " in a " + recipe.getClass();
+            return "Un-removing recipe for " + recipe.getRecipeOutput()
+                .getDisplayName() + " in a " + recipe.getClass();
         }
 
         @Override

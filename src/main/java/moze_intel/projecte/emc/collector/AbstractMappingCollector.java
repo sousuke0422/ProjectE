@@ -6,7 +6,7 @@ import java.util.Map;
 import moze_intel.projecte.emc.arithmetics.IValueArithmetic;
 
 public abstract class AbstractMappingCollector<T, V extends Comparable<V>, A extends IValueArithmetic>
-        implements IExtendedMappingCollector<T, V, A> {
+    implements IExtendedMappingCollector<T, V, A> {
 
     A defaultArithmetic;
 
@@ -47,7 +47,7 @@ public abstract class AbstractMappingCollector<T, V extends Comparable<V>, A ext
     }
 
     public abstract void addConversion(int outnumber, T output, Map<T, Integer> ingredientsWithAmount,
-            A arithmeticForConversion);
+        A arithmeticForConversion);
 
     public A getArithmetic() {
         return this.defaultArithmetic;

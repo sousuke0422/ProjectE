@@ -2,10 +2,6 @@ package moze_intel.projecte.gameObjs.items.rings;
 
 import java.util.List;
 
-import moze_intel.projecte.api.item.IPedestalItem;
-import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
-import moze_intel.projecte.utils.WorldHelper;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
@@ -15,6 +11,10 @@ import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
 import com.google.common.collect.Lists;
+
+import moze_intel.projecte.api.item.IPedestalItem;
+import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
+import moze_intel.projecte.utils.WorldHelper;
 
 public class MindStone extends RingToggle implements IPedestalItem {
 
@@ -51,7 +51,7 @@ public class MindStone extends RingToggle implements IPedestalItem {
 
     @Override
     public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int par4, int par5, int par6, int par7,
-            float par8, float par9, float par10) {
+        float par8, float par9, float par10) {
         if (!world.isRemote && stack.getItemDamage() == 0 && getStoredXP(stack) != 0) {
             int toAdd = removeStoredXP(stack, TRANSFER_RATE);
 
@@ -75,7 +75,7 @@ public class MindStone extends RingToggle implements IPedestalItem {
             player.experienceTotal = experiencetotal;
             player.experienceLevel = getLvlForXP(experiencetotal);
             player.experience = (float) (experiencetotal - getXPForLvl(player.experienceLevel))
-                    / (float) player.xpBarCap();
+                / (float) player.xpBarCap();
         }
     }
 

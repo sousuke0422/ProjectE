@@ -1,11 +1,5 @@
 package moze_intel.projecte.impl;
 
-import moze_intel.projecte.api.proxy.IBlacklistProxy;
-import moze_intel.projecte.gameObjs.items.TimeWatch;
-import moze_intel.projecte.utils.NBTWhitelist;
-import moze_intel.projecte.utils.PELogger;
-import moze_intel.projecte.utils.WorldHelper;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -14,6 +8,11 @@ import com.google.common.base.Preconditions;
 
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.LoaderState;
+import moze_intel.projecte.api.proxy.IBlacklistProxy;
+import moze_intel.projecte.gameObjs.items.TimeWatch;
+import moze_intel.projecte.utils.NBTWhitelist;
+import moze_intel.projecte.utils.PELogger;
+import moze_intel.projecte.utils.WorldHelper;
 
 public class BlacklistProxyImpl implements IBlacklistProxy {
 
@@ -25,40 +24,68 @@ public class BlacklistProxyImpl implements IBlacklistProxy {
     public void blacklistInterdiction(Class<? extends Entity> clazz) {
         Preconditions.checkNotNull(clazz);
         Preconditions.checkState(
-                Loader.instance().isInState(LoaderState.POSTINITIALIZATION),
-                "Mod %s registering interdiction blacklist at incorrect time!",
-                Loader.instance().activeModContainer().getModId());
-        doBlacklistInterdiction(clazz, Loader.instance().activeModContainer().getModId());
+            Loader.instance()
+                .isInState(LoaderState.POSTINITIALIZATION),
+            "Mod %s registering interdiction blacklist at incorrect time!",
+            Loader.instance()
+                .activeModContainer()
+                .getModId());
+        doBlacklistInterdiction(
+            clazz,
+            Loader.instance()
+                .activeModContainer()
+                .getModId());
     }
 
     @Override
     public void blacklistSwiftwolf(Class<? extends Entity> clazz) {
         Preconditions.checkNotNull(clazz);
         Preconditions.checkState(
-                Loader.instance().isInState(LoaderState.POSTINITIALIZATION),
-                "Mod %s registering SWRG repel at incorrect time!",
-                Loader.instance().activeModContainer().getModId());
-        doBlacklistSwiftwolf(clazz, Loader.instance().activeModContainer().getModId());
+            Loader.instance()
+                .isInState(LoaderState.POSTINITIALIZATION),
+            "Mod %s registering SWRG repel at incorrect time!",
+            Loader.instance()
+                .activeModContainer()
+                .getModId());
+        doBlacklistSwiftwolf(
+            clazz,
+            Loader.instance()
+                .activeModContainer()
+                .getModId());
     }
 
     @Override
     public void blacklistTimeWatch(Class<? extends TileEntity> clazz) {
         Preconditions.checkNotNull(clazz);
         Preconditions.checkState(
-                Loader.instance().isInState(LoaderState.POSTINITIALIZATION),
-                "Mod %s registering TimeWatch blacklist at incorrect time!",
-                Loader.instance().activeModContainer().getModId());
-        doBlacklistTimewatch(clazz, Loader.instance().activeModContainer().getModId());
+            Loader.instance()
+                .isInState(LoaderState.POSTINITIALIZATION),
+            "Mod %s registering TimeWatch blacklist at incorrect time!",
+            Loader.instance()
+                .activeModContainer()
+                .getModId());
+        doBlacklistTimewatch(
+            clazz,
+            Loader.instance()
+                .activeModContainer()
+                .getModId());
     }
 
     @Override
     public void whitelistNBT(ItemStack stack) {
         Preconditions.checkNotNull(stack);
         Preconditions.checkState(
-                Loader.instance().isInState(LoaderState.POSTINITIALIZATION),
-                "Mod %s registering NBT whitelist at incorrect time!",
-                Loader.instance().activeModContainer().getModId());
-        doWhitelistNBT(stack, Loader.instance().activeModContainer().getModId());
+            Loader.instance()
+                .isInState(LoaderState.POSTINITIALIZATION),
+            "Mod %s registering NBT whitelist at incorrect time!",
+            Loader.instance()
+                .activeModContainer()
+                .getModId());
+        doWhitelistNBT(
+            stack,
+            Loader.instance()
+                .activeModContainer()
+                .getModId());
     }
 
     /**

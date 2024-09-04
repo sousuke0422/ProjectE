@@ -1,8 +1,5 @@
 package moze_intel.projecte.gameObjs.items.tools;
 
-import moze_intel.projecte.api.item.IExtraFunction;
-import moze_intel.projecte.config.ProjectEConfig;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityLivingBase;
@@ -15,6 +12,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 import com.google.common.collect.Multimap;
+
+import moze_intel.projecte.api.item.IExtraFunction;
+import moze_intel.projecte.config.ProjectEConfig;
 
 public class DarkSword extends PEToolBase implements IExtraFunction {
 
@@ -44,9 +44,9 @@ public class DarkSword extends PEToolBase implements IExtraFunction {
         } else {
             Material material = p_150893_2_.getMaterial();
             return material != Material.plants && material != Material.vine
-                    && material != Material.coral
-                    && material != Material.leaves
-                    && material != Material.gourd ? 1.0F : 1.5F;
+                && material != Material.coral
+                && material != Material.leaves
+                && material != Material.gourd ? 1.0F : 1.5F;
         }
     }
 
@@ -87,8 +87,8 @@ public class DarkSword extends PEToolBase implements IExtraFunction {
 
         Multimap multimap = super.getAttributeModifiers(stack);
         multimap.put(
-                SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName(),
-                new AttributeModifier(field_111210_e, "Weapon modifier", damage, 0));
+            SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName(),
+            new AttributeModifier(field_111210_e, "Weapon modifier", damage, 0));
         return multimap;
     }
 }

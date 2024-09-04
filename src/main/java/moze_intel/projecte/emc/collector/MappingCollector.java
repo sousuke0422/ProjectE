@@ -5,13 +5,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import com.google.common.collect.Maps;
+
 import moze_intel.projecte.emc.arithmetics.IValueArithmetic;
 import moze_intel.projecte.utils.PELogger;
 
-import com.google.common.collect.Maps;
-
 public abstract class MappingCollector<T, V extends Comparable<V>, A extends IValueArithmetic<V>>
-        extends AbstractMappingCollector<T, V, A> {
+    extends AbstractMappingCollector<T, V, A> {
 
     protected static final boolean DEBUG_GRAPHMAPPER = false;
 
@@ -76,15 +76,15 @@ public abstract class MappingCollector<T, V extends Comparable<V>, A extends IVa
     }
 
     public void addConversion(int outnumber, T output, Map<T, Integer> ingredientsWithAmount,
-            A arithmeticForConversion) {
+        A arithmeticForConversion) {
         ingredientsWithAmount = Maps.newHashMap(ingredientsWithAmount);
         if (output == null || ingredientsWithAmount.containsKey(null)) {
             PELogger.logWarn(
-                    String.format(
-                            "Ignoring Recipe because of invalid ingredient or output: %s -> %dx%s",
-                            ingredientsWithAmount,
-                            outnumber,
-                            output));
+                String.format(
+                    "Ignoring Recipe because of invalid ingredient or output: %s -> %dx%s",
+                    ingredientsWithAmount,
+                    outnumber,
+                    output));
             return;
         }
         if (outnumber <= 0) throw new IllegalArgumentException("outnumber has to be > 0!");
@@ -102,11 +102,11 @@ public abstract class MappingCollector<T, V extends Comparable<V>, A extends IVa
     public void setValueBefore(T something, V value) {
         if (something == null) return;
         if (fixValueBeforeInherit.containsKey(something)) PELogger.logWarn(
-                "Overwriting fixValueBeforeInherit for " + something
-                        + ":"
-                        + fixValueBeforeInherit.get(something)
-                        + " to "
-                        + value);
+            "Overwriting fixValueBeforeInherit for " + something
+                + ":"
+                + fixValueBeforeInherit.get(something)
+                + " to "
+                + value);
         fixValueBeforeInherit.put(something, value);
         fixValueAfterInherit.remove(something);
     }
@@ -115,11 +115,11 @@ public abstract class MappingCollector<T, V extends Comparable<V>, A extends IVa
     public void setValueAfter(T something, V value) {
         if (something == null) return;
         if (fixValueAfterInherit.containsKey(something)) PELogger.logWarn(
-                "Overwriting fixValueAfterInherit for " + something
-                        + ":"
-                        + fixValueAfterInherit.get(something)
-                        + " to "
-                        + value);
+            "Overwriting fixValueAfterInherit for " + something
+                + ":"
+                + fixValueAfterInherit.get(something)
+                + " to "
+                + value);
         fixValueAfterInherit.put(something, value);
     }
 
@@ -127,11 +127,11 @@ public abstract class MappingCollector<T, V extends Comparable<V>, A extends IVa
     public void setValueFromConversion(int outnumber, T something, Map<T, Integer> ingredientsWithAmount) {
         if (something == null || ingredientsWithAmount.containsKey(null)) {
             PELogger.logWarn(
-                    String.format(
-                            "Ignoring setValueFromConversion because of invalid ingredient or output: %s -> %dx%s",
-                            ingredientsWithAmount,
-                            outnumber,
-                            something));
+                String.format(
+                    "Ignoring setValueFromConversion because of invalid ingredient or output: %s -> %dx%s",
+                    ingredientsWithAmount,
+                    outnumber,
+                    something));
             return;
         }
         if (outnumber <= 0) throw new IllegalArgumentException("outnumber has to be > 0!");
@@ -140,7 +140,7 @@ public abstract class MappingCollector<T, V extends Comparable<V>, A extends IVa
         if (overwriteConversion.containsKey(something)) {
             Conversion oldConversion = overwriteConversion.get(something);
             PELogger.logWarn(
-                    "Overwriting setValueFromConversion " + overwriteConversion.get(something) + " with " + conversion);
+                "Overwriting setValueFromConversion " + overwriteConversion.get(something) + " with " + conversion);
             for (T ingredient : ingredientsWithAmount.keySet()) {
                 getUsesFor(ingredient).remove(oldConversion);
             }
@@ -186,13 +186,23 @@ public abstract class MappingCollector<T, V extends Comparable<V>, A extends IVa
             if (ingredientsWithAmount == null || ingredientsWithAmount.size() == 0) return "nothing";
             StringBuilder sb = new StringBuilder();
             boolean first = true;
-            Iterator<Map.Entry<T, Integer>> iter = ingredientsWithAmount.entrySet().iterator();
+            Iterator<Map.Entry<T, Integer>> iter = ingredientsWithAmount.entrySet()
+                .iterator();
             if (iter.hasNext()) {
                 Map.Entry<T, Integer> entry = iter.next();
-                sb.append(entry.getValue()).append("*").append(entry.getKey().toString());
+                sb.append(entry.getValue())
+                    .append("*")
+                    .append(
+                        entry.getKey()
+                            .toString());
                 while (iter.hasNext()) {
                     entry = iter.next();
-                    sb.append(" + ").append(entry.getValue()).append("*").append(entry.getKey().toString());
+                    sb.append(" + ")
+                        .append(entry.getValue())
+                        .append("*")
+                        .append(
+                            entry.getKey()
+                                .toString());
                 }
             }
 

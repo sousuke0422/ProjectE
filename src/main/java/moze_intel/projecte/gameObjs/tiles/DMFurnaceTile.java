@@ -1,7 +1,5 @@
 package moze_intel.projecte.gameObjs.tiles;
 
-import moze_intel.projecte.api.item.IItemEmc;
-
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
@@ -10,6 +8,7 @@ import net.minecraft.tileentity.TileEntityFurnace;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import moze_intel.projecte.api.item.IItemEmc;
 
 public class DMFurnaceTile extends RMFurnaceTile implements IInventory, ISidedInventory {
 
@@ -41,7 +40,8 @@ public class DMFurnaceTile extends RMFurnaceTile implements IInventory, ISidedIn
         if (slot == 0) {
             return TileEntityFurnace.isItemFuel(stack) || stack.getItem() instanceof IItemEmc;
         } else if (slot >= 1 && slot <= 9) {
-            return FurnaceRecipes.smelting().getSmeltingResult(stack) != null;
+            return FurnaceRecipes.smelting()
+                .getSmeltingResult(stack) != null;
         }
 
         return false;

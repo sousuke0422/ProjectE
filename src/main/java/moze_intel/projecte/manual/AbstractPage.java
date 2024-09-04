@@ -2,9 +2,6 @@ package moze_intel.projecte.manual;
 
 import java.util.List;
 
-import moze_intel.projecte.gameObjs.gui.GUIManual;
-import moze_intel.projecte.utils.CollectionHelper;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
@@ -15,6 +12,8 @@ import com.google.common.collect.Lists;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import moze_intel.projecte.gameObjs.gui.GUIManual;
+import moze_intel.projecte.utils.CollectionHelper;
 
 @SideOnly(Side.CLIENT)
 public abstract class AbstractPage {
@@ -50,9 +49,11 @@ public abstract class AbstractPage {
     }
 
     public static AbstractPage createItemPage(ItemStack stack, PageCategory category) {
-        String body = StatCollector.translateToLocal("pe.manual." + stack.getUnlocalizedName().substring(5));
+        String body = StatCollector.translateToLocal(
+            "pe.manual." + stack.getUnlocalizedName()
+                .substring(5));
         List<List<String>> parts = CollectionHelper
-                .splitToLength(GUIManual.splitBody(body), GUIManual.TEXT_HEIGHT / GUIManual.TEXT_Y_OFFSET);
+            .splitToLength(GUIManual.splitBody(body), GUIManual.TEXT_HEIGHT / GUIManual.TEXT_Y_OFFSET);
         AbstractPage ret = new ItemPage(stack.copy(), category, StringUtils.join(parts.get(0), ""));
         for (int i = 1; i < parts.size(); i++) {
             ret.addSubPage(new ItemPage(stack.copy(), category, StringUtils.join(parts.get(i), "")).setIndexed(false));
@@ -63,7 +64,7 @@ public abstract class AbstractPage {
     public static AbstractPage createTextPages(String identifier, PageCategory category) {
         String body = StatCollector.translateToLocal("pe.manual." + identifier);
         List<List<String>> parts = CollectionHelper
-                .splitToLength(GUIManual.splitBody(body), GUIManual.TEXT_HEIGHT / GUIManual.TEXT_Y_OFFSET);
+            .splitToLength(GUIManual.splitBody(body), GUIManual.TEXT_HEIGHT / GUIManual.TEXT_Y_OFFSET);
         AbstractPage ret = new TextPage(identifier, category, StringUtils.join(parts.get(0), ""));
         for (int i = 1; i < parts.size(); i++) {
             ret.addSubPage(new TextPage(identifier, category, StringUtils.join(parts.get(i), "")).setIndexed(false));

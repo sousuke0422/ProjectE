@@ -1,10 +1,5 @@
 package moze_intel.projecte.gameObjs.gui;
 
-import moze_intel.projecte.PECore;
-import moze_intel.projecte.gameObjs.container.CollectorMK2Container;
-import moze_intel.projecte.gameObjs.tiles.CollectorMK2Tile;
-import moze_intel.projecte.utils.Constants;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -12,11 +7,16 @@ import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
+import moze_intel.projecte.PECore;
+import moze_intel.projecte.gameObjs.container.CollectorMK2Container;
+import moze_intel.projecte.gameObjs.tiles.CollectorMK2Tile;
+import moze_intel.projecte.utils.Constants;
+
 public class GUICollectorMK2 extends GuiContainer {
 
     private static final ResourceLocation texture = new ResourceLocation(
-            PECore.MODID.toLowerCase(),
-            "textures/gui/collector2.png");
+        PECore.MODID.toLowerCase(),
+        "textures/gui/collector2.png");
     private CollectorMK2Tile tile;
 
     public GUICollectorMK2(InventoryPlayer invPlayer, CollectorMK2Tile tile) {

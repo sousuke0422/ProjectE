@@ -1,7 +1,5 @@
 package moze_intel.projecte.rendering;
 
-import moze_intel.projecte.PECore;
-
 import net.minecraft.client.model.ModelChest;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -12,13 +10,14 @@ import org.lwjgl.opengl.GL11;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import moze_intel.projecte.PECore;
 
 @SideOnly(Side.CLIENT)
 public class CondenserMK2ItemRenderer implements IItemRenderer {
 
     private final ResourceLocation texture = new ResourceLocation(
-            PECore.MODID.toLowerCase(),
-            "textures/blocks/condenser_mk2.png");
+        PECore.MODID.toLowerCase(),
+        "textures/blocks/condenser_mk2.png");
     private final ModelChest model = new ModelChest();
 
     @Override
@@ -28,7 +27,7 @@ public class CondenserMK2ItemRenderer implements IItemRenderer {
 
     @Override
     public boolean shouldUseRenderHelper(IItemRenderer.ItemRenderType type, ItemStack item,
-            IItemRenderer.ItemRendererHelper helper) {
+        IItemRenderer.ItemRendererHelper helper) {
         return true;
     }
 
@@ -53,7 +52,8 @@ public class CondenserMK2ItemRenderer implements IItemRenderer {
     }
 
     private void renderCondenser(float x, float y, float z, int metaData) {
-        FMLClientHandler.instance().getClient().renderEngine.bindTexture(texture);
+        FMLClientHandler.instance()
+            .getClient().renderEngine.bindTexture(texture);
         GL11.glPushMatrix();
         GL11.glTranslatef(x, y, z);
         GL11.glRotatef(180, 1, 0, 0);

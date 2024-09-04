@@ -2,6 +2,19 @@ package moze_intel.projecte.gameObjs.items;
 
 import java.util.List;
 
+import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.Direction;
+import net.minecraft.util.MathHelper;
+import net.minecraft.util.StatCollector;
+import net.minecraft.world.World;
+import net.minecraftforge.common.util.ForgeDirection;
+
+import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.PECore;
 import moze_intel.projecte.api.item.IExtraFunction;
 import moze_intel.projecte.api.item.IProjectileShooter;
@@ -17,29 +30,15 @@ import moze_intel.projecte.utils.PEKeybind;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldTransmutations;
 
-import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Direction;
-import net.minecraft.util.MathHelper;
-import net.minecraft.util.StatCollector;
-import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
-
-import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
 public class PhilosophersStone extends ItemMode implements IProjectileShooter, IExtraFunction {
 
     public PhilosophersStone() {
         super(
-                "philosophers_stone",
-                (byte) 4,
-                new String[] { StatCollector.translateToLocal("pe.philstone.mode1"),
-                        StatCollector.translateToLocal("pe.philstone.mode2"),
-                        StatCollector.translateToLocal("pe.philstone.mode3") });
+            "philosophers_stone",
+            (byte) 4,
+            new String[] { StatCollector.translateToLocal("pe.philstone.mode1"),
+                StatCollector.translateToLocal("pe.philstone.mode2"),
+                StatCollector.translateToLocal("pe.philstone.mode3") });
         this.setContainerItem(this);
         this.setNoRepair();
     }
@@ -51,7 +50,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
 
     @Override
     public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int blockX, int blockY, int blockZ,
-            int sideHit, float px, float py, float pz) {
+        int sideHit, float px, float py, float pz) {
         if (world.isRemote) {
             return false;
         }
@@ -59,7 +58,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
         MetaBlock mBlock = new MetaBlock(world, blockX, blockY, blockZ);
 
         MetaBlock result = WorldTransmutations
-                .getWorldTransmutation(world, blockX, blockY, blockZ, player.isSneaking());
+            .getWorldTransmutation(world, blockX, blockY, blockZ, player.isSneaking());
 
         if (result != null) {
             Coordinates pos = new Coordinates(blockX, blockY, blockZ);
@@ -84,7 +83,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
     }
 
     private void getAxisOrientedPanel(ForgeDirection direction, int charge, MetaBlock pointed, MetaBlock result,
-            Coordinates coords, World world, EntityPlayer player) {
+        Coordinates coords, World world, EntityPlayer player) {
         int side;
 
         if (direction.offsetY != 0) {
@@ -99,7 +98,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
     }
 
     private void getAxisOrientedLine(ForgeDirection direction, int charge, MetaBlock pointed, MetaBlock result,
-            Coordinates coords, World world, EntityPlayer player) {
+        Coordinates coords, World world, EntityPlayer player) {
         int side;
 
         if (direction.offsetX != 0) {
@@ -108,7 +107,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
             side = 1;
         } else {
             String dir = Direction.directions[MathHelper
-                    .floor_double((double) ((player.rotationYaw * 4F) / 360F) + 0.5D) & 3];
+                .floor_double((double) ((player.rotationYaw * 4F) / 360F) + 0.5D) & 3];
 
             if (dir.equals("NORTH") || dir.equals("SOUTH")) {
                 side = 0;
@@ -124,7 +123,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
      * type 0 = cube, type 1 = panel, type 2 = line
      */
     private void doWorldTransmutation(World world, MetaBlock pointed, MetaBlock result, Coordinates coords, int type,
-            int side, int charge, EntityPlayer player) {
+        int side, int charge, EntityPlayer player) {
         if (type == 0) {
             for (int i = coords.x - charge; i <= coords.x + charge; i++)
                 for (int j = coords.y - charge; j <= coords.y + charge; j++)
@@ -162,15 +161,15 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
     }
 
     private void changeBlock(World world, MetaBlock pointed, MetaBlock result, int x, int y, int z,
-            EntityPlayer player) {
+        EntityPlayer player) {
         MetaBlock block = new MetaBlock(world, x, y, z);
 
         if (block.equals(pointed)) {
             PlayerHelper.checkedReplaceBlock(((EntityPlayerMP) player), x, y, z, result.getBlock(), result.getMeta());
             if (world.rand.nextInt(8) == 0) {
                 PacketHandler.sendToAllAround(
-                        new ParticlePKT("largesmoke", x, y + 1, z),
-                        new TargetPoint(world.provider.dimensionId, x, y + 1, z, 32));
+                    new ParticlePKT("largesmoke", x, y + 1, z),
+                    new TargetPoint(world.provider.dimensionId, x, y + 1, z, 32));
             }
         }
     }
@@ -196,12 +195,12 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
     public void doExtraFunction(ItemStack stack, EntityPlayer player) {
         if (!player.worldObj.isRemote) {
             player.openGui(
-                    PECore.instance,
-                    Constants.PHILOS_STONE_GUI,
-                    player.worldObj,
-                    (int) player.posX,
-                    (int) player.posY,
-                    (int) player.posZ);
+                PECore.instance,
+                Constants.PHILOS_STONE_GUI,
+                player.worldObj,
+                (int) player.posX,
+                (int) player.posY,
+                (int) player.posZ);
         }
     }
 
@@ -209,9 +208,9 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4) {
         list.add(
-                String.format(
-                        StatCollector.translateToLocal("pe.philstone.tooltip1"),
-                        ClientKeyHelper.getKeyName(PEKeybind.EXTRA_FUNCTION)));
+            String.format(
+                StatCollector.translateToLocal("pe.philstone.tooltip1"),
+                ClientKeyHelper.getKeyName(PEKeybind.EXTRA_FUNCTION)));
     }
 
     @Override

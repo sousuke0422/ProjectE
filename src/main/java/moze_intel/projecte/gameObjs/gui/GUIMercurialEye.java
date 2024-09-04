@@ -1,9 +1,5 @@
 package moze_intel.projecte.gameObjs.gui;
 
-import moze_intel.projecte.PECore;
-import moze_intel.projecte.gameObjs.container.MercurialEyeContainer;
-import moze_intel.projecte.gameObjs.container.inventory.MercurialEyeInventory;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -11,11 +7,15 @@ import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
+import moze_intel.projecte.PECore;
+import moze_intel.projecte.gameObjs.container.MercurialEyeContainer;
+import moze_intel.projecte.gameObjs.container.inventory.MercurialEyeInventory;
+
 public class GUIMercurialEye extends GuiContainer {
 
     private static final ResourceLocation texture = new ResourceLocation(
-            PECore.MODID.toLowerCase(),
-            "textures/gui/mercurial_eye.png");
+        PECore.MODID.toLowerCase(),
+        "textures/gui/mercurial_eye.png");
     private MercurialEyeInventory inventory;
 
     public GUIMercurialEye(InventoryPlayer invPlayer, MercurialEyeInventory inventory) {

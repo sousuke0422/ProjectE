@@ -5,14 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import moze_intel.projecte.api.item.IModeChanger;
-import moze_intel.projecte.utils.Comparators;
-import moze_intel.projecte.utils.Coordinates;
-import moze_intel.projecte.utils.EMCHelper;
-import moze_intel.projecte.utils.ItemHelper;
-import moze_intel.projecte.utils.PlayerHelper;
-import moze_intel.projecte.utils.WorldHelper;
-
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
@@ -32,6 +24,13 @@ import com.google.common.collect.Lists;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import moze_intel.projecte.api.item.IModeChanger;
+import moze_intel.projecte.utils.Comparators;
+import moze_intel.projecte.utils.Coordinates;
+import moze_intel.projecte.utils.EMCHelper;
+import moze_intel.projecte.utils.ItemHelper;
+import moze_intel.projecte.utils.PlayerHelper;
+import moze_intel.projecte.utils.WorldHelper;
 
 public class DiviningRodLow extends ItemPE implements IModeChanger {
 
@@ -72,7 +71,7 @@ public class DiviningRodLow extends ItemPE implements IModeChanger {
             byte mode = getMode(stack);
             int depth = getDepthFromMode(mode);
             AxisAlignedBB box = WorldHelper
-                    .getDeepBox(new Coordinates(mop), ForgeDirection.getOrientation(mop.sideHit), depth);
+                .getDeepBox(new Coordinates(mop), ForgeDirection.getOrientation(mop.sideHit), depth);
 
             for (int i = (int) box.minX; i <= box.maxX; i++)
                 for (int j = (int) box.minY; j <= box.maxY; j++) for (int k = (int) box.minZ; k <= box.maxZ; k++) {
@@ -92,7 +91,8 @@ public class DiviningRodLow extends ItemPE implements IModeChanger {
                     long blockEmc = EMCHelper.getEmcValue(blockStack);
 
                     if (blockEmc == 0) {
-                        Map<ItemStack, ItemStack> map = FurnaceRecipes.smelting().getSmeltingList();
+                        Map<ItemStack, ItemStack> map = FurnaceRecipes.smelting()
+                            .getSmeltingList();
 
                         for (Entry<ItemStack, ItemStack> entry : map.entrySet()) {
                             if (entry == null || entry.getKey() == null) {
@@ -141,7 +141,7 @@ public class DiviningRodLow extends ItemPE implements IModeChanger {
             }
 
             player.addChatComponentMessage(
-                    new ChatComponentTranslation("pe.divining.avgemc", numBlocks, (totalEmc / numBlocks)));
+                new ChatComponentTranslation("pe.divining.avgemc", numBlocks, (totalEmc / numBlocks)));
 
             if (this instanceof DiviningRodMedium) {
                 player.addChatComponentMessage(new ChatComponentTranslation("pe.divining.maxemc", maxValues[0]));

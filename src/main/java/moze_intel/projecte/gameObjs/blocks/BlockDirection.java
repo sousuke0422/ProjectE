@@ -1,10 +1,5 @@
 package moze_intel.projecte.gameObjs.blocks;
 
-import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.gameObjs.tiles.TileEmc;
-import moze_intel.projecte.gameObjs.tiles.TileEmcDirection;
-import moze_intel.projecte.utils.WorldHelper;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityLivingBase;
@@ -14,6 +9,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
+
+import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.gameObjs.tiles.TileEmc;
+import moze_intel.projecte.gameObjs.tiles.TileEmcDirection;
+import moze_intel.projecte.utils.WorldHelper;
 
 public abstract class BlockDirection extends Block {
 

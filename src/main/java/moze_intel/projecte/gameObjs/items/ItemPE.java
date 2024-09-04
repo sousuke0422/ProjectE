@@ -1,12 +1,12 @@
 package moze_intel.projecte.gameObjs.items;
 
-import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.utils.EMCHelper;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+
+import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.utils.EMCHelper;
 
 public abstract class ItemPE extends Item {
 

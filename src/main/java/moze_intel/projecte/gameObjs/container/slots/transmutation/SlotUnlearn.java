@@ -1,10 +1,10 @@
 package moze_intel.projecte.gameObjs.container.slots.transmutation;
 
-import moze_intel.projecte.gameObjs.container.inventory.TransmutationInventory;
-import moze_intel.projecte.utils.EMCHelper;
-
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+
+import moze_intel.projecte.gameObjs.container.inventory.TransmutationInventory;
+import moze_intel.projecte.utils.EMCHelper;
 
 public class SlotUnlearn extends Slot {
 
