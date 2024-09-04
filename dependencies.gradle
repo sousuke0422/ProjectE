@@ -3,11 +3,11 @@
 dependencies {
     compile "com.cricketcraft.chisel:Chisel2:2.5.0.2:api"
 
-    compileOnly('com.github.GTNewHorizons:CodeChickenLib:1.1.5.7:dev') {transitive=false}
-    compileOnly('com.github.GTNewHorizons:CodeChickenCore:1.1.7:dev') {transitive=false}
-    compileOnly('com.github.GTNewHorizons:NotEnoughItems:2.3.24-GTNH:dev') {transitive=false}
+    compileOnly('com.github.GTNewHorizons:CodeChickenLib:1.1.8:dev') {transitive=false}
+    compileOnly('com.github.GTNewHorizons:CodeChickenCore:1.1.11:dev') {transitive=false}
+    compileOnly('com.github.GTNewHorizons:NotEnoughItems:2.4.12-GTNH:dev') {transitive=false}
 
-    compile('com.github.GTNewHorizons:CraftTweaker:3.2.11:dev') {transitive=false}
+    compile('com.github.GTNewHorizons:CraftTweaker:3.2.13:dev') {transitive=false}
 
     dependencies { compile fileTree(dir: 'lib', include: '*.jar') }
 
