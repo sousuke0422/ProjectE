@@ -1,3 +1,9 @@
+###Version 2.2.0
+* NOTICE: This build is in no way affiliated with the official version.
+* NOTICE: Due to the effect of Long, we have observed incompatibilities with add-ons that handle EMC.
+* NOTICE: use GTNH NEI (NotEnoughItems Unofficial).
+* FIXED: GTNH NEI (NotEnoughItems Unofficial) Compatibility
+
 ###Version 2.1.0
 * NOTICE: This build is in no way affiliated with the official version.
 * NOTICE: Due to the effect of Long, we have observed incompatibilities with add-ons that handle EMC.
@@ -202,7 +208,7 @@
 * CHANGE: ProjectE commands have been unified
 * CHANGE: Harvest Goddess Band no longer passively grows flowers and tall grass on grass blocks by default. A config option has been added to revert this
 * CHANGE: Gem of Eternal Density is now faster thanks to a change that makes it work more like its EE2 counterpart
-* CHANGE: Pick AOE config now applies to the Morning Star as well 
+* CHANGE: Pick AOE config now applies to the Morning Star as well
 
 ###Version 1.7.10-PE1.4.6
 * NEW: More EE2 sounds added
@@ -354,7 +360,7 @@
 ###Version Alpha 0.2d-dev9
 * NEW: Optimized energy condensers
 * NEW: Energy condenser lock slot is now a "ghost" slot
-* NEW: Added dev changelogs 
+* NEW: Added dev changelogs
 * FIX: Energy condensers duping items infinitely after user EMC value change
 
 ###Version Alpha 0.2c
@@ -460,7 +466,7 @@
 * NEW: Added reverse recipes for matter/fuel blocks
 * NEW: zh_CN.lang
 * FIX: Transmutation table knowledge reset on player death
-* FIX: Fuel mapping initialization 
+* FIX: Fuel mapping initialization
 
 ###Version Alpha 0.1c
 * FIX: Major client-packet leak
