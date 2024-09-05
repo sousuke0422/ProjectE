@@ -21,7 +21,7 @@ build-job:       # This job runs in the build stage, which runs first.
   stage: build
   script:
     - chmod +x ./gradlew
-    - ./gradlew SetupCIWorkspace build devJar sourcesJar
+    - ./gradlew SetupCIWorkspace build
   cache:
     key: gradle
     paths:
