@@ -7,46 +7,40 @@ import net.minecraftforge.common.util.ForgeDirection;
  *
  * @author williewillus
  */
-public class TileEmcHandler extends TileEmcBase implements IEmcAcceptor, IEmcProvider
-{
-	public TileEmcHandler()
-	{
-		this.maximumEMC = Double.MAX_VALUE;
-	}
+public class TileEmcHandler extends TileEmcBase implements IEmcAcceptor, IEmcProvider {
 
-	public TileEmcHandler(double max)
-	{
-		this.maximumEMC = max;
-	}
+    public TileEmcHandler() {
+        this.maximumEMC = Double.MAX_VALUE;
+    }
 
-	// -- IEMCAcceptor -- //
-	@Override
-	public double acceptEMC(ForgeDirection side, double toAccept)
-	{
-		double toAdd = Math.min(maximumEMC - currentEMC, toAccept);
-		currentEMC += toAdd;
-		return toAdd;
-	}
+    public TileEmcHandler(double max) {
+        this.maximumEMC = max;
+    }
 
-	// -- IEMCProvider -- //
-	@Override
-	public double provideEMC(ForgeDirection side, double toExtract)
-	{
-		double toRemove = Math.min(currentEMC, toExtract);
-		currentEMC -= toRemove;
-		return toRemove;
-	}
+    // -- IEMCAcceptor -- //
+    @Override
+    public double acceptEMC(ForgeDirection side, double toAccept) {
+        double toAdd = Math.min(maximumEMC - currentEMC, toAccept);
+        currentEMC += toAdd;
+        return toAdd;
+    }
 
-	// -- IEMCStorage --//
-	@Override
-	public double getStoredEmc()
-	{
-		return currentEMC;
-	}
+    // -- IEMCProvider -- //
+    @Override
+    public double provideEMC(ForgeDirection side, double toExtract) {
+        double toRemove = Math.min(currentEMC, toExtract);
+        currentEMC -= toRemove;
+        return toRemove;
+    }
 
-	@Override
-	public double getMaximumEmc()
-	{
-		return maximumEMC;
-	}
+    // -- IEMCStorage --//
+    @Override
+    public double getStoredEmc() {
+        return currentEMC;
+    }
+
+    @Override
+    public double getMaximumEmc() {
+        return maximumEMC;
+    }
 }

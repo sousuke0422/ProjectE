@@ -2,43 +2,40 @@ package moze_intel.projecte.network.commands;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.ChatComponentTranslation;
+
 import moze_intel.projecte.config.CustomEMCParser;
 import moze_intel.projecte.emc.EMCMapper;
-import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.handlers.TileEntityHandler;
+import moze_intel.projecte.network.PacketHandler;
 
-public class ReloadEmcCMD extends ProjectEBaseCMD
-{
-	@Override
-	public String getCommandName() 
-	{
-		return "projecte_reloadEMC";
-	}
-	
-	@Override
-	public String getCommandUsage(ICommandSender sender)
-	{
-		return "/projecte reloadEMC";
-	}
+public class ReloadEmcCMD extends ProjectEBaseCMD {
 
-	@Override
-	public void processCommand(ICommandSender sender, String[] params) 
-	{
-		sender.addChatMessage(new ChatComponentTranslation("pe.command.reload.started"));
+    @Override
+    public String getCommandName() {
+        return "projecte_reloadEMC";
+    }
 
-		EMCMapper.clearMaps();
-		CustomEMCParser.readUserData();
-		EMCMapper.map();
-		TileEntityHandler.checkAllCondensers();
+    @Override
+    public String getCommandUsage(ICommandSender sender) {
+        return "/projecte reloadEMC";
+    }
 
-		sender.addChatMessage(new ChatComponentTranslation("pe.command.reload.success"));
+    @Override
+    public void processCommand(ICommandSender sender, String[] params) {
+        sender.addChatMessage(new ChatComponentTranslation("pe.command.reload.started"));
 
-		PacketHandler.sendFragmentedEmcPacketToAll();
-	}
+        EMCMapper.clearMaps();
+        CustomEMCParser.readUserData();
+        EMCMapper.map();
+        TileEntityHandler.checkAllCondensers();
 
-	@Override
-	public int getRequiredPermissionLevel() 
-	{
-		return 4;
-	}
+        sender.addChatMessage(new ChatComponentTranslation("pe.command.reload.success"));
+
+        PacketHandler.sendFragmentedEmcPacketToAll();
+    }
+
+    @Override
+    public int getRequiredPermissionLevel() {
+        return 4;
+    }
 }

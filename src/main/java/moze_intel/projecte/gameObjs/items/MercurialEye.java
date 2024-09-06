@@ -1,12 +1,5 @@
 package moze_intel.projecte.gameObjs.items;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import moze_intel.projecte.PECore;
-import moze_intel.projecte.api.item.IExtraFunction;
-import moze_intel.projecte.utils.Constants;
-import moze_intel.projecte.utils.EMCHelper;
-import moze_intel.projecte.utils.PlayerHelper;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
@@ -23,264 +16,248 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class MercurialEye extends ItemMode implements IExtraFunction
-{
-	public MercurialEye()
-	{
-		super("mercurial_eye", (byte)4, new String[] {"Normal", "Transmutation"});
-		this.setNoRepair();
-	}
-	
-	final private int NORMAL_MODE = 0;
-	final private int TRANSMUTATION_MODE = 1;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import moze_intel.projecte.PECore;
+import moze_intel.projecte.api.item.IExtraFunction;
+import moze_intel.projecte.utils.Constants;
+import moze_intel.projecte.utils.EMCHelper;
+import moze_intel.projecte.utils.PlayerHelper;
 
-	final private double WALL_MODE = Math.sin(Math.toRadians(45));
+public class MercurialEye extends ItemMode implements IExtraFunction {
 
-	@Override
-	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
-	{
-		if (!world.isRemote)
-		{
-			MovingObjectPosition mop = this.getMovingObjectPositionFromPlayer(world, player, false);
+    public MercurialEye() {
+        super("mercurial_eye", (byte) 4, new String[] { "Normal", "Transmutation" });
+        this.setNoRepair();
+    }
 
-			if (mop == null || mop.typeOfHit != MovingObjectPosition.MovingObjectType.BLOCK)
-			{
-				return stack;
-			}
+    final private int NORMAL_MODE = 0;
+    final private int TRANSMUTATION_MODE = 1;
 
-			ItemStack[] inventory = getInventory(stack);
+    final private double WALL_MODE = Math.sin(Math.toRadians(45));
 
-			if (inventory[0] == null || inventory[1] == null)
-			{
-				return stack;
-			}
+    @Override
+    public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
+        if (!world.isRemote) {
+            MovingObjectPosition mop = this.getMovingObjectPositionFromPlayer(world, player, false);
 
-			Block newBlock = Block.getBlockFromItem(inventory[1].getItem());
+            if (mop == null || mop.typeOfHit != MovingObjectPosition.MovingObjectType.BLOCK) {
+                return stack;
+            }
 
-			if (newBlock == Blocks.air)
-			{
-				return stack;
-			}
+            ItemStack[] inventory = getInventory(stack);
 
-			int newMeta = inventory[1].getItemDamage();
+            if (inventory[0] == null || inventory[1] == null) {
+                return stack;
+            }
 
-			double kleinEmc = ItemPE.getEmc(inventory[0]);
-			int reqEmc = EMCHelper.getEmcValue(inventory[1]);
+            Block newBlock = Block.getBlockFromItem(inventory[1].getItem());
 
-			byte charge = getCharge(stack);
-			byte mode = this.getMode(stack);
+            if (newBlock == Blocks.air) {
+                return stack;
+            }
 
-			int facing = MathHelper.floor_double((double) ((player.rotationYaw * 4F) / 360F) + 0.5D) & 3;
-			ForgeDirection dir = ForgeDirection.getOrientation(mop.sideHit);
-			Vec3 look = player.getLookVec();
+            int newMeta = inventory[1].getItemDamage();
 
-			AxisAlignedBB box = AxisAlignedBB.getBoundingBox(
-					mop.blockX,
-					mop.blockY,
-					mop.blockZ,
-					mop.blockX,
-					mop.blockY,
-					mop.blockZ
-			);
+            double kleinEmc = ItemPE.getEmc(inventory[0]);
+            int reqEmc = EMCHelper.getEmcValue(inventory[1]);
 
-			int dX = 0, dY = 0, dZ = 0;
+            byte charge = getCharge(stack);
+            byte mode = this.getMode(stack);
 
-			boolean lookingDown = look.yCoord >= -1 && look.yCoord <= -WALL_MODE;
-			boolean lookingUp   = look.yCoord <=  1 && look.yCoord >=  WALL_MODE;
+            int facing = MathHelper.floor_double((double) ((player.rotationYaw * 4F) / 360F) + 0.5D) & 3;
+            ForgeDirection dir = ForgeDirection.getOrientation(mop.sideHit);
+            Vec3 look = player.getLookVec();
 
-			boolean lookingAlongZ = facing == 0 || facing == 2;
+            AxisAlignedBB box = AxisAlignedBB
+                .getBoundingBox(mop.blockX, mop.blockY, mop.blockZ, mop.blockX, mop.blockY, mop.blockZ);
 
-			switch (dir) {
-				case UP:
-					if (lookingDown || mode == TRANSMUTATION_MODE)
-					{
-						box = box.expand(charge, 0, charge);
-						dY = 1;
-					}
-					else if (lookingAlongZ)
-						box = box.expand(charge, charge * 2, 0).offset(0, charge, 0);
-					else
-						box = box.expand(0, charge * 2, charge).offset(0, charge, 0);
+            int dX = 0, dY = 0, dZ = 0;
 
-					break;
+            boolean lookingDown = look.yCoord >= -1 && look.yCoord <= -WALL_MODE;
+            boolean lookingUp = look.yCoord <= 1 && look.yCoord >= WALL_MODE;
 
-				case DOWN:
-					if (lookingUp || mode == TRANSMUTATION_MODE)
-					{
-						box = box.expand(charge, 0, charge);
-						dY = -1;
+            boolean lookingAlongZ = facing == 0 || facing == 2;
 
-					}
-					else if (lookingAlongZ)
-						box = box.expand(charge, charge * 2, 0).offset(0, -charge, 0);
-					else
-						box = box.expand(0, charge * 2, charge).offset(0, -charge, 0);
+            switch (dir) {
+                case UP:
+                    if (lookingDown || mode == TRANSMUTATION_MODE) {
+                        box = box.expand(charge, 0, charge);
+                        dY = 1;
+                    } else if (lookingAlongZ) box = box.expand(charge, charge * 2, 0)
+                        .offset(0, charge, 0);
+                    else box = box.expand(0, charge * 2, charge)
+                        .offset(0, charge, 0);
 
-					break;
+                    break;
 
-				case EAST:
-					box = box.expand(0, charge, charge);
-					dX = 1;
-					break;
+                case DOWN:
+                    if (lookingUp || mode == TRANSMUTATION_MODE) {
+                        box = box.expand(charge, 0, charge);
+                        dY = -1;
 
-				case WEST:
-					box = box.expand(0, charge, charge);
-					dX = -1;
-					break;
+                    } else if (lookingAlongZ) box = box.expand(charge, charge * 2, 0)
+                        .offset(0, -charge, 0);
+                    else box = box.expand(0, charge * 2, charge)
+                        .offset(0, -charge, 0);
 
-				case SOUTH:
-					box = box.expand(charge, charge, 0);
-					dZ = 1;
-					break;
+                    break;
 
-				case NORTH:
-					box = box.expand(charge, charge, 0);
-					dZ = -1;
-					break;
-			}
+                case EAST:
+                    box = box.expand(0, charge, charge);
+                    dX = 1;
+                    break;
 
-			if (NORMAL_MODE == mode)
-				box = box.offset(dX, dY, dZ);
+                case WEST:
+                    box = box.expand(0, charge, charge);
+                    dX = -1;
+                    break;
 
-			if (box != null)
-			{
-				for (int x = (int) box.minX; x <= (int) box.maxX; x++)
-				{
-					for (int y = (int) box.minY; y <= (int) box.maxY; y++)
-					{
-						for (int z = (int) box.minZ; z <= (int) box.maxZ; z++)
-						{
-							Block oldBlock = world.getBlock(x, y, z);
-							int oldMeta = oldBlock.getDamageValue(world, x, y, z);
+                case SOUTH:
+                    box = box.expand(charge, charge, 0);
+                    dZ = 1;
+                    break;
 
-							if (mode == NORMAL_MODE && oldBlock == Blocks.air)
-							{
-								if (kleinEmc < reqEmc)
-									break;
-								if (PlayerHelper.checkedPlaceBlock(((EntityPlayerMP) player), x, y, z, newBlock, newMeta))
-								{
-									removeKleinEMC(stack, reqEmc);
-									kleinEmc -= reqEmc;
-								}
-							}
-							else if (mode == TRANSMUTATION_MODE)
-							{
-								if ((oldBlock == newBlock && oldMeta == newMeta) || oldBlock == Blocks.air || world.getTileEntity(x, y, z) != null || !EMCHelper.doesItemHaveEmc(new ItemStack(oldBlock, 1, oldMeta)))
-								{
-									continue;
-								}
+                case NORTH:
+                    box = box.expand(charge, charge, 0);
+                    dZ = -1;
+                    break;
+            }
 
-								int emc = EMCHelper.getEmcValue(new ItemStack(oldBlock, 1, oldMeta));
+            if (NORMAL_MODE == mode) box = box.offset(dX, dY, dZ);
 
-								if (emc > reqEmc)
-								{
-									if (PlayerHelper.checkedReplaceBlock(((EntityPlayerMP) player), x, y, z, newBlock, newMeta))
-									{
-										int difference = emc - reqEmc;
-										kleinEmc += MathHelper.clamp_double(kleinEmc, 0, EMCHelper.getKleinStarMaxEmc(inventory[0]));
-										addKleinEMC(stack, difference);
-									}
-								}
-								else if (emc < reqEmc)
-								{
-									int difference = reqEmc - emc;
+            if (box != null) {
+                for (int x = (int) box.minX; x <= (int) box.maxX; x++) {
+                    for (int y = (int) box.minY; y <= (int) box.maxY; y++) {
+                        for (int z = (int) box.minZ; z <= (int) box.maxZ; z++) {
+                            Block oldBlock = world.getBlock(x, y, z);
+                            int oldMeta = oldBlock.getDamageValue(world, x, y, z);
 
-									if (kleinEmc >= difference)
-									{
-										if (PlayerHelper.checkedReplaceBlock(((EntityPlayerMP) player), x, y, z, newBlock, newMeta))
-										{
-											kleinEmc -= difference;
-											removeKleinEMC(stack, difference);
-										}
-									}
-								}
-								else
-								{
-									PlayerHelper.checkedReplaceBlock(((EntityPlayerMP) player), x, y, z, newBlock, newMeta);
-								}
-							}
-						}
-					}
-				}
-				player.worldObj.playSoundAtEntity(player, "projecte:item.pepower", 1.0F, 0.80F + ((0.20F / (float)numCharges) * charge));
-			}
-		}
+                            if (mode == NORMAL_MODE && oldBlock == Blocks.air) {
+                                if (kleinEmc < reqEmc) break;
+                                if (PlayerHelper
+                                    .checkedPlaceBlock(((EntityPlayerMP) player), x, y, z, newBlock, newMeta)) {
+                                    removeKleinEMC(stack, reqEmc);
+                                    kleinEmc -= reqEmc;
+                                }
+                            } else if (mode == TRANSMUTATION_MODE) {
+                                if ((oldBlock == newBlock && oldMeta == newMeta) || oldBlock == Blocks.air
+                                    || world.getTileEntity(x, y, z) != null
+                                    || !EMCHelper.doesItemHaveEmc(new ItemStack(oldBlock, 1, oldMeta))) {
+                                    continue;
+                                }
 
-		return stack;
-	}
+                                int emc = EMCHelper.getEmcValue(new ItemStack(oldBlock, 1, oldMeta));
 
-	private void addKleinEMC(ItemStack eye, int amount)
-	{
-		NBTTagList list = eye.stackTagCompound.getTagList("Items", NBT.TAG_COMPOUND);
+                                if (emc > reqEmc) {
+                                    if (PlayerHelper
+                                        .checkedReplaceBlock(((EntityPlayerMP) player), x, y, z, newBlock, newMeta)) {
+                                        int difference = emc - reqEmc;
+                                        kleinEmc += MathHelper
+                                            .clamp_double(kleinEmc, 0, EMCHelper.getKleinStarMaxEmc(inventory[0]));
+                                        addKleinEMC(stack, difference);
+                                    }
+                                } else if (emc < reqEmc) {
+                                    int difference = reqEmc - emc;
 
-		for (int i = 0; i < list.tagCount(); i++)
-		{
-			NBTTagCompound nbt = list.getCompoundTagAt(i);
+                                    if (kleinEmc >= difference) {
+                                        if (PlayerHelper.checkedReplaceBlock(
+                                            ((EntityPlayerMP) player),
+                                            x,
+                                            y,
+                                            z,
+                                            newBlock,
+                                            newMeta)) {
+                                            kleinEmc -= difference;
+                                            removeKleinEMC(stack, difference);
+                                        }
+                                    }
+                                } else {
+                                    PlayerHelper
+                                        .checkedReplaceBlock(((EntityPlayerMP) player), x, y, z, newBlock, newMeta);
+                                }
+                            }
+                        }
+                    }
+                }
+                player.worldObj.playSoundAtEntity(
+                    player,
+                    "projecte:item.pepower",
+                    1.0F,
+                    0.80F + ((0.20F / (float) numCharges) * charge));
+            }
+        }
 
-			if (nbt.getByte("Slot") == 0)
-			{
-				ItemStack kleinStar = ItemStack.loadItemStackFromNBT(nbt);
+        return stack;
+    }
 
-				NBTTagCompound tag = nbt.getCompoundTag("tag");
+    private void addKleinEMC(ItemStack eye, int amount) {
+        NBTTagList list = eye.stackTagCompound.getTagList("Items", NBT.TAG_COMPOUND);
 
-				double newEmc = MathHelper.clamp_double(tag.getDouble("StoredEMC") + amount, 0, EMCHelper.getKleinStarMaxEmc(kleinStar));
+        for (int i = 0; i < list.tagCount(); i++) {
+            NBTTagCompound nbt = list.getCompoundTagAt(i);
 
-				tag.setDouble("StoredEMC", newEmc);
-				break;
-			}
-		}
-	}
+            if (nbt.getByte("Slot") == 0) {
+                ItemStack kleinStar = ItemStack.loadItemStackFromNBT(nbt);
 
-	private void removeKleinEMC(ItemStack eye, int amount)
-	{
-		NBTTagList list = eye.stackTagCompound.getTagList("Items", NBT.TAG_COMPOUND);
+                NBTTagCompound tag = nbt.getCompoundTag("tag");
 
-		for (int i = 0; i < list.tagCount(); i++)
-		{
-			NBTTagCompound nbt = list.getCompoundTagAt(i);
+                double newEmc = MathHelper
+                    .clamp_double(tag.getDouble("StoredEMC") + amount, 0, EMCHelper.getKleinStarMaxEmc(kleinStar));
 
-			if (nbt.getByte("Slot") == 0)
-			{
-				NBTTagCompound tag = nbt.getCompoundTag("tag");
-				tag.setDouble("StoredEMC", tag.getDouble("StoredEMC") - amount);
-				break;
-			}
-		}
-	}
+                tag.setDouble("StoredEMC", newEmc);
+                break;
+            }
+        }
+    }
 
-	private ItemStack[] getInventory(ItemStack eye)
-	{
-		ItemStack[] result = new ItemStack[2];
+    private void removeKleinEMC(ItemStack eye, int amount) {
+        NBTTagList list = eye.stackTagCompound.getTagList("Items", NBT.TAG_COMPOUND);
 
-		if (eye.hasTagCompound())
-		{
-			NBTTagList list = eye.stackTagCompound.getTagList("Items", NBT.TAG_COMPOUND);
+        for (int i = 0; i < list.tagCount(); i++) {
+            NBTTagCompound nbt = list.getCompoundTagAt(i);
 
-			for (int i = 0; i < list.tagCount(); i++)
-			{
-				NBTTagCompound nbt = list.getCompoundTagAt(i);
-				result[nbt.getByte("Slot")] = ItemStack.loadItemStackFromNBT(nbt);
-			}
-		}
+            if (nbt.getByte("Slot") == 0) {
+                NBTTagCompound tag = nbt.getCompoundTag("tag");
+                tag.setDouble("StoredEMC", tag.getDouble("StoredEMC") - amount);
+                break;
+            }
+        }
+    }
 
-		return result;
-	}
+    private ItemStack[] getInventory(ItemStack eye) {
+        ItemStack[] result = new ItemStack[2];
 
-	@Override
-	public void doExtraFunction(ItemStack stack, EntityPlayer player) 
-	{
-		player.openGui(PECore.instance, Constants.MERCURIAL_GUI, player.worldObj, (int) player.posX, (int) player.posY, (int) player.posZ);
-	}
-	
-	@Override
-	public int getMaxItemUseDuration(ItemStack stack) 
-	{
-		return 1; 
-	}
-	
-	@SideOnly(Side.CLIENT)
-	public void registerIcons(IIconRegister register)
-	{
-		this.itemIcon = register.registerIcon(this.getTexture("mercurial_eye"));
-	}
+        if (eye.hasTagCompound()) {
+            NBTTagList list = eye.stackTagCompound.getTagList("Items", NBT.TAG_COMPOUND);
+
+            for (int i = 0; i < list.tagCount(); i++) {
+                NBTTagCompound nbt = list.getCompoundTagAt(i);
+                result[nbt.getByte("Slot")] = ItemStack.loadItemStackFromNBT(nbt);
+            }
+        }
+
+        return result;
+    }
+
+    @Override
+    public void doExtraFunction(ItemStack stack, EntityPlayer player) {
+        player.openGui(
+            PECore.instance,
+            Constants.MERCURIAL_GUI,
+            player.worldObj,
+            (int) player.posX,
+            (int) player.posY,
+            (int) player.posZ);
+    }
+
+    @Override
+    public int getMaxItemUseDuration(ItemStack stack) {
+        return 1;
+    }
+
+    @SideOnly(Side.CLIENT)
+    public void registerIcons(IIconRegister register) {
+        this.itemIcon = register.registerIcon(this.getTexture("mercurial_eye"));
+    }
 }

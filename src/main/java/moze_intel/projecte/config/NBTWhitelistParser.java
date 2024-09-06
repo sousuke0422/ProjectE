@@ -1,12 +1,5 @@
 package moze_intel.projecte.config;
 
-import moze_intel.projecte.PECore;
-import moze_intel.projecte.utils.FileHelper;
-import moze_intel.projecte.utils.ItemHelper;
-import moze_intel.projecte.utils.NBTWhitelist;
-import moze_intel.projecte.utils.PELogger;
-import net.minecraft.item.ItemStack;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -14,138 +7,115 @@ import java.io.IOException;
 import java.io.LineNumberReader;
 import java.io.PrintWriter;
 
-public final class NBTWhitelistParser
-{
-	private static final String VERSION = "#0.1a";
-	private static File CONFIG;
-	private static boolean loaded;
+import net.minecraft.item.ItemStack;
 
-	public static void init()
-	{
-		CONFIG = new File(PECore.CONFIG_DIR, "nbt_whitelist.cfg");
-		loaded = false;
+import moze_intel.projecte.PECore;
+import moze_intel.projecte.utils.FileHelper;
+import moze_intel.projecte.utils.ItemHelper;
+import moze_intel.projecte.utils.NBTWhitelist;
+import moze_intel.projecte.utils.PELogger;
 
-		if (!CONFIG.exists())
-		{
-			try
-			{
-				if (CONFIG.createNewFile())
-				{
-					writeDefaultFile();
-					loaded = true;
-				}
-			}
-			catch (IOException e)
-			{
-				PELogger.logFatal("Exception in file I/O: couldn't create custom configuration files.");
-				e.printStackTrace();
-				return;
-			}
-		}
-		else
-		{
-			BufferedReader reader = null;
+public final class NBTWhitelistParser {
 
-			try
-			{
-				reader = new BufferedReader(new FileReader(CONFIG));
+    private static final String VERSION = "#0.1a";
+    private static File CONFIG;
+    private static boolean loaded;
 
-				String line = reader.readLine();
+    public static void init() {
+        CONFIG = new File(PECore.CONFIG_DIR, "nbt_whitelist.cfg");
+        loaded = false;
 
-				if (line == null || !line.equals(VERSION))
-				{
-					PELogger.logFatal("Found old NBT whitelist file: resetting.");
-					writeDefaultFile();
-				}
-			}
-			catch (IOException e)
-			{
-				PELogger.logFatal("Exception in file I/O: couldn't create custom configuration files.");
-				e.printStackTrace();
-			}
-			finally
-			{
-				FileHelper.closeStream(reader);
-			}
+        if (!CONFIG.exists()) {
+            try {
+                if (CONFIG.createNewFile()) {
+                    writeDefaultFile();
+                    loaded = true;
+                }
+            } catch (IOException e) {
+                PELogger.logFatal("Exception in file I/O: couldn't create custom configuration files.");
+                e.printStackTrace();
+                return;
+            }
+        } else {
+            BufferedReader reader = null;
 
-			loaded = true;
-		}
-	}
+            try {
+                reader = new BufferedReader(new FileReader(CONFIG));
 
-	public static void readUserData()
-	{
-		if (!loaded)
-		{
-			PELogger.logFatal("ERROR: configurations files are not loaded!");
-			return;
-		}
+                String line = reader.readLine();
 
-		LineNumberReader reader = null;
+                if (line == null || !line.equals(VERSION)) {
+                    PELogger.logFatal("Found old NBT whitelist file: resetting.");
+                    writeDefaultFile();
+                }
+            } catch (IOException e) {
+                PELogger.logFatal("Exception in file I/O: couldn't create custom configuration files.");
+                e.printStackTrace();
+            } finally {
+                FileHelper.closeStream(reader);
+            }
 
-		try
-		{
-			reader = new LineNumberReader(new FileReader(CONFIG));
+            loaded = true;
+        }
+    }
 
-			String line;
+    public static void readUserData() {
+        if (!loaded) {
+            PELogger.logFatal("ERROR: configurations files are not loaded!");
+            return;
+        }
 
-			while ((line = reader.readLine()) != null)
-			{
-				line = line.trim();
+        LineNumberReader reader = null;
 
-				if (line.isEmpty() || line.charAt(0) == '#')
-				{
-					continue;
-				}
+        try {
+            reader = new LineNumberReader(new FileReader(CONFIG));
 
-				ItemStack stack = ItemHelper.getStackFromString(line, 0);
+            String line;
 
-				if (stack == null)
-				{
-					PELogger.logFatal("Error in NBT whitelist file: no item stack found for " + line);
-					PELogger.logFatal("At line: " + reader.getLineNumber());
-					continue;
-				}
+            while ((line = reader.readLine()) != null) {
+                line = line.trim();
 
-				if (NBTWhitelist.register(stack))
-				{
-					PELogger.logInfo("Registered user-defined NBT whitelist for: " + line);
-				}
-			}
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-		finally
-		{
-			FileHelper.closeStream(reader);
-		}
-	}
+                if (line.isEmpty() || line.charAt(0) == '#') {
+                    continue;
+                }
 
-	private static void writeDefaultFile()
-	{
-		PrintWriter writer = null;
+                ItemStack stack = ItemHelper.getStackFromString(line, 0);
 
-		try
-		{
-			writer = new PrintWriter(CONFIG);
+                if (stack == null) {
+                    PELogger.logFatal("Error in NBT whitelist file: no item stack found for " + line);
+                    PELogger.logFatal("At line: " + reader.getLineNumber());
+                    continue;
+                }
 
-			writer.println(VERSION);
-			writer.println("#Custom NBT whitelist file");
-			writer.println("#This file is used for items that should keep NBT data when condensed/transmuted.");
-			writer.println("#To add an item, just put it's unlocalized name on a new line. Here's some examples:");
-			writer.println("TConstruct:pickaxe");
-			writer.println("ExtraUtilities:unstableingot");
-			writer.println("ExtraUtilities:unstableIngot");
-			writer.println("Botania:specialFlower");
-		}
-		catch (IOException e)
-		{
-			e.printStackTrace();
-		}
-		finally
-		{
-			FileHelper.closeStream(writer);
-		}
-	}
+                if (NBTWhitelist.register(stack)) {
+                    PELogger.logInfo("Registered user-defined NBT whitelist for: " + line);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            FileHelper.closeStream(reader);
+        }
+    }
+
+    private static void writeDefaultFile() {
+        PrintWriter writer = null;
+
+        try {
+            writer = new PrintWriter(CONFIG);
+
+            writer.println(VERSION);
+            writer.println("#Custom NBT whitelist file");
+            writer.println("#This file is used for items that should keep NBT data when condensed/transmuted.");
+            writer.println("#To add an item, just put it's unlocalized name on a new line. Here's some examples:");
+            writer.println("TConstruct:pickaxe");
+            writer.println("ExtraUtilities:unstableingot");
+            writer.println("ExtraUtilities:unstableIngot");
+            writer.println("Botania:specialFlower");
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            FileHelper.closeStream(writer);
+        }
+    }
 }

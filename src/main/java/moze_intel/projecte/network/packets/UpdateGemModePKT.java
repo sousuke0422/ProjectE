@@ -1,48 +1,46 @@
 package moze_intel.projecte.network.packets;
 
+import net.minecraft.item.ItemStack;
+
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
 import moze_intel.projecte.gameObjs.ObjHandler;
-import net.minecraft.item.ItemStack;
 
-public class UpdateGemModePKT implements IMessage
-{
-	private boolean mode;
+public class UpdateGemModePKT implements IMessage {
 
-	public UpdateGemModePKT() {}
+    private boolean mode;
 
-	public UpdateGemModePKT(boolean mode)
-	{
-		this.mode = mode;
-	}
+    public UpdateGemModePKT() {}
 
-	@Override
-	public void fromBytes(ByteBuf buf)
-	{
-		mode = buf.readBoolean();
-	}
+    public UpdateGemModePKT(boolean mode) {
+        this.mode = mode;
+    }
 
-	@Override
-	public void toBytes(ByteBuf buf)
-	{
-		buf.writeBoolean(mode);
-	}
+    @Override
+    public void fromBytes(ByteBuf buf) {
+        mode = buf.readBoolean();
+    }
 
-	public static class Handler implements IMessageHandler<UpdateGemModePKT, IMessage>
-	{
-		@Override
-		public IMessage onMessage(final UpdateGemModePKT pkt, final MessageContext ctx)
-		{
-			ItemStack stack = ctx.getServerHandler().playerEntity.getHeldItem();
+    @Override
+    public void toBytes(ByteBuf buf) {
+        buf.writeBoolean(mode);
+    }
 
-			if (stack != null && (stack.getItem() == ObjHandler.eternalDensity || stack.getItem() == ObjHandler.voidRing))
-			{
-				stack.getTagCompound().setBoolean("Whitelist", pkt.mode);
-			}
+    public static class Handler implements IMessageHandler<UpdateGemModePKT, IMessage> {
 
-			return null;
-		}
-	}
+        @Override
+        public IMessage onMessage(final UpdateGemModePKT pkt, final MessageContext ctx) {
+            ItemStack stack = ctx.getServerHandler().playerEntity.getHeldItem();
+
+            if (stack != null
+                && (stack.getItem() == ObjHandler.eternalDensity || stack.getItem() == ObjHandler.voidRing)) {
+                stack.getTagCompound()
+                    .setBoolean("Whitelist", pkt.mode);
+            }
+
+            return null;
+        }
+    }
 }

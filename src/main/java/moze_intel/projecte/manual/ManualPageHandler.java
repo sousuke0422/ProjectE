@@ -1,13 +1,9 @@
 package moze_intel.projecte.manual;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import moze_intel.projecte.gameObjs.ObjHandler;
-import moze_intel.projecte.gameObjs.gui.GUIManual;
-import moze_intel.projecte.utils.Comparators;
-import moze_intel.projecte.utils.PELogger;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.IReloadableResourceManager;
@@ -16,31 +12,36 @@ import net.minecraft.client.resources.IResourceManagerReloadListener;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.gameObjs.gui.GUIManual;
+import moze_intel.projecte.utils.Comparators;
+import moze_intel.projecte.utils.PELogger;
 
 @SideOnly(Side.CLIENT)
-public class ManualPageHandler
-{
+public class ManualPageHandler {
+
     public static final List<IndexPage> indexPages = Lists.newArrayList();
     public static final List<AbstractPage> pages = Lists.newArrayList();
     public static final Map<PageCategory, List<AbstractPage>> categoryMap = Maps.newEnumMap(PageCategory.class);
     public static final List<Pair<AbstractPage, AbstractPage>> spreads = Lists.newArrayList();
 
-    public static void init()
-    {
-        IResourceManager resourceManager = Minecraft.getMinecraft().getResourceManager();
-        if (resourceManager instanceof IReloadableResourceManager)
-        {
-            ((IReloadableResourceManager) resourceManager).registerReloadListener(new IResourceManagerReloadListener()
-            {
+    public static void init() {
+        IResourceManager resourceManager = Minecraft.getMinecraft()
+            .getResourceManager();
+        if (resourceManager instanceof IReloadableResourceManager) {
+            ((IReloadableResourceManager) resourceManager).registerReloadListener(new IResourceManagerReloadListener() {
+
                 @Override
-                public void onResourceManagerReload(IResourceManager p_110549_1_)
-                {
+                public void onResourceManagerReload(IResourceManager p_110549_1_) {
                     ManualPageHandler.reset();
                 }
             });
@@ -49,8 +50,7 @@ public class ManualPageHandler
         reset();
     }
 
-    private static void reset()
-    {
+    private static void reset() {
         indexPages.clear();
         pages.clear();
         categoryMap.clear();
@@ -58,16 +58,14 @@ public class ManualPageHandler
         setupPages();
     }
 
-    private static void setupPages()
-    {
-        for (PageCategory e : PageCategory.values())
-        {
+    private static void setupPages() {
+        for (PageCategory e : PageCategory.values()) {
             categoryMap.put(e, Lists.<AbstractPage>newArrayList());
         }
 
         addTextPage("introduction", PageCategory.NONE);
 
-        //Blocks
+        // Blocks
         addBlock(ObjHandler.alchChest, PageCategory.BLOCK);
         addImagePage("img_alchchest", new ResourceLocation("projecte:textures/gui/alchchest.png"), PageCategory.BLOCK);
         addBlock(ObjHandler.confuseTorch, PageCategory.BLOCK);
@@ -90,7 +88,7 @@ public class ManualPageHandler
         addBlock(ObjHandler.matterBlock, PageCategory.BLOCK);
         addBlock(ObjHandler.fuelBlock, PageCategory.BLOCK);
 
-        //Items
+        // Items
         addItem(ObjHandler.philosStone, PageCategory.ITEM);
         addItem(ObjHandler.alchBag, PageCategory.ITEM);
         addItem(ObjHandler.repairTalisman, PageCategory.ITEM);
@@ -155,11 +153,9 @@ public class ManualPageHandler
         addItem(ObjHandler.covalence, PageCategory.MUSTFIGUREOUTTHERESTOFTHESE);
         addItem(ObjHandler.kleinStars, PageCategory.MUSTFIGUREOUTTHERESTOFTHESE);
 
-        for (List<AbstractPage> categoryPages : categoryMap.values())
-        {
+        for (List<AbstractPage> categoryPages : categoryMap.values()) {
             Collections.sort(categoryPages, Comparators.PAGE_HEADER);
-            for (AbstractPage page : categoryPages)
-            {
+            for (AbstractPage page : categoryPages) {
                 pages.add(page);
             }
         }
@@ -168,13 +164,11 @@ public class ManualPageHandler
         buildPageSpreads();
     }
 
-    private static void generateDummyIndexPages()
-    {
+    private static void generateDummyIndexPages() {
         List<IndexPage> toAdd = Lists.newArrayList();
         int numIndexPages = Math.round(((float) ManualPageHandler.pages.size()) / GUIManual.ENTRIES_PER_PAGE);
         PELogger.logDebug("" + (float) ManualPageHandler.pages.size() / GUIManual.ENTRIES_PER_PAGE);
-        for (int i = 0; i < numIndexPages; i++)
-        {
+        for (int i = 0; i < numIndexPages; i++) {
             toAdd.add(new IndexPage());
         }
         indexPages.addAll(toAdd);
@@ -182,13 +176,10 @@ public class ManualPageHandler
         PELogger.logDebug("Built %d dummy index pages", indexPages.size());
     }
 
-    private static void buildPageSpreads()
-    {
+    private static void buildPageSpreads() {
         int firstNormalPage = 0;
-        for (AbstractPage page : pages)
-        {
-            if (!(page instanceof IndexPage))
-            {
+        for (AbstractPage page : pages) {
+            if (!(page instanceof IndexPage)) {
                 firstNormalPage = pages.indexOf(page);
                 break;
             }
@@ -201,12 +192,9 @@ public class ManualPageHandler
         PELogger.logDebug("Built %d spreads total", spreads.size());
     }
 
-    private static void doBuildSpread(List<AbstractPage> list)
-    {
-        for (int i = 0; i < list.size(); i += 2)
-        {
-            if (i == list.size() - 1)
-            {
+    private static void doBuildSpread(List<AbstractPage> list) {
+        for (int i = 0; i < list.size(); i += 2) {
+            if (i == list.size() - 1) {
                 // Handle last page being odd
                 spreads.add(ImmutablePair.of(list.get(i), ((AbstractPage) null)));
                 continue;
@@ -215,41 +203,42 @@ public class ManualPageHandler
         }
     }
 
-    private static void addItem(Item item, PageCategory category)
-    {
+    private static void addItem(Item item, PageCategory category) {
         // Manually exclude alchBag from having 16 of the same entry
-        List<ItemStack> list = (item == ObjHandler.alchBag || !item.getHasSubtypes()) ? Collections.singletonList(new ItemStack(item)) : getSubItems(item);
+        List<ItemStack> list = (item == ObjHandler.alchBag || !item.getHasSubtypes())
+            ? Collections.singletonList(new ItemStack(item))
+            : getSubItems(item);
 
-        for (ItemStack s : list)
-        {
+        for (ItemStack s : list) {
             AbstractPage page = AbstractPage.createItemPage(s, category);
-            categoryMap.get(category).add(page);
-            categoryMap.get(category).addAll(page.subPages);
+            categoryMap.get(category)
+                .add(page);
+            categoryMap.get(category)
+                .addAll(page.subPages);
             PELogger.logDebug("Added %d item pages for stack %s", page.subPages.size() + 1, s.toString());
         }
     }
 
-    private static void addBlock(Block block, PageCategory category)
-    {
+    private static void addBlock(Block block, PageCategory category) {
         addItem(Item.getItemFromBlock(block), category);
     }
 
-    private static void addTextPage(String identifier, PageCategory category)
-    {
+    private static void addTextPage(String identifier, PageCategory category) {
         AbstractPage page = AbstractPage.createTextPages(identifier, category);
-        categoryMap.get(category).add(page);
-        categoryMap.get(category).addAll(page.subPages);
+        categoryMap.get(category)
+            .add(page);
+        categoryMap.get(category)
+            .addAll(page.subPages);
         PELogger.logDebug("Added %d text pages for identifier %s", page.subPages.size() + 1, identifier);
     }
 
-    private static void addImagePage(String identifier, ResourceLocation resource, PageCategory category)
-    {
+    private static void addImagePage(String identifier, ResourceLocation resource, PageCategory category) {
         AbstractPage page = AbstractPage.createImagePage(identifier, resource, category);
-        categoryMap.get(category).add(page);
+        categoryMap.get(category)
+            .add(page);
     }
 
-    private static List<ItemStack> getSubItems(Item i)
-    {
+    private static List<ItemStack> getSubItems(Item i) {
         List<ItemStack> list = Lists.newArrayList();
         i.getSubItems(i, null, list);
         return list;

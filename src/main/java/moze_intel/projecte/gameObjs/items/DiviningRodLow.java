@@ -1,15 +1,10 @@
 package moze_intel.projecte.gameObjs.items;
 
-import com.google.common.collect.Lists;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import moze_intel.projecte.api.item.IModeChanger;
-import moze_intel.projecte.utils.Comparators;
-import moze_intel.projecte.utils.Coordinates;
-import moze_intel.projecte.utils.EMCHelper;
-import moze_intel.projecte.utils.ItemHelper;
-import moze_intel.projecte.utils.PlayerHelper;
-import moze_intel.projecte.utils.WorldHelper;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
@@ -25,197 +20,173 @@ import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
+import com.google.common.collect.Lists;
 
-public class DiviningRodLow extends ItemPE implements IModeChanger
-{
-	// Modes should be in the format depthx3x3
-	protected String[] modes;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import moze_intel.projecte.api.item.IModeChanger;
+import moze_intel.projecte.utils.Comparators;
+import moze_intel.projecte.utils.Coordinates;
+import moze_intel.projecte.utils.EMCHelper;
+import moze_intel.projecte.utils.ItemHelper;
+import moze_intel.projecte.utils.PlayerHelper;
+import moze_intel.projecte.utils.WorldHelper;
 
-	public DiviningRodLow()
-	{
-		this.setUnlocalizedName("divining_rod_1");
-		modes = new String[] {"3x3x3"};
-	}
+public class DiviningRodLow extends ItemPE implements IModeChanger {
 
-	// Only for subclasses
-	protected DiviningRodLow(String[] modeDesc)
-	{
-		modes = modeDesc;
-	}
-	
-	@Override
-	public void onUpdate(ItemStack stack, World world, Entity entity, int par4, boolean par5) 
-	{
-		if (!stack.hasTagCompound())
-		{
-			stack.setTagCompound(new NBTTagCompound());
-		}
-	}
-	
-	@Override
-	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player)
-	{
-		if (world.isRemote)
-		{
-			return stack;
-		}
+    // Modes should be in the format depthx3x3
+    protected String[] modes;
 
-		MovingObjectPosition mop = this.getMovingObjectPositionFromPlayer(world, player, false);
+    public DiviningRodLow() {
+        this.setUnlocalizedName("divining_rod_1");
+        modes = new String[] { "3x3x3" };
+    }
 
-		if (mop != null && mop.typeOfHit.equals(MovingObjectType.BLOCK))
-		{
-			PlayerHelper.swingItem(player);
-			List<Integer> emcValues = Lists.newArrayList();
-			long totalEmc = 0;
-			int numBlocks = 0;
+    // Only for subclasses
+    protected DiviningRodLow(String[] modeDesc) {
+        modes = modeDesc;
+    }
 
-			byte mode = getMode(stack);
-			int depth = getDepthFromMode(mode);
-			AxisAlignedBB box = WorldHelper.getDeepBox(new Coordinates(mop), ForgeDirection.getOrientation(mop.sideHit), depth);
+    @Override
+    public void onUpdate(ItemStack stack, World world, Entity entity, int par4, boolean par5) {
+        if (!stack.hasTagCompound()) {
+            stack.setTagCompound(new NBTTagCompound());
+        }
+    }
 
-			for (int i = (int) box.minX; i <= box.maxX; i++)
-				for (int j = (int) box.minY; j <= box.maxY; j++)
-					for (int k = (int) box.minZ; k <= box.maxZ; k++)
-					{
-						Block block = world.getBlock(i, j, k);
+    @Override
+    public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
+        if (world.isRemote) {
+            return stack;
+        }
 
-						if (block == Blocks.air)
-						{
-							continue;
-						}
+        MovingObjectPosition mop = this.getMovingObjectPositionFromPlayer(world, player, false);
 
-						List<ItemStack> drops = block.getDrops(world, i, j, k, world.getBlockMetadata(i, j, k), 0);
+        if (mop != null && mop.typeOfHit.equals(MovingObjectType.BLOCK)) {
+            PlayerHelper.swingItem(player);
+            List<Integer> emcValues = Lists.newArrayList();
+            long totalEmc = 0;
+            int numBlocks = 0;
 
-						if (drops.size() == 0)
-						{
-							continue;
-						}
+            byte mode = getMode(stack);
+            int depth = getDepthFromMode(mode);
+            AxisAlignedBB box = WorldHelper
+                .getDeepBox(new Coordinates(mop), ForgeDirection.getOrientation(mop.sideHit), depth);
 
-						ItemStack blockStack = drops.get(0);
-						int blockEmc = EMCHelper.getEmcValue(blockStack);
+            for (int i = (int) box.minX; i <= box.maxX; i++)
+                for (int j = (int) box.minY; j <= box.maxY; j++) for (int k = (int) box.minZ; k <= box.maxZ; k++) {
+                    Block block = world.getBlock(i, j, k);
 
-						if (blockEmc == 0)
-						{
-							Map<ItemStack, ItemStack> map = FurnaceRecipes.smelting().getSmeltingList();
+                    if (block == Blocks.air) {
+                        continue;
+                    }
 
-							for (Entry<ItemStack, ItemStack> entry : map.entrySet())
-							{
-								if (entry == null || entry.getKey() == null)
-								{
-									continue;
-								}
+                    List<ItemStack> drops = block.getDrops(world, i, j, k, world.getBlockMetadata(i, j, k), 0);
 
-								if (ItemHelper.areItemStacksEqualIgnoreNBT(entry.getKey(), blockStack))
-								{
-									int currentValue = EMCHelper.getEmcValue(entry.getValue());
+                    if (drops.size() == 0) {
+                        continue;
+                    }
 
-									if (currentValue != 0)
-									{
-										if (!emcValues.contains(currentValue))
-										{
-											emcValues.add(currentValue);
-										}
+                    ItemStack blockStack = drops.get(0);
+                    int blockEmc = EMCHelper.getEmcValue(blockStack);
 
-										totalEmc += currentValue;
-									}
-								}
-							}
-						}
-						else
-						{
-							if (!emcValues.contains(blockEmc))
-							{
-								emcValues.add(blockEmc);
-							}
+                    if (blockEmc == 0) {
+                        Map<ItemStack, ItemStack> map = FurnaceRecipes.smelting()
+                            .getSmeltingList();
 
-							totalEmc += blockEmc;
-						}
+                        for (Entry<ItemStack, ItemStack> entry : map.entrySet()) {
+                            if (entry == null || entry.getKey() == null) {
+                                continue;
+                            }
 
-						numBlocks++;
-					}
+                            if (ItemHelper.areItemStacksEqualIgnoreNBT(entry.getKey(), blockStack)) {
+                                int currentValue = EMCHelper.getEmcValue(entry.getValue());
 
+                                if (currentValue != 0) {
+                                    if (!emcValues.contains(currentValue)) {
+                                        emcValues.add(currentValue);
+                                    }
 
-			if (numBlocks == 0)
-			{
-				return stack;
-			}
-			
-			int[] maxValues = new int[3];
+                                    totalEmc += currentValue;
+                                }
+                            }
+                        }
+                    } else {
+                        if (!emcValues.contains(blockEmc)) {
+                            emcValues.add(blockEmc);
+                        }
 
-			for (int i = 0; i < 3; i++)
-			{
-				maxValues[i] = 1;
-			}
+                        totalEmc += blockEmc;
+                    }
 
-			Collections.sort(emcValues, Comparators.INT_DESCENDING);
+                    numBlocks++;
+                }
 
-			int num = emcValues.size() >= 3 ? 3 : emcValues.size();
+            if (numBlocks == 0) {
+                return stack;
+            }
 
-			for (int i = 0; i < num; i++)
-			{
-				maxValues[i] = emcValues.get(i);
-			}
+            int[] maxValues = new int[3];
 
-			player.addChatComponentMessage(new ChatComponentTranslation("pe.divining.avgemc", numBlocks, (totalEmc / numBlocks)));
+            for (int i = 0; i < 3; i++) {
+                maxValues[i] = 1;
+            }
 
-			if (this instanceof DiviningRodMedium)
-			{
-				player.addChatComponentMessage(new ChatComponentTranslation("pe.divining.maxemc", maxValues[0]));
-			}
-			if (this instanceof DiviningRodHigh)
-			{
-				player.addChatComponentMessage(new ChatComponentTranslation("pe.divining.secondmax", maxValues[1]));
-				player.addChatComponentMessage(new ChatComponentTranslation("pe.divining.thirdmax", maxValues[2]));
-			}
-		}
+            Collections.sort(emcValues, Comparators.INT_DESCENDING);
 
-		return stack;
+            int num = emcValues.size() >= 3 ? 3 : emcValues.size();
 
-	}
+            for (int i = 0; i < num; i++) {
+                maxValues[i] = emcValues.get(i);
+            }
 
-	/**
-	 * Gets the first number in the mode description.
-	 */
-	private int getDepthFromMode(byte mode)
-	{
-		String modeDesc = modes[mode];
-		// Subtract one because of how the box method works
-		return Integer.parseInt(modeDesc.substring(0, modeDesc.indexOf('x'))) - 1;
-	}
+            player.addChatComponentMessage(
+                new ChatComponentTranslation("pe.divining.avgemc", numBlocks, (totalEmc / numBlocks)));
 
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerIcons(IIconRegister register)
-	{
-		this.itemIcon = register.registerIcon(this.getTexture("divining1"));
-	}
+            if (this instanceof DiviningRodMedium) {
+                player.addChatComponentMessage(new ChatComponentTranslation("pe.divining.maxemc", maxValues[0]));
+            }
+            if (this instanceof DiviningRodHigh) {
+                player.addChatComponentMessage(new ChatComponentTranslation("pe.divining.secondmax", maxValues[1]));
+                player.addChatComponentMessage(new ChatComponentTranslation("pe.divining.thirdmax", maxValues[2]));
+            }
+        }
 
-	@Override
-	public byte getMode(ItemStack stack)
-	{
-		return stack.stackTagCompound.getByte("Mode");
-	}
+        return stack;
 
-	@Override
-	public void changeMode(EntityPlayer player, ItemStack stack)
-	{
-		if (modes.length == 1)
-		{
-			return;
-		}
-		if (getMode(stack) == modes.length - 1)
-		{
-			stack.stackTagCompound.setByte("Mode", ((byte) 0));
-		}
-		else
-		{
-			stack.stackTagCompound.setByte("Mode", ((byte) (getMode(stack) + 1)));
-		}
+    }
 
-		player.addChatComponentMessage(new ChatComponentTranslation("pe.item.mode_switch", modes[getMode(stack)]));
-	}
+    /**
+     * Gets the first number in the mode description.
+     */
+    private int getDepthFromMode(byte mode) {
+        String modeDesc = modes[mode];
+        // Subtract one because of how the box method works
+        return Integer.parseInt(modeDesc.substring(0, modeDesc.indexOf('x'))) - 1;
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void registerIcons(IIconRegister register) {
+        this.itemIcon = register.registerIcon(this.getTexture("divining1"));
+    }
+
+    @Override
+    public byte getMode(ItemStack stack) {
+        return stack.stackTagCompound.getByte("Mode");
+    }
+
+    @Override
+    public void changeMode(EntityPlayer player, ItemStack stack) {
+        if (modes.length == 1) {
+            return;
+        }
+        if (getMode(stack) == modes.length - 1) {
+            stack.stackTagCompound.setByte("Mode", ((byte) 0));
+        } else {
+            stack.stackTagCompound.setByte("Mode", ((byte) (getMode(stack) + 1)));
+        }
+
+        player.addChatComponentMessage(new ChatComponentTranslation("pe.item.mode_switch", modes[getMode(stack)]));
+    }
 }

@@ -1,6 +1,5 @@
 package moze_intel.projecte.gameObjs.customRecipes;
 
-import moze_intel.projecte.gameObjs.ObjHandler;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
@@ -18,194 +17,168 @@ import net.minecraft.item.ItemTool;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
 
-public class RecipesCovalenceRepair implements IRecipe
-{
-	private ItemStack output;
+import moze_intel.projecte.gameObjs.ObjHandler;
 
-	@Override
-	public boolean matches(InventoryCrafting inv, World world) 
-	{
-		ItemStack[] dust = new ItemStack[8];
-		ItemStack tool = null;
-		boolean foundItem = false;
-		int dustCounter = 0;
-		
-		for (int i = 0; i < inv.getSizeInventory(); i++)
-		{
-			ItemStack input = inv.getStackInSlot(i);
-			
-			if (input == null)
-			{
-				continue;
-			}
-			
-			if (isItemRepairable(input))
-			{
-				if (!foundItem)
-				{
-					tool = input;
-					foundItem = true;
-				}
-				else
-				{
-					return false;
-				}
-			}
-			else if (input.getItem() == ObjHandler.covalence)
-			{
-				if (dustCounter < 8)
-				{
-					dust[dustCounter] = input;
-					dustCounter++;
-				}
-				else
-				{
-					return false;
-				}
-			}
-		}
-		
-		if (tool == null || !foundItem || dustCounter == 0)
-		{
-			return false;
-		}
+public class RecipesCovalenceRepair implements IRecipe {
 
-		if (!correctDustCount(dustCounter, tool.getItem()))
-		{
-			return false;
-		}
+    private ItemStack output;
 
-		int dustDamage = getDustType(tool);
+    @Override
+    public boolean matches(InventoryCrafting inv, World world) {
+        ItemStack[] dust = new ItemStack[8];
+        ItemStack tool = null;
+        boolean foundItem = false;
+        int dustCounter = 0;
 
-		for (ItemStack stack : dust) {
-			if (stack != null && stack.getItemDamage() < dustDamage) {
-				return false;
-			}
-		}
-		
-		output = tool.copy();
-		output.setItemDamage(0);
-		return true;
-	}
+        for (int i = 0; i < inv.getSizeInventory(); i++) {
+            ItemStack input = inv.getStackInSlot(i);
 
-	private boolean correctDustCount(int dustCounter, Item toRepair)
-	{
-		if (toRepair instanceof ItemSpade || toRepair instanceof ItemShears
-				|| toRepair instanceof ItemFlintAndSteel || toRepair instanceof ItemFishingRod)
-		{
-			return dustCounter == 1;
-		}
+            if (input == null) {
+                continue;
+            }
 
-		if (toRepair instanceof ItemSword)
-		{
-			return dustCounter == 2;
-		}
+            if (isItemRepairable(input)) {
+                if (!foundItem) {
+                    tool = input;
+                    foundItem = true;
+                } else {
+                    return false;
+                }
+            } else if (input.getItem() == ObjHandler.covalence) {
+                if (dustCounter < 8) {
+                    dust[dustCounter] = input;
+                    dustCounter++;
+                } else {
+                    return false;
+                }
+            }
+        }
 
-		if (toRepair instanceof ItemAxe || toRepair instanceof ItemPickaxe || toRepair instanceof ItemBow)
-		{
-			return dustCounter == 3;
-		}
+        if (tool == null || !foundItem || dustCounter == 0) {
+            return false;
+        }
 
-		if (toRepair instanceof ItemArmor)
-		{
-			ItemArmor armor = ((ItemArmor) toRepair);
-			switch(armor.armorType)
-			{
-				case 0: return dustCounter == 5;
-				case 1: return dustCounter == 8;
-				case 2: return dustCounter == 7;
-				case 3: return dustCounter == 4;
-				default: return false;
-			}
-		}
+        if (!correctDustCount(dustCounter, tool.getItem())) {
+            return false;
+        }
 
-		return dustCounter == 3;
+        int dustDamage = getDustType(tool);
 
-	}
+        for (ItemStack stack : dust) {
+            if (stack != null && stack.getItemDamage() < dustDamage) {
+                return false;
+            }
+        }
 
-	private boolean isItemRepairable(ItemStack stack)
-	{
-		if (stack.getHasSubtypes())
-		{
-			return false;
-		}
+        output = tool.copy();
+        output.setItemDamage(0);
+        return true;
+    }
 
-		if (stack.getMaxDamage() == 0 || stack.getItemDamage() == 0)
-		{
-			return false;
-		}
-		
-		Item item = stack.getItem();
+    private boolean correctDustCount(int dustCounter, Item toRepair) {
+        if (toRepair instanceof ItemSpade || toRepair instanceof ItemShears
+            || toRepair instanceof ItemFlintAndSteel
+            || toRepair instanceof ItemFishingRod) {
+            return dustCounter == 1;
+        }
 
-		if (item instanceof ItemShears || item instanceof ItemFlintAndSteel || item instanceof ItemFishingRod || item instanceof ItemBow)
-		{
-			return true;
-		}
+        if (toRepair instanceof ItemSword) {
+            return dustCounter == 2;
+        }
 
-		return (item instanceof ItemTool || item instanceof ItemSword || item instanceof ItemHoe || item instanceof ItemArmor);
-	}
-	
-	private int getDustType(ItemStack stack)
-	{
-		Item item = stack.getItem();
-		
-		if (item instanceof ItemShears || item instanceof ItemFlintAndSteel)
-		{
-			return 1;
-		}
+        if (toRepair instanceof ItemAxe || toRepair instanceof ItemPickaxe || toRepair instanceof ItemBow) {
+            return dustCounter == 3;
+        }
 
-		if (item instanceof ItemBow || item instanceof ItemFishingRod)
-		{
-			return 0;
-		}
-		
-		String name = "";
-		
-		if (item instanceof ItemTool)
-		{
-			name = ((ItemTool) item).getToolMaterialName();
-		}
-		else if (item instanceof ItemSword)
-		{
-			name = ((ItemSword) item).getToolMaterialName();
-		}
-		else if (item instanceof ItemHoe)
-		{
-			name = ((ItemHoe) item).getToolMaterialName();
-		}
-		else if (item instanceof ItemArmor)
-		{
-			name = ((ItemArmor) item).getArmorMaterial().toString();
-		}
-		
-		if (name.equals("WOOD") || name.equals("STONE") || name.equals("CLOTH"))
-		{
-			return 0;
-		}
+        if (toRepair instanceof ItemArmor) {
+            ItemArmor armor = ((ItemArmor) toRepair);
+            switch (armor.armorType) {
+                case 0:
+                    return dustCounter == 5;
+                case 1:
+                    return dustCounter == 8;
+                case 2:
+                    return dustCounter == 7;
+                case 3:
+                    return dustCounter == 4;
+                default:
+                    return false;
+            }
+        }
 
-		if (name.equals("IRON") || name.equals("GOLD") || name.equals("CHAIN"))
-		{
-			return 1;
-		}
+        return dustCounter == 3;
 
-		return 2;
-	}
-	
-	@Override
-	public ItemStack getCraftingResult(InventoryCrafting var1) 
-	{
-		return output.copy();
-	}
+    }
 
-	@Override
-	public int getRecipeSize() 
-	{
-		return 10;
-	}
+    private boolean isItemRepairable(ItemStack stack) {
+        if (stack.getHasSubtypes()) {
+            return false;
+        }
 
-	@Override
-	public ItemStack getRecipeOutput() 
-	{
-		return output;
-	}
+        if (stack.getMaxDamage() == 0 || stack.getItemDamage() == 0) {
+            return false;
+        }
+
+        Item item = stack.getItem();
+
+        if (item instanceof ItemShears || item instanceof ItemFlintAndSteel
+            || item instanceof ItemFishingRod
+            || item instanceof ItemBow) {
+            return true;
+        }
+
+        return (item instanceof ItemTool || item instanceof ItemSword
+            || item instanceof ItemHoe
+            || item instanceof ItemArmor);
+    }
+
+    private int getDustType(ItemStack stack) {
+        Item item = stack.getItem();
+
+        if (item instanceof ItemShears || item instanceof ItemFlintAndSteel) {
+            return 1;
+        }
+
+        if (item instanceof ItemBow || item instanceof ItemFishingRod) {
+            return 0;
+        }
+
+        String name = "";
+
+        if (item instanceof ItemTool) {
+            name = ((ItemTool) item).getToolMaterialName();
+        } else if (item instanceof ItemSword) {
+            name = ((ItemSword) item).getToolMaterialName();
+        } else if (item instanceof ItemHoe) {
+            name = ((ItemHoe) item).getToolMaterialName();
+        } else if (item instanceof ItemArmor) {
+            name = ((ItemArmor) item).getArmorMaterial()
+                .toString();
+        }
+
+        if (name.equals("WOOD") || name.equals("STONE") || name.equals("CLOTH")) {
+            return 0;
+        }
+
+        if (name.equals("IRON") || name.equals("GOLD") || name.equals("CHAIN")) {
+            return 1;
+        }
+
+        return 2;
+    }
+
+    @Override
+    public ItemStack getCraftingResult(InventoryCrafting var1) {
+        return output.copy();
+    }
+
+    @Override
+    public int getRecipeSize() {
+        return 10;
+    }
+
+    @Override
+    public ItemStack getRecipeOutput() {
+        return output;
+    }
 }

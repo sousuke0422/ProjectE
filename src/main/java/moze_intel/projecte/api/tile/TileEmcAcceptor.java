@@ -7,13 +7,12 @@ import net.minecraftforge.common.util.ForgeDirection;
  *
  * @author williewillus
  */
-public class TileEmcAcceptor extends TileEmcBase implements IEmcAcceptor
-{
-	@Override
-	public double acceptEMC(ForgeDirection side, double toAccept)
-	{
-		double toAdd = Math.min(maximumEMC - currentEMC, toAccept);
-		addEMC(toAdd);
-		return toAdd;
-	}
+public class TileEmcAcceptor extends TileEmcBase implements IEmcAcceptor {
+
+    @Override
+    public double acceptEMC(ForgeDirection side, double toAccept) {
+        double toAdd = Math.min(maximumEMC - currentEMC, toAccept);
+        addEMC(toAdd);
+        return toAdd;
+    }
 }

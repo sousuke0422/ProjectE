@@ -1,105 +1,89 @@
 package moze_intel.projecte.gameObjs.tiles;
 
-import moze_intel.projecte.utils.EMCHelper;
 import net.minecraft.item.ItemStack;
 
-public class CondenserMK2Tile extends CondenserTile
-{
-	private static final int LOCK_SLOT = 0;
-	private static final int INPUT_SLOTS_LOWER = 1;
-	private static final int INPUT_SLOTS_UPPER = 42;
-	private static final int OUTPUT_SLOTS_LOWER = 43;
-	private static final int OUTPUT_SLOTS_UPPER = 84;
+import moze_intel.projecte.utils.EMCHelper;
 
-	public CondenserMK2Tile()
-	{
-		this.inventory = new ItemStack[85];
-		this.loadChecks = false;
-	}
+public class CondenserMK2Tile extends CondenserTile {
 
-	@Override
-	protected void condense()
-	{
-		while (this.hasSpace() && this.getStoredEmc() >= requiredEmc)
-		{
-			pushStack();
-			this.removeEMC(requiredEmc);
-		}
+    private static final int LOCK_SLOT = 0;
+    private static final int INPUT_SLOTS_LOWER = 1;
+    private static final int INPUT_SLOTS_UPPER = 42;
+    private static final int OUTPUT_SLOTS_LOWER = 43;
+    private static final int OUTPUT_SLOTS_UPPER = 84;
 
-		if (this.hasSpace())
-		{
-			for (int i = INPUT_SLOTS_LOWER; i <= INPUT_SLOTS_UPPER; i++)
-			{
-				ItemStack stack = inventory[i];
+    public CondenserMK2Tile() {
+        this.inventory = new ItemStack[85];
+        this.loadChecks = false;
+    }
 
-				if (stack == null)
-				{
-					continue;
-				}
+    @Override
+    protected void condense() {
+        while (this.hasSpace() && this.getStoredEmc() >= requiredEmc) {
+            pushStack();
+            this.removeEMC(requiredEmc);
+        }
 
-				this.addEMC(EMCHelper.getEmcValue(stack) * stack.stackSize);
-				inventory[i] = null;
-				break;
-			}
-		}
-	}
+        if (this.hasSpace()) {
+            for (int i = INPUT_SLOTS_LOWER; i <= INPUT_SLOTS_UPPER; i++) {
+                ItemStack stack = inventory[i];
 
-	@Override
-	protected boolean hasSpace()
-	{
-		for (int i = OUTPUT_SLOTS_LOWER; i <= OUTPUT_SLOTS_UPPER; i++)
-		{
-			ItemStack stack = inventory[i];
+                if (stack == null) {
+                    continue;
+                }
 
-			if (stack == null)
-			{
-				return true;
-			}
+                this.addEMC(EMCHelper.getEmcValue(stack) * stack.stackSize);
+                inventory[i] = null;
+                break;
+            }
+        }
+    }
 
-			if (isStackEqualToLock(stack) && stack.stackSize < stack.getMaxStackSize())
-			{
-				return true;
-			}
-		}
+    @Override
+    protected boolean hasSpace() {
+        for (int i = OUTPUT_SLOTS_LOWER; i <= OUTPUT_SLOTS_UPPER; i++) {
+            ItemStack stack = inventory[i];
 
-		return false;
-	}
+            if (stack == null) {
+                return true;
+            }
 
-	@Override
-	protected int getSlotForStack()
-	{
-		for (int i = OUTPUT_SLOTS_LOWER; i <= OUTPUT_SLOTS_UPPER; i++)
-		{
-			ItemStack stack = inventory[i];
+            if (isStackEqualToLock(stack) && stack.stackSize < stack.getMaxStackSize()) {
+                return true;
+            }
+        }
 
-			if (stack == null)
-			{
-				return i;
-			}
+        return false;
+    }
 
-			if (isStackEqualToLock(stack) && stack.stackSize < stack.getMaxStackSize())
-			{
-				return i;
-			}
-		}
+    @Override
+    protected int getSlotForStack() {
+        for (int i = OUTPUT_SLOTS_LOWER; i <= OUTPUT_SLOTS_UPPER; i++) {
+            ItemStack stack = inventory[i];
 
-		return 0;
-	}
+            if (stack == null) {
+                return i;
+            }
 
-	@Override
-	public boolean isItemValidForSlot(int slot, ItemStack stack)
-	{
-		if (slot == LOCK_SLOT || slot >= OUTPUT_SLOTS_LOWER)
-		{
-			return false;
-		}
+            if (isStackEqualToLock(stack) && stack.stackSize < stack.getMaxStackSize()) {
+                return i;
+            }
+        }
 
-		return !isStackEqualToLock(stack) && EMCHelper.doesItemHaveEmc(stack);
-	}
+        return 0;
+    }
 
-	@Override
-	public String getInventoryName()
-	{
-		return "tile.pe_condenser_mk2.name";
-	}
+    @Override
+    public boolean isItemValidForSlot(int slot, ItemStack stack) {
+        if (slot == LOCK_SLOT || slot >= OUTPUT_SLOTS_LOWER) {
+            return false;
+        }
+
+        return !isStackEqualToLock(stack) && EMCHelper.doesItemHaveEmc(stack);
+    }
+
+    @Override
+    public String getInventoryName() {
+        return "tile.pe_condenser_mk2.name";
+    }
 }

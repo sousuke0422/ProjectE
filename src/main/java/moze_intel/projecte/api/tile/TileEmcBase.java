@@ -10,81 +10,68 @@ import net.minecraft.tileentity.TileEntity;
  *
  * @author williewillus
  */
-public class TileEmcBase extends TileEntity implements IEmcStorage
-{
-	protected double maximumEMC;
-	protected double currentEMC = 0;
+public class TileEmcBase extends TileEntity implements IEmcStorage {
 
-	protected TileEmcBase()
-	{
-		setMaximumEMC(Double.MAX_VALUE);
-	}
+    protected double maximumEMC;
+    protected double currentEMC = 0;
 
-	public final void setMaximumEMC(double max)
-	{
-		maximumEMC = max;
-		if (currentEMC > maximumEMC)
-		{
-			currentEMC = maximumEMC;
-		}
-	}
+    protected TileEmcBase() {
+        setMaximumEMC(Double.MAX_VALUE);
+    }
 
-	@Override
-	public double getStoredEmc()
-	{
-		return currentEMC;
-	}
+    public final void setMaximumEMC(double max) {
+        maximumEMC = max;
+        if (currentEMC > maximumEMC) {
+            currentEMC = maximumEMC;
+        }
+    }
 
-	@Override
-	public double getMaximumEmc()
-	{
-		return maximumEMC;
-	}
+    @Override
+    public double getStoredEmc() {
+        return currentEMC;
+    }
 
-	/**
-	 * Add EMC directly into the internal buffer. Use for internal implementation of your tile
-	 */
-	protected void addEMC(double toAdd)
-	{
-		currentEMC += toAdd;
-		if (currentEMC > maximumEMC)
-		{
-			currentEMC = maximumEMC;
-		}
-	}
+    @Override
+    public double getMaximumEmc() {
+        return maximumEMC;
+    }
 
-	/**
-	 * Removes EMC directly into the internal buffer. Use for internal implementation of your tile
-	 */
-	protected void removeEMC(double toRemove)
-	{
-		currentEMC -= toRemove;
-		if (currentEMC < 0)
-		{
-			currentEMC = 0;
-		}
-	}
+    /**
+     * Add EMC directly into the internal buffer. Use for internal implementation of your tile
+     */
+    protected void addEMC(double toAdd) {
+        currentEMC += toAdd;
+        if (currentEMC > maximumEMC) {
+            currentEMC = maximumEMC;
+        }
+    }
 
-	@Override
-	public void writeToNBT(NBTTagCompound tag)
-	{
-		super.writeToNBT(tag);
-		if (currentEMC > maximumEMC)
-		{
-			currentEMC = maximumEMC;
-		}
-		tag.setDouble("EMC", currentEMC);
-	}
+    /**
+     * Removes EMC directly into the internal buffer. Use for internal implementation of your tile
+     */
+    protected void removeEMC(double toRemove) {
+        currentEMC -= toRemove;
+        if (currentEMC < 0) {
+            currentEMC = 0;
+        }
+    }
 
-	@Override
-	public void readFromNBT(NBTTagCompound tag)
-	{
-		super.readFromNBT(tag);
-		double set = tag.getDouble("EMC");
-		if (set > maximumEMC)
-		{
-			set = maximumEMC;
-		}
-		currentEMC = set;
-	}
+    @Override
+    public void writeToNBT(NBTTagCompound tag) {
+        super.writeToNBT(tag);
+        if (currentEMC > maximumEMC) {
+            currentEMC = maximumEMC;
+        }
+        tag.setDouble("EMC", currentEMC);
+    }
+
+    @Override
+    public void readFromNBT(NBTTagCompound tag) {
+        super.readFromNBT(tag);
+        double set = tag.getDouble("EMC");
+        if (set > maximumEMC) {
+            set = maximumEMC;
+        }
+        currentEMC = set;
+    }
 }

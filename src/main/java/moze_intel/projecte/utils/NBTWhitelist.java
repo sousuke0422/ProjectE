@@ -1,46 +1,43 @@
 package moze_intel.projecte.utils;
 
-import com.google.common.collect.Lists;
-import moze_intel.projecte.emc.SimpleStack;
+import java.util.List;
+
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
-import java.util.List;
+import com.google.common.collect.Lists;
 
-public final class NBTWhitelist
-{
-	private static final List<SimpleStack> LIST = Lists.newArrayList();
+import moze_intel.projecte.emc.SimpleStack;
 
-	public static boolean register(ItemStack stack)
-	{
-		SimpleStack s = new SimpleStack(stack);
+public final class NBTWhitelist {
 
-		if (!s.isValid())
-		{
-			return false;
-		}
+    private static final List<SimpleStack> LIST = Lists.newArrayList();
 
-		s.qnty = 1;
-		s.damage = OreDictionary.WILDCARD_VALUE;
+    public static boolean register(ItemStack stack) {
+        SimpleStack s = new SimpleStack(stack);
 
-		if (!LIST.contains(s))
-		{
-			LIST.add(s);
-			return true;
-		}
+        if (!s.isValid()) {
+            return false;
+        }
 
-		return false;
-	}
+        s.qnty = 1;
+        s.damage = OreDictionary.WILDCARD_VALUE;
 
-	public static boolean shouldDupeWithNBT(ItemStack stack)
-	{
-		SimpleStack s = new SimpleStack(stack);
+        if (!LIST.contains(s)) {
+            LIST.add(s);
+            return true;
+        }
 
-		if (!s.isValid())
-		{
-			return false;
-		}
+        return false;
+    }
 
-		return LIST.contains(s);
-	}
+    public static boolean shouldDupeWithNBT(ItemStack stack) {
+        SimpleStack s = new SimpleStack(stack);
+
+        if (!s.isValid()) {
+            return false;
+        }
+
+        return LIST.contains(s);
+    }
 }

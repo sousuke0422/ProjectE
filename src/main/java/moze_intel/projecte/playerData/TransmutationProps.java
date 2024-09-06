@@ -1,9 +1,8 @@
 package moze_intel.projecte.playerData;
 
-import com.google.common.collect.Lists;
-import moze_intel.projecte.utils.EMCHelper;
-import moze_intel.projecte.utils.ItemHelper;
-import moze_intel.projecte.utils.PELogger;
+import java.util.Iterator;
+import java.util.List;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -13,162 +12,140 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.IExtendedEntityProperties;
 import net.minecraftforge.common.util.Constants;
 
-import java.util.Iterator;
-import java.util.List;
+import com.google.common.collect.Lists;
 
-public class TransmutationProps implements IExtendedEntityProperties
-{
-	private final EntityPlayer player;
+import moze_intel.projecte.utils.EMCHelper;
+import moze_intel.projecte.utils.ItemHelper;
 
-	private double transmutationEmc;
-	private List<ItemStack> knowledge = Lists.newArrayList();
-	private ItemStack[] inputLocks = new ItemStack[9];
-	public static final String PROP_NAME = "ProjectETransmutation";
+public class TransmutationProps implements IExtendedEntityProperties {
 
-	public static void register(EntityPlayer player)
-	{
-		player.registerExtendedProperties(PROP_NAME, new TransmutationProps(player));
-	}
+    private final EntityPlayer player;
 
-	public static TransmutationProps getDataFor(EntityPlayer player)
-	{
-		return ((TransmutationProps) player.getExtendedProperties(PROP_NAME));
-	}
+    private double transmutationEmc;
+    private List<ItemStack> knowledge = Lists.newArrayList();
+    private ItemStack[] inputLocks = new ItemStack[9];
+    public static final String PROP_NAME = "ProjectETransmutation";
 
-	public TransmutationProps(EntityPlayer player)
-	{
-		this.player = player;
-	}
+    public static void register(EntityPlayer player) {
+        player.registerExtendedProperties(PROP_NAME, new TransmutationProps(player));
+    }
 
-	public ItemStack[] getInputLocks()
-	{
-		return inputLocks;
-	}
+    public static TransmutationProps getDataFor(EntityPlayer player) {
+        return ((TransmutationProps) player.getExtendedProperties(PROP_NAME));
+    }
 
-	public void setInputLocks(ItemStack[] inputLocks)
-	{
-		this.inputLocks = inputLocks;
-	}
+    public TransmutationProps(EntityPlayer player) {
+        this.player = player;
+    }
 
-	protected double getTransmutationEmc()
-	{
-		return transmutationEmc;
-	}
+    public ItemStack[] getInputLocks() {
+        return inputLocks;
+    }
 
-	protected void setTransmutationEmc(double transmutationEmc)
-	{
-		this.transmutationEmc = transmutationEmc;
-	}
+    public void setInputLocks(ItemStack[] inputLocks) {
+        this.inputLocks = inputLocks;
+    }
 
-	protected List<ItemStack> getKnowledge()
-	{
-		pruneStaleKnowledge();
-		return knowledge;
-	}
+    protected double getTransmutationEmc() {
+        return transmutationEmc;
+    }
 
-	private void pruneDuplicateKnowledge()
-	{
-		ItemHelper.compactItemListNoStacksize(knowledge);
-		for (ItemStack s : knowledge)
-		{
-			if (s.stackSize > 1)
-			{
-				s.stackSize = 1;
-			}
-		}
-	}
+    protected void setTransmutationEmc(double transmutationEmc) {
+        this.transmutationEmc = transmutationEmc;
+    }
 
-	private void pruneStaleKnowledge()
-	{
-		Iterator<ItemStack> iter = knowledge.iterator();
-		while (iter.hasNext())
-		{
-			if (!EMCHelper.doesItemHaveEmc(iter.next()))
-			{
-				iter.remove();
-			}
-		}
-	}
+    protected List<ItemStack> getKnowledge() {
+        pruneStaleKnowledge();
+        return knowledge;
+    }
 
-	protected NBTTagCompound saveForPacket()
-	{
-		NBTTagCompound compound = new NBTTagCompound();
-		compound.setDouble("transmutationEmc", transmutationEmc);
+    private void pruneDuplicateKnowledge() {
+        ItemHelper.compactItemListNoStacksize(knowledge);
+        for (ItemStack s : knowledge) {
+            if (s.stackSize > 1) {
+                s.stackSize = 1;
+            }
+        }
+    }
 
-		pruneStaleKnowledge();
-		NBTTagList knowledgeWrite = new NBTTagList();
-		for (ItemStack i : knowledge)
-		{
-			NBTTagCompound tag = i.writeToNBT(new NBTTagCompound());
-			knowledgeWrite.appendTag(tag);
-		}
+    private void pruneStaleKnowledge() {
+        Iterator<ItemStack> iter = knowledge.iterator();
+        while (iter.hasNext()) {
+            if (!EMCHelper.doesItemHaveEmc(iter.next())) {
+                iter.remove();
+            }
+        }
+    }
 
-		NBTTagList inputLockWrite = ItemHelper.toIndexedNBTList(inputLocks);
-		compound.setTag("knowledge", knowledgeWrite);
-		compound.setTag("inputlocks", inputLockWrite);
-		return compound;
-	}
+    protected NBTTagCompound saveForPacket() {
+        NBTTagCompound compound = new NBTTagCompound();
+        compound.setDouble("transmutationEmc", transmutationEmc);
 
-	public void readFromPacket(NBTTagCompound compound)
-	{
-		transmutationEmc = compound.getDouble("transmutationEmc");
+        pruneStaleKnowledge();
+        NBTTagList knowledgeWrite = new NBTTagList();
+        for (ItemStack i : knowledge) {
+            NBTTagCompound tag = i.writeToNBT(new NBTTagCompound());
+            knowledgeWrite.appendTag(tag);
+        }
 
-		NBTTagList list = compound.getTagList("knowledge", Constants.NBT.TAG_COMPOUND);
-		knowledge.clear();
-		for (int i = 0; i < list.tagCount(); i++)
-		{
-			ItemStack item = ItemStack.loadItemStackFromNBT(list.getCompoundTagAt(i));
-			if (item != null)
-			{
-				knowledge.add(item);
-			}
-		}
+        NBTTagList inputLockWrite = ItemHelper.toIndexedNBTList(inputLocks);
+        compound.setTag("knowledge", knowledgeWrite);
+        compound.setTag("inputlocks", inputLockWrite);
+        return compound;
+    }
 
-		NBTTagList list2 = compound.getTagList("inputlocks", Constants.NBT.TAG_COMPOUND);
-		inputLocks = ItemHelper.copyIndexedNBTToArray(list2, new ItemStack[9]);
-	}
+    public void readFromPacket(NBTTagCompound compound) {
+        transmutationEmc = compound.getDouble("transmutationEmc");
 
-	@Override
-	public void saveNBTData(NBTTagCompound compound)
-	{
-		NBTTagCompound properties = new NBTTagCompound();
-		properties.setDouble("transmutationEmc", transmutationEmc);
+        NBTTagList list = compound.getTagList("knowledge", Constants.NBT.TAG_COMPOUND);
+        knowledge.clear();
+        for (int i = 0; i < list.tagCount(); i++) {
+            ItemStack item = ItemStack.loadItemStackFromNBT(list.getCompoundTagAt(i));
+            if (item != null) {
+                knowledge.add(item);
+            }
+        }
 
-		pruneStaleKnowledge();
-		NBTTagList knowledgeWrite = new NBTTagList();
-		for (ItemStack i : knowledge)
-		{
-			NBTTagCompound tag = i.writeToNBT(new NBTTagCompound());
-			knowledgeWrite.appendTag(tag);
-		}
+        NBTTagList list2 = compound.getTagList("inputlocks", Constants.NBT.TAG_COMPOUND);
+        inputLocks = ItemHelper.copyIndexedNBTToArray(list2, new ItemStack[9]);
+    }
 
-		NBTTagList inputLockWrite = ItemHelper.toIndexedNBTList(inputLocks);
-		properties.setTag("knowledge", knowledgeWrite);
-		properties.setTag("inputlock", inputLockWrite);
-		compound.setTag(PROP_NAME, properties);
-	}
+    @Override
+    public void saveNBTData(NBTTagCompound compound) {
+        NBTTagCompound properties = new NBTTagCompound();
+        properties.setDouble("transmutationEmc", transmutationEmc);
 
-	@Override
-	public void loadNBTData(NBTTagCompound compound)
-	{
-		NBTTagCompound properties = compound.getCompoundTag(PROP_NAME);
+        pruneStaleKnowledge();
+        NBTTagList knowledgeWrite = new NBTTagList();
+        for (ItemStack i : knowledge) {
+            NBTTagCompound tag = i.writeToNBT(new NBTTagCompound());
+            knowledgeWrite.appendTag(tag);
+        }
 
-		transmutationEmc = properties.getDouble("transmutationEmc");
+        NBTTagList inputLockWrite = ItemHelper.toIndexedNBTList(inputLocks);
+        properties.setTag("knowledge", knowledgeWrite);
+        properties.setTag("inputlock", inputLockWrite);
+        compound.setTag(PROP_NAME, properties);
+    }
 
-		NBTTagList list = properties.getTagList("knowledge", Constants.NBT.TAG_COMPOUND);
-		for (int i = 0; i < list.tagCount(); i++)
-		{
-			ItemStack item = ItemStack.loadItemStackFromNBT(list.getCompoundTagAt(i));
-			if (item != null)
-			{
-				knowledge.add(item);
-			}
-		}
-		pruneDuplicateKnowledge();
-		NBTTagList list2 = properties.getTagList("inputlock", Constants.NBT.TAG_COMPOUND);
-		inputLocks = ItemHelper.copyIndexedNBTToArray(list2, new ItemStack[9]);
-	}
+    @Override
+    public void loadNBTData(NBTTagCompound compound) {
+        NBTTagCompound properties = compound.getCompoundTag(PROP_NAME);
 
-	@Override
-	public void init(Entity entity, World world) {}
+        transmutationEmc = properties.getDouble("transmutationEmc");
+
+        NBTTagList list = properties.getTagList("knowledge", Constants.NBT.TAG_COMPOUND);
+        for (int i = 0; i < list.tagCount(); i++) {
+            ItemStack item = ItemStack.loadItemStackFromNBT(list.getCompoundTagAt(i));
+            if (item != null) {
+                knowledge.add(item);
+            }
+        }
+        pruneDuplicateKnowledge();
+        NBTTagList list2 = properties.getTagList("inputlock", Constants.NBT.TAG_COMPOUND);
+        inputLocks = ItemHelper.copyIndexedNBTToArray(list2, new ItemStack[9]);
+    }
+
+    @Override
+    public void init(Entity entity, World world) {}
 }
