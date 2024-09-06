@@ -1,0 +1,16 @@
+// Add any additional repositories for your dependencies here
+
+repositories {
+    maven { //Waila Repo
+        name "Mobius Repo"
+        url "http://mobiusstrip.eu/maven"
+    }
+    maven {
+        name 'GTNH Maven'
+        url 'https://nexus.gtnewhorizons.com/repository/public/'
+    }
+    maven {
+        name 'Chisel'
+        url "http://maven.tterrag.com/"
+    }
+}
