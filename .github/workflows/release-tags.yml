@@ -7,6 +7,8 @@ on:
 
 permissions:
   contents: write
+env:
+  MAVEN_PUBLISHING_URL: "https://nexus.teamblackcrystal.com/repository/maven-releases2/"
 
 jobs:
   release-tags:
