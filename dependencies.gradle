@@ -47,4 +47,5 @@ dependencies {
 
     // dependencies { compile fileTree(dir: 'lib', include: '*.jar') }
 
+    testImplementation('junit:junit:4.11')
 }
