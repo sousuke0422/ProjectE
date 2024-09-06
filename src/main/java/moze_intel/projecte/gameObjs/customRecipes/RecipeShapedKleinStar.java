@@ -28,7 +28,6 @@ public class RecipeShapedKleinStar implements IRecipe {
      */
     private ItemStack recipeOutput;
     private boolean field_92101_f;
-    private static final String __OBFID = "CL_00000093";
 
     public RecipeShapedKleinStar(int width, int height, ItemStack[] items, ItemStack output) {
         this.recipeWidth = width;
