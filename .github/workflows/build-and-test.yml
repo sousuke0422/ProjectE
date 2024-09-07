@@ -3,11 +3,11 @@ name: Build and test
 
 on:
   pull_request:
-    branches: [ master, main ]
+    branches: [ MC17, fmpe-1.x ]
   push:
-    branches: [ master, main ]
+    branches: [ MC17, fmpe-1.x ]
 
 jobs:
   build-and-test:
-    uses: GTNewHorizons/GTNH-Actions-Workflows/.github/workflows/build-and-test.yml@master
+    uses: TeamBlackCrystal/GTNH-Actions-Workflows/.github/workflows/build-and-test.yml@master
     secrets: inherit
