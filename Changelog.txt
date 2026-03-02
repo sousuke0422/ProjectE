@@ -1,3 +1,9 @@
+###Version 2.3.0
+* NOTICE: This build is in no way affiliated with the official version.
+* NOTICE: Due to the effect of Long, we have observed incompatibilities with add-ons that handle EMC.
+* NOTICE: use GTNH NEI (NotEnoughItems Unofficial).
+* NEW: Update EMC while the Transmutation Table is open.
+
 ###Version 2.2.0
 * NOTICE: This build is in no way affiliated with the official version.
 * NOTICE: Due to the effect of Long, we have observed incompatibilities with add-ons that handle EMC.
