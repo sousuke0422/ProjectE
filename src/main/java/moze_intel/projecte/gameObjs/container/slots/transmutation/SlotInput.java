@@ -39,7 +39,7 @@ public class SlotInput extends Slot {
                 inv.removeEmc(remainingEmc);
             } else {
                 itemEmc.addEmc(stack, inv.emc);
-                inv.emc = 0;
+                inv.removeEmc(inv.emc);
             }
         }
 
