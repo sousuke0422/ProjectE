@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -14,6 +15,7 @@ import com.google.common.collect.Lists;
 
 import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.gameObjs.ObjHandler;
+import moze_intel.projecte.handlers.EmcSyncThrottler;
 import moze_intel.projecte.playerData.Transmutation;
 import moze_intel.projecte.utils.Comparators;
 import moze_intel.projecte.utils.Constants;
@@ -341,6 +343,8 @@ public class TransmutationInventory implements IInventory {
         if (emc >= Constants.TILE_MAX_EMC || emc < 0) {
             emc = Constants.TILE_MAX_EMC;
         }
+
+        syncEmcToClient();
     }
 
     public void removeEmc(double value) {
@@ -348,6 +352,14 @@ public class TransmutationInventory implements IInventory {
 
         if (emc < 0) {
             emc = 0;
+        }
+
+        syncEmcToClient();
+    }
+
+    private void syncEmcToClient() {
+        if (!player.worldObj.isRemote && player instanceof EntityPlayerMP) {
+            EmcSyncThrottler.requestSync((EntityPlayerMP) player, emc);
         }
     }
 

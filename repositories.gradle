@@ -1,16 +1,21 @@
 // Add any additional repositories for your dependencies here
+// mvnrepository.com で Chisel2 は Tterrag / ModMaven でホスト
 
 repositories {
-    maven { //Waila Repo
-        name "Mobius Repo"
-        url "http://mobiusstrip.eu/maven"
+    maven {
+        name 'ModMaven'
+        url "https://modmaven.dev"
+    }
+    maven {
+        name 'Chisel (Tterrag)'
+        url "https://maven.tterrag.com/"
     }
     maven {
         name 'GTNH Maven'
         url 'https://nexus.gtnewhorizons.com/repository/public/'
     }
     maven {
-        name 'Chisel'
-        url "http://maven.tterrag.com/"
+        name "Mobius Repo"
+        url "http://mobiusstrip.eu/maven"
     }
 }

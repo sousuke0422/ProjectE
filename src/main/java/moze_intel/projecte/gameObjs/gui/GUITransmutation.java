@@ -24,6 +24,8 @@ public class GUITransmutation extends GuiContainer {
         "textures/gui/transmute.png");
     TransmutationInventory inv;
     private GuiTextField textBoxFilter;
+    /** パケットで受信したEMCのみを使用（SPでinvが共有され即時更新される対策） */
+    private double displayEmc = -1;
 
     int xLocation;
     int yLocation;
@@ -35,9 +37,19 @@ public class GUITransmutation extends GuiContainer {
         this.ySize = 196;
     }
 
+    /** パケット同期用：EMCを更新して表示を再計算する */
+    public void setEmcFromSync(double emc) {
+        this.displayEmc = emc;
+        this.inv.emc = emc;
+        this.inv.updateOutputs(true);
+    }
+
     @Override
     public void initGui() {
         super.initGui();
+        if (displayEmc < 0) {
+            displayEmc = inv.emc;
+        }
 
         this.xLocation = (this.width - this.xSize) / 2;
         this.yLocation = (this.height - this.ySize) / 2;
@@ -60,7 +72,7 @@ public class GUITransmutation extends GuiContainer {
     @Override
     protected void drawGuiContainerForegroundLayer(int var1, int var2) {
         this.fontRendererObj.drawString(StatCollector.translateToLocal("pe.transmutation.transmute"), 6, 8, 4210752);
-        long emcAmount = (long) inv.emc;
+        long emcAmount = (long) (displayEmc >= 0 ? displayEmc : inv.emc);
         String emcLabel = StatCollector.translateToLocal("pe.emc.emc_tooltip_prefix");
         this.fontRendererObj.drawString(emcLabel, 6, this.ySize - 104, 4210752);
         String emc = TransmutationEMCFormatter.EMCFormat(emcAmount);

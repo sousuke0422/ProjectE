@@ -33,6 +33,7 @@ import moze_intel.projecte.network.packets.SwingItemPKT;
 import moze_intel.projecte.network.packets.SyncBagDataPKT;
 import moze_intel.projecte.network.packets.SyncEmcPKT;
 import moze_intel.projecte.network.packets.SyncPedestalPKT;
+import moze_intel.projecte.network.packets.TransmutationEmcSyncPKT;
 import moze_intel.projecte.network.packets.UpdateGemModePKT;
 import moze_intel.projecte.utils.PELogger;
 
@@ -59,6 +60,7 @@ public final class PacketHandler {
         HANDLER.registerMessage(OrientationSyncPKT.Handler.class, OrientationSyncPKT.class, 15, Side.CLIENT);
         HANDLER.registerMessage(UpdateGemModePKT.Handler.class, UpdateGemModePKT.class, 16, Side.SERVER);
         HANDLER.registerMessage(SyncPedestalPKT.Handler.class, SyncPedestalPKT.class, 17, Side.CLIENT);
+        HANDLER.registerMessage(TransmutationEmcSyncPKT.Handler.class, TransmutationEmcSyncPKT.class, 18, Side.CLIENT);
     }
 
     public static Packet getMCPacket(IMessage message) {

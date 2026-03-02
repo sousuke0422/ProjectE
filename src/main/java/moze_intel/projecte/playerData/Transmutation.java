@@ -14,6 +14,8 @@ import com.google.common.collect.Lists;
 import moze_intel.projecte.api.event.PlayerKnowledgeChangeEvent;
 import moze_intel.projecte.emc.EMCMapper;
 import moze_intel.projecte.emc.SimpleStack;
+import moze_intel.projecte.gameObjs.container.TransmutationContainer;
+import moze_intel.projecte.handlers.EmcSyncThrottler;
 import moze_intel.projecte.network.PacketHandler;
 import moze_intel.projecte.network.packets.KnowledgeSyncPKT;
 import moze_intel.projecte.utils.EMCHelper;
@@ -134,6 +136,13 @@ public final class Transmutation {
     public static void setEmc(EntityPlayer player, double emc) {
         TransmutationProps.getDataFor(player)
             .setTransmutationEmc(emc);
+
+        // アドオン等が外部からEMCを追加した場合、錬成盤を開いていれば表示を同期
+        if (!player.worldObj.isRemote && player.openContainer instanceof TransmutationContainer) {
+            TransmutationContainer container = (TransmutationContainer) player.openContainer;
+            container.transmutationInventory.emc = emc;
+            EmcSyncThrottler.requestSync((EntityPlayerMP) player, emc);
+        }
     }
 
     public static void sync(EntityPlayer player) {

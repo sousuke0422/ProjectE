@@ -1,5 +1,6 @@
 package moze_intel.projecte.network.packets;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTTagCompound;
 
 import cpw.mods.fml.common.network.ByteBufUtils;
@@ -8,6 +9,7 @@ import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
 import moze_intel.projecte.PECore;
+import moze_intel.projecte.gameObjs.container.TransmutationContainer;
 import moze_intel.projecte.utils.PELogger;
 
 public class KnowledgeSyncPKT implements IMessage {
@@ -37,6 +39,16 @@ public class KnowledgeSyncPKT implements IMessage {
             PECore.proxy.getClientTransmutationProps()
                 .readFromPacket(message.nbt);
             PELogger.logDebug("** RECEIVED TRANSMUTATION DATA CLIENTSIDE **");
+
+            // アドオン等が外部からEMCを追加した場合、錬成盤を開いていれば表示を同期
+            if (Minecraft.getMinecraft().thePlayer != null
+                && Minecraft.getMinecraft().thePlayer.openContainer instanceof TransmutationContainer) {
+                double emc = message.nbt.getDouble("transmutationEmc");
+                TransmutationContainer container = (TransmutationContainer) Minecraft
+                    .getMinecraft().thePlayer.openContainer;
+                container.transmutationInventory.emc = emc;
+                container.transmutationInventory.updateOutputs(true);
+            }
 
             return null;
         }
