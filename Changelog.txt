@@ -1,3 +1,9 @@
+###Version 2.3.1
+* NOTICE: This build is in no way affiliated with the official version.
+* NOTICE: Due to the effect of Long, we have observed incompatibilities with add-ons that handle EMC.
+* NOTICE: use GTNH NEI (NotEnoughItems Unofficial).
+* FIXED: Client FATAL "NULL tile entity reference in Collector sync packet" by correcting Collector sync packet Long/Int decode mismatch.
+
 ###Version 2.3.0
 * NOTICE: This build is in no way affiliated with the official version.
 * NOTICE: Due to the effect of Long, we have observed incompatibilities with add-ons that handle EMC.
