@@ -30,7 +30,7 @@ public class CollectorSyncPKT implements IMessage {
 
     @Override
     public void fromBytes(ByteBuf buf) {
-        displayEmc = buf.readInt();
+        displayEmc = buf.readLong();
         displayKleinCharge = buf.readDouble();
         x = buf.readInt();
         y = buf.readInt();
