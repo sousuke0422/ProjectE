@@ -117,6 +117,16 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
         return false;
     }
 
+    /**
+     * Ray trace that hits liquids first. Exposed for client overlay; {@link Item#getMovingObjectPositionFromPlayer} is protected.
+     */
+    public static MovingObjectPosition traceIncludeLiquids(ItemStack stack, World world, EntityPlayer player) {
+        if (stack == null || !(stack.getItem() instanceof PhilosophersStone)) {
+            return null;
+        }
+        return ((PhilosophersStone) stack.getItem()).getMovingObjectPositionFromPlayer(world, player, true);
+    }
+
     private void getAxisOrientedPanel(ForgeDirection direction, int charge, MetaBlock pointed, MetaBlock result,
         Coordinates coords, World world, EntityPlayer player) {
         int side;
@@ -199,7 +209,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
         EntityPlayer player) {
         MetaBlock block = new MetaBlock(world, x, y, z);
 
-        if (block.equals(pointed)) {
+        if (block.equals(pointed) || WorldTransmutations.sameTransmutableFluid(block, pointed)) {
             PlayerHelper.checkedReplaceBlock(((EntityPlayerMP) player), x, y, z, result.getBlock(), result.getMeta());
             if (world.rand.nextInt(8) == 0) {
                 PacketHandler.sendToAllAround(
