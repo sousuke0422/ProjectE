@@ -8,6 +8,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 import net.minecraft.util.MathHelper;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -55,6 +56,39 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
             return false;
         }
 
+        MovingObjectPosition liquidTrace = this.getMovingObjectPositionFromPlayer(world, player, true);
+        if (liquidTrace != null && liquidTrace.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
+            int lx = liquidTrace.blockX;
+            int ly = liquidTrace.blockY;
+            int lz = liquidTrace.blockZ;
+            if (world.getBlock(lx, ly, lz)
+                .getMaterial()
+                .isLiquid()) {
+                if (tryWorldTransmutation(stack, player, world, lx, ly, lz, liquidTrace.sideHit)) {
+                    return true;
+                }
+                MovingObjectPosition behind = this.getMovingObjectPositionFromPlayer(world, player, false);
+                if (behind != null && behind.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
+                    if (tryWorldTransmutation(
+                        stack,
+                        player,
+                        world,
+                        behind.blockX,
+                        behind.blockY,
+                        behind.blockZ,
+                        behind.sideHit)) {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        tryWorldTransmutation(stack, player, world, blockX, blockY, blockZ, sideHit);
+        return true;
+    }
+
+    private boolean tryWorldTransmutation(ItemStack stack, EntityPlayer player, World world, int blockX, int blockY,
+        int blockZ, int sideHit) {
         MetaBlock mBlock = new MetaBlock(world, blockX, blockY, blockZ);
 
         MetaBlock result = WorldTransmutations
@@ -77,9 +111,10 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
             world.playSoundAtEntity(player, "projecte:item.petransmute", 1.0F, 1.0F);
 
             PlayerHelper.swingItem(player);
+            return true;
         }
 
-        return true;
+        return false;
     }
 
     private void getAxisOrientedPanel(ForgeDirection direction, int charge, MetaBlock pointed, MetaBlock result,

@@ -3,6 +3,7 @@ package moze_intel.projecte.events;
 import java.util.List;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -34,7 +35,9 @@ import moze_intel.projecte.utils.WorldTransmutations;
 @SideOnly(Side.CLIENT)
 public class TransmutationRenderingEvent {
 
-    private Minecraft mc = Minecraft.getMinecraft();
+    /** Same value as GTNH CustomMainMenu {@code GlStateManager.pushAttrib()} (ENABLE_BIT | LIGHTING_BIT). */
+    private static final int GL_ATTRIB_STACK_MASK_CMM = 8256;
+
     private final List<AxisAlignedBB> renderList = Lists.newArrayList();
     private double playerX;
     private double playerY;
@@ -43,16 +46,24 @@ public class TransmutationRenderingEvent {
 
     @SubscribeEvent
     public void preDrawHud(RenderGameOverlayEvent.Pre event) {
-        if (event.type == ElementType.CROSSHAIRS) {
-            if (transmutationResult != null) {
-                RenderItem.getInstance()
-                    .renderItemIntoGUI(
-                        mc.fontRenderer,
-                        mc.getTextureManager(),
-                        transmutationResult.toItemStack(),
-                        0,
-                        0);
-            }
+        if (event.type != ElementType.CROSSHAIRS || transmutationResult == null) {
+            return;
+        }
+        Minecraft mc = Minecraft.getMinecraft();
+        GL11.glPushAttrib(GL_ATTRIB_STACK_MASK_CMM);
+        try {
+            RenderHelper.enableGUIStandardItemLighting();
+            RenderItem.getInstance()
+                .renderItemIntoGUI(
+                    mc.fontRenderer,
+                    mc.getTextureManager(),
+                    transmutationResult.toItemStack(),
+                    0,
+                    0);
+            RenderHelper.disableStandardItemLighting();
+        } finally {
+            GL11.glPopAttrib();
+            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         }
     }
 
@@ -210,6 +221,7 @@ public class TransmutationRenderingEvent {
         GL11.glEnable(GL11.GL_LIGHTING);
         GL11.glEnable(GL11.GL_TEXTURE_2D);
         GL11.glDisable(GL11.GL_BLEND);
+        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
     }
 
     private void addBlockToRenderList(World world, MetaBlock current, int x, int y, int z) {
