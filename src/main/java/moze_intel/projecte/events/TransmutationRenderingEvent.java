@@ -48,7 +48,8 @@ public class TransmutationRenderingEvent {
      * Same phase as mc1.12 ProjectE ({@code RenderGameOverlayEvent.Pre} + {@link ElementType#CROSSHAIRS}).
      * Do not wrap in {@code glPushAttrib(ENABLE_BIT|LIGHTING_BIT)}: pop restores stale lighting after
      * {@link RenderHelper#disableStandardItemLighting()} and can leave the preview under-lit or in the wrong space.
-     * Match {@link net.minecraft.client.gui.inventory.GuiContainer} slot GL setup for {@link RenderItem#renderItemIntoGUI}.
+     * Match {@link net.minecraft.client.gui.inventory.GuiContainer} slot GL setup for
+     * {@link RenderItem#renderItemIntoGUI}.
      */
     @SubscribeEvent
     public void preDrawHud(RenderGameOverlayEvent.Pre event) {
@@ -62,12 +63,7 @@ public class TransmutationRenderingEvent {
         GL11.glEnable(GL11.GL_COLOR_MATERIAL);
         GL11.glEnable(GL11.GL_LIGHTING);
         RenderItem.getInstance()
-            .renderItemIntoGUI(
-                mc.fontRenderer,
-                mc.getTextureManager(),
-                transmutationResult.toItemStack(),
-                0,
-                0);
+            .renderItemIntoGUI(mc.fontRenderer, mc.getTextureManager(), transmutationResult.toItemStack(), 0, 0);
         GL11.glDisable(GL12.GL_RESCALE_NORMAL);
         RenderHelper.disableStandardItemLighting();
         GL11.glDisable(GL11.GL_COLOR_MATERIAL);
@@ -92,17 +88,15 @@ public class TransmutationRenderingEvent {
         playerY = player.lastTickPosY + (player.posY - player.lastTickPosY) * (double) event.partialTicks;
         playerZ = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * (double) event.partialTicks;
 
-        // Match server PhilosophersStone: liquid trace first so preview/AOE are not locked to the solid behind water/lava.
+        // Match server PhilosophersStone: liquid trace first so preview/AOE are not locked to the solid behind
+        // water/lava.
         MovingObjectPosition mop = event.target;
         MovingObjectPosition liquidTrace = PhilosophersStone.traceIncludeLiquids(stack, world, player);
         if (liquidTrace != null && liquidTrace.typeOfHit == MovingObjectType.BLOCK) {
             Block hit = world.getBlock(liquidTrace.blockX, liquidTrace.blockY, liquidTrace.blockZ);
-            if (hit.getMaterial().isLiquid()) {
-                MetaBlock liquidCell = new MetaBlock(
-                    world,
-                    liquidTrace.blockX,
-                    liquidTrace.blockY,
-                    liquidTrace.blockZ);
+            if (hit.getMaterial()
+                .isLiquid()) {
+                MetaBlock liquidCell = new MetaBlock(world, liquidTrace.blockX, liquidTrace.blockY, liquidTrace.blockZ);
                 if (WorldTransmutations.getWorldTransmutation(liquidCell, player.isSneaking()) != null) {
                     mop = liquidTrace;
                 }
@@ -178,7 +172,8 @@ public class TransmutationRenderingEvent {
     }
 
     private void drawAll() {
-        // Alpha test + typical GUI ref (e.g. 0.1) discards low-alpha fragments; translucent fill would not blend correctly.
+        // Alpha test + typical GUI ref (e.g. 0.1) discards low-alpha fragments; translucent fill would not blend
+        // correctly.
         boolean alphaTestWasOn = GL11.glIsEnabled(GL11.GL_ALPHA_TEST);
         GL11.glDisable(GL11.GL_ALPHA_TEST);
 
@@ -258,9 +253,8 @@ public class TransmutationRenderingEvent {
 
     private void addBlockToRenderList(World world, MetaBlock current, int x, int y, int z) {
         MetaBlock there = new MetaBlock(world, x, y, z);
-        boolean inAoe = there.equals(current)
-            || (WorldTransmutations.fluidMapKeyOrNull(current) != null
-                && WorldTransmutations.sameTransmutableFluid(there, current));
+        boolean inAoe = there.equals(current) || (WorldTransmutations.fluidMapKeyOrNull(current) != null
+            && WorldTransmutations.sameTransmutableFluid(there, current));
         if (inAoe) {
             AxisAlignedBB box = AxisAlignedBB
                 .getBoundingBox(x - 0.02f, y - 0.02f, z - 0.02f, x + 1.02f, y + 1.02f, z + 1.02f);
