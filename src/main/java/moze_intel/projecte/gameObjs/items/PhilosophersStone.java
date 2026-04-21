@@ -118,7 +118,8 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
     }
 
     /**
-     * Ray trace that hits liquids first. Exposed for client overlay; {@link Item#getMovingObjectPositionFromPlayer} is protected.
+     * Ray trace that hits liquids first. Exposed for client overlay; {@link Item#getMovingObjectPositionFromPlayer} is
+     * protected.
      */
     public static MovingObjectPosition traceIncludeLiquids(ItemStack stack, World world, EntityPlayer player) {
         if (stack == null || !(stack.getItem() instanceof PhilosophersStone)) {
