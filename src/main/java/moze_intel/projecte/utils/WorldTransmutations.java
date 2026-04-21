@@ -87,8 +87,35 @@ public final class WorldTransmutations {
             new MetaBlock[] { new MetaBlock(Blocks.wool, 0), new MetaBlock(Blocks.wool, 14) });
     }
 
+    /**
+     * Lava/water still vs flowing share one MAP entry (still block key). Used for lookup and overlay matching.
+     */
+    public static MetaBlock fluidMapKeyOrNull(MetaBlock fromWorld) {
+        Block b = fromWorld.getBlock();
+        if (b == Blocks.flowing_lava || b == Blocks.lava) {
+            return new MetaBlock(Blocks.lava);
+        }
+        if (b == Blocks.flowing_water || b == Blocks.water) {
+            return new MetaBlock(Blocks.water);
+        }
+        return null;
+    }
+
+    public static boolean sameTransmutableFluid(MetaBlock a, MetaBlock b) {
+        MetaBlock ka = fluidMapKeyOrNull(a);
+        MetaBlock kb = fluidMapKeyOrNull(b);
+        if (ka == null || kb == null) {
+            return false;
+        }
+        return ka.equals(kb);
+    }
+
     public static MetaBlock getWorldTransmutation(World world, int x, int y, int z, boolean isSneaking) {
         MetaBlock block = new MetaBlock(world, x, y, z);
+        MetaBlock fluidKey = fluidMapKeyOrNull(block);
+        if (fluidKey != null && MAP.containsKey(fluidKey)) {
+            return MAP.get(fluidKey)[isSneaking ? 1 : 0];
+        }
 
         if (MAP.containsKey(block)) {
             return MAP.get(block)[isSneaking ? 1 : 0];
@@ -98,6 +125,11 @@ public final class WorldTransmutations {
     }
 
     public static MetaBlock getWorldTransmutation(MetaBlock block, boolean isSneaking) {
+        MetaBlock fluidKey = fluidMapKeyOrNull(block);
+        if (fluidKey != null && MAP.containsKey(fluidKey)) {
+            return MAP.get(fluidKey)[isSneaking ? 1 : 0];
+        }
+
         if (MAP.containsKey(block)) {
             return MAP.get(block)[isSneaking ? 1 : 0];
         }

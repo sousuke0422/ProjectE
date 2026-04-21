@@ -2,7 +2,9 @@ package moze_intel.projecte.events;
 
 import java.util.List;
 
+import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -19,6 +21,7 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 
 import com.google.common.collect.Lists;
 
@@ -28,32 +31,43 @@ import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.items.ItemMode;
+import moze_intel.projecte.gameObjs.items.PhilosophersStone;
 import moze_intel.projecte.utils.MetaBlock;
 import moze_intel.projecte.utils.WorldTransmutations;
 
 @SideOnly(Side.CLIENT)
 public class TransmutationRenderingEvent {
 
-    private Minecraft mc = Minecraft.getMinecraft();
     private final List<AxisAlignedBB> renderList = Lists.newArrayList();
     private double playerX;
     private double playerY;
     private double playerZ;
     private MetaBlock transmutationResult;
 
+    /**
+     * Same phase as mc1.12 ProjectE ({@code RenderGameOverlayEvent.Pre} + {@link ElementType#CROSSHAIRS}).
+     * Do not wrap in {@code glPushAttrib(ENABLE_BIT|LIGHTING_BIT)}: pop restores stale lighting after
+     * {@link RenderHelper#disableStandardItemLighting()} and can leave the preview under-lit or in the wrong space.
+     * Match {@link net.minecraft.client.gui.inventory.GuiContainer} slot GL setup for
+     * {@link RenderItem#renderItemIntoGUI}.
+     */
     @SubscribeEvent
     public void preDrawHud(RenderGameOverlayEvent.Pre event) {
-        if (event.type == ElementType.CROSSHAIRS) {
-            if (transmutationResult != null) {
-                RenderItem.getInstance()
-                    .renderItemIntoGUI(
-                        mc.fontRenderer,
-                        mc.getTextureManager(),
-                        transmutationResult.toItemStack(),
-                        0,
-                        0);
-            }
+        if (event.type != ElementType.CROSSHAIRS || transmutationResult == null) {
+            return;
         }
+        Minecraft mc = Minecraft.getMinecraft();
+        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderHelper.enableGUIStandardItemLighting();
+        GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+        GL11.glEnable(GL11.GL_COLOR_MATERIAL);
+        GL11.glEnable(GL11.GL_LIGHTING);
+        RenderItem.getInstance()
+            .renderItemIntoGUI(mc.fontRenderer, mc.getTextureManager(), transmutationResult.toItemStack(), 0, 0);
+        GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+        RenderHelper.disableStandardItemLighting();
+        GL11.glDisable(GL11.GL_COLOR_MATERIAL);
+        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
     }
 
     @SubscribeEvent
@@ -74,7 +88,20 @@ public class TransmutationRenderingEvent {
         playerY = player.lastTickPosY + (player.posY - player.lastTickPosY) * (double) event.partialTicks;
         playerZ = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * (double) event.partialTicks;
 
+        // Match server PhilosophersStone: liquid trace first so preview/AOE are not locked to the solid behind
+        // water/lava.
         MovingObjectPosition mop = event.target;
+        MovingObjectPosition liquidTrace = PhilosophersStone.traceIncludeLiquids(stack, world, player);
+        if (liquidTrace != null && liquidTrace.typeOfHit == MovingObjectType.BLOCK) {
+            Block hit = world.getBlock(liquidTrace.blockX, liquidTrace.blockY, liquidTrace.blockZ);
+            if (hit.getMaterial()
+                .isLiquid()) {
+                MetaBlock liquidCell = new MetaBlock(world, liquidTrace.blockX, liquidTrace.blockY, liquidTrace.blockZ);
+                if (WorldTransmutations.getWorldTransmutation(liquidCell, player.isSneaking()) != null) {
+                    mop = liquidTrace;
+                }
+            }
+        }
 
         if (mop != null && mop.typeOfHit == MovingObjectType.BLOCK) {
             ForgeDirection orientation = ForgeDirection.getOrientation(mop.sideHit);
@@ -145,75 +172,90 @@ public class TransmutationRenderingEvent {
     }
 
     private void drawAll() {
-        GL11.glEnable(GL11.GL_BLEND);
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        GL11.glDisable(GL11.GL_TEXTURE_2D);
-        GL11.glDisable(GL11.GL_CULL_FACE);
-        GL11.glDisable(GL11.GL_LIGHTING);
-        GL11.glDepthMask(false);
-        GL11.glColor4f(1.0f, 1.0f, 1.0f, ProjectEConfig.pulsatingOverlay ? getPulseProportion() * 0.60f : 0.35f);
+        // Alpha test + typical GUI ref (e.g. 0.1) discards low-alpha fragments; translucent fill would not blend
+        // correctly.
+        boolean alphaTestWasOn = GL11.glIsEnabled(GL11.GL_ALPHA_TEST);
+        GL11.glDisable(GL11.GL_ALPHA_TEST);
 
-        Tessellator tessellator = Tessellator.instance;
+        try {
+            GL11.glEnable(GL11.GL_BLEND);
+            GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+            GL11.glDisable(GL11.GL_TEXTURE_2D);
+            GL11.glDisable(GL11.GL_CULL_FACE);
+            GL11.glDisable(GL11.GL_LIGHTING);
+            GL11.glDepthMask(false);
+            GL11.glColor4f(1.0f, 1.0f, 1.0f, ProjectEConfig.pulsatingOverlay ? getPulseProportion() * 0.60f : 0.35f);
 
-        for (AxisAlignedBB b : renderList) {
-            // Top
-            tessellator.startDrawingQuads();
-            tessellator.addVertex(b.minX, b.maxY, b.minZ);
-            tessellator.addVertex(b.maxX, b.maxY, b.minZ);
-            tessellator.addVertex(b.maxX, b.maxY, b.maxZ);
-            tessellator.addVertex(b.minX, b.maxY, b.maxZ);
-            tessellator.draw();
+            Tessellator tessellator = Tessellator.instance;
 
-            // Bottom
-            tessellator.startDrawingQuads();
-            tessellator.addVertex(b.minX, b.minY, b.minZ);
-            tessellator.addVertex(b.maxX, b.minY, b.minZ);
-            tessellator.addVertex(b.maxX, b.minY, b.maxZ);
-            tessellator.addVertex(b.minX, b.minY, b.maxZ);
-            tessellator.draw();
+            for (AxisAlignedBB b : renderList) {
+                // Top
+                tessellator.startDrawingQuads();
+                tessellator.addVertex(b.minX, b.maxY, b.minZ);
+                tessellator.addVertex(b.maxX, b.maxY, b.minZ);
+                tessellator.addVertex(b.maxX, b.maxY, b.maxZ);
+                tessellator.addVertex(b.minX, b.maxY, b.maxZ);
+                tessellator.draw();
 
-            // Front
-            tessellator.startDrawingQuads();
-            tessellator.addVertex(b.maxX, b.maxY, b.maxZ);
-            tessellator.addVertex(b.minX, b.maxY, b.maxZ);
-            tessellator.addVertex(b.minX, b.minY, b.maxZ);
-            tessellator.addVertex(b.maxX, b.minY, b.maxZ);
-            tessellator.draw();
+                // Bottom
+                tessellator.startDrawingQuads();
+                tessellator.addVertex(b.minX, b.minY, b.minZ);
+                tessellator.addVertex(b.maxX, b.minY, b.minZ);
+                tessellator.addVertex(b.maxX, b.minY, b.maxZ);
+                tessellator.addVertex(b.minX, b.minY, b.maxZ);
+                tessellator.draw();
 
-            // Back
-            tessellator.startDrawingQuads();
-            tessellator.addVertex(b.maxX, b.minY, b.minZ);
-            tessellator.addVertex(b.minX, b.minY, b.minZ);
-            tessellator.addVertex(b.minX, b.maxY, b.minZ);
-            tessellator.addVertex(b.maxX, b.maxY, b.minZ);
-            tessellator.draw();
+                // Front
+                tessellator.startDrawingQuads();
+                tessellator.addVertex(b.maxX, b.maxY, b.maxZ);
+                tessellator.addVertex(b.minX, b.maxY, b.maxZ);
+                tessellator.addVertex(b.minX, b.minY, b.maxZ);
+                tessellator.addVertex(b.maxX, b.minY, b.maxZ);
+                tessellator.draw();
 
-            // Left
-            tessellator.startDrawingQuads();
-            tessellator.addVertex(b.minX, b.maxY, b.maxZ);
-            tessellator.addVertex(b.minX, b.maxY, b.minZ);
-            tessellator.addVertex(b.minX, b.minY, b.minZ);
-            tessellator.addVertex(b.minX, b.minY, b.maxZ);
-            tessellator.draw();
+                // Back
+                tessellator.startDrawingQuads();
+                tessellator.addVertex(b.maxX, b.minY, b.minZ);
+                tessellator.addVertex(b.minX, b.minY, b.minZ);
+                tessellator.addVertex(b.minX, b.maxY, b.minZ);
+                tessellator.addVertex(b.maxX, b.maxY, b.minZ);
+                tessellator.draw();
 
-            // Right
-            tessellator.startDrawingQuads();
-            tessellator.addVertex(b.maxX, b.maxY, b.maxZ);
-            tessellator.addVertex(b.maxX, b.maxY, b.minZ);
-            tessellator.addVertex(b.maxX, b.minY, b.minZ);
-            tessellator.addVertex(b.maxX, b.minY, b.maxZ);
-            tessellator.draw();
+                // Left
+                tessellator.startDrawingQuads();
+                tessellator.addVertex(b.minX, b.maxY, b.maxZ);
+                tessellator.addVertex(b.minX, b.maxY, b.minZ);
+                tessellator.addVertex(b.minX, b.minY, b.minZ);
+                tessellator.addVertex(b.minX, b.minY, b.maxZ);
+                tessellator.draw();
+
+                // Right
+                tessellator.startDrawingQuads();
+                tessellator.addVertex(b.maxX, b.maxY, b.maxZ);
+                tessellator.addVertex(b.maxX, b.maxY, b.minZ);
+                tessellator.addVertex(b.maxX, b.minY, b.minZ);
+                tessellator.addVertex(b.maxX, b.minY, b.maxZ);
+                tessellator.draw();
+            }
+
+            GL11.glDepthMask(true);
+            GL11.glEnable(GL11.GL_CULL_FACE);
+            GL11.glEnable(GL11.GL_LIGHTING);
+            GL11.glEnable(GL11.GL_TEXTURE_2D);
+            GL11.glDisable(GL11.GL_BLEND);
+            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        } finally {
+            if (alphaTestWasOn) {
+                GL11.glEnable(GL11.GL_ALPHA_TEST);
+            }
         }
-
-        GL11.glDepthMask(true);
-        GL11.glEnable(GL11.GL_CULL_FACE);
-        GL11.glEnable(GL11.GL_LIGHTING);
-        GL11.glEnable(GL11.GL_TEXTURE_2D);
-        GL11.glDisable(GL11.GL_BLEND);
     }
 
     private void addBlockToRenderList(World world, MetaBlock current, int x, int y, int z) {
-        if (new MetaBlock(world, x, y, z).equals(current)) {
+        MetaBlock there = new MetaBlock(world, x, y, z);
+        boolean inAoe = there.equals(current) || (WorldTransmutations.fluidMapKeyOrNull(current) != null
+            && WorldTransmutations.sameTransmutableFluid(there, current));
+        if (inAoe) {
             AxisAlignedBB box = AxisAlignedBB
                 .getBoundingBox(x - 0.02f, y - 0.02f, z - 0.02f, x + 1.02f, y + 1.02f, z + 1.02f);
             box = box.offset(-playerX, -playerY, -playerZ);

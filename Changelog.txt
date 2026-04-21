@@ -1,3 +1,12 @@
+###Version 2.4.0
+* NOTICE: This build is in no way affiliated with the official version.
+* NOTICE: Due to the effect of Long, we have observed incompatibilities with add-ons that handle EMC.
+* NOTICE: use GTNH NEI (NotEnoughItems Unofficial).
+* FIXED: Philosopher's Stone world transmute (server): liquid-first ray; if the struck fluid has no world recipe, try the solid behind it.
+* FIXED: World transmute map and charge-area replace: still and flowing lava/water share one MAP key; area replace treats still and flowing as the same fluid.
+* FIXED: Client highlight and HUD: liquid-first targeting (same rule as server) so preview and AOE are not locked to the solid behind water/lava; AOE outline includes other cells of that fluid in range. HUD icon at (0,0) on Pre CROSSHAIRS with GuiContainer-style GL before renderItemIntoGUI; removed glPushAttrib(8256) around the item draw (pop undid lighting cleanup).
+* FIXED: Client AOE white fill: temporarily disable GL_ALPHA_TEST for the translucent quads, then restore the previous state (correct alpha blending).
+
 ###Version 2.3.1
 * NOTICE: This build is in no way affiliated with the official version.
 * NOTICE: Due to the effect of Long, we have observed incompatibilities with add-ons that handle EMC.
