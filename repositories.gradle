@@ -14,8 +14,4 @@ repositories {
         name 'GTNH Maven'
         url 'https://nexus.gtnewhorizons.com/repository/public/'
     }
-    maven {
-        name "Mobius Repo"
-        url "http://mobiusstrip.eu/maven"
-    }
 }
