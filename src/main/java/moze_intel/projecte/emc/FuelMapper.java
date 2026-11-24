@@ -17,8 +17,47 @@ import moze_intel.projecte.utils.PELogger;
 public final class FuelMapper {
 
     private static final List<SimpleStack> FUEL_MAP = Lists.newArrayList();
+    /** Fuels registered by other mods. Kept apart because the map is rebuilt whenever emc values are (re)loaded. */
+    private static final List<ItemStack> REGISTERED_FUELS = Lists.newArrayList();
 
-    public static void loadMap() {
+    /**
+     * Adds an item to the fuels that collectors can upgrade. Fuels are ordered by emc value, so the item slots in
+     * between the fuels worth less and more than it. Items without an emc value are left out until they have one.
+     * <p>
+     * Call this during init on both sides, or send the IMC message {@code collectorfuel} with the item stack.
+     *
+     * @return false if the stack was null or already registered
+     */
+    public static synchronized boolean registerFuel(ItemStack stack) {
+        if (stack == null || stack.getItem() == null) {
+            return false;
+        }
+        for (ItemStack registered : REGISTERED_FUELS) {
+            if (registered.getItem() == stack.getItem() && registered.getItemDamage() == stack.getItemDamage()) {
+                return false;
+            }
+        }
+        ItemStack copy = stack.copy();
+        copy.stackSize = 1;
+        REGISTERED_FUELS.add(copy);
+        if (!FUEL_MAP.isEmpty()) {
+            // Emc is already mapped: put it in place right away
+            addToMap(copy);
+            Collections.sort(FUEL_MAP, Comparators.SIMPLESTACK_ASCENDING);
+        }
+        return true;
+    }
+
+    /** @return every collector fuel from the least to the most valuable; each one upgrades into the next */
+    public static synchronized List<ItemStack> getFuels() {
+        List<ItemStack> fuels = Lists.newArrayListWithCapacity(FUEL_MAP.size());
+        for (SimpleStack fuel : FUEL_MAP) {
+            fuels.add(fuel.toItemStack());
+        }
+        return fuels;
+    }
+
+    public static synchronized void loadMap() {
         if (!FUEL_MAP.isEmpty()) {
             FUEL_MAP.clear();
         }
@@ -38,6 +77,10 @@ public final class FuelMapper {
         addToMap(new ItemStack(ObjHandler.fuelBlock, 1, 1));
         addToMap(new ItemStack(ObjHandler.fuels, 1, 2));
         addToMap(new ItemStack(ObjHandler.fuelBlock, 1, 2));
+
+        for (ItemStack registered : REGISTERED_FUELS) {
+            addToMap(registered);
+        }
 
         Collections.sort(FUEL_MAP, Comparators.SIMPLESTACK_ASCENDING);
     }
