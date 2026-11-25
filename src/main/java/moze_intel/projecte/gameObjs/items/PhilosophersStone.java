@@ -56,35 +56,40 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
             return false;
         }
 
-        MovingObjectPosition liquidTrace = this.getMovingObjectPositionFromPlayer(world, player, true);
-        if (liquidTrace != null && liquidTrace.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
-            int lx = liquidTrace.blockX;
-            int ly = liquidTrace.blockY;
-            int lz = liquidTrace.blockZ;
-            if (world.getBlock(lx, ly, lz)
-                .getMaterial()
-                .isLiquid()) {
-                if (tryWorldTransmutation(stack, player, world, lx, ly, lz, liquidTrace.sideHit)) {
-                    return true;
-                }
-                MovingObjectPosition behind = this.getMovingObjectPositionFromPlayer(world, player, false);
-                if (behind != null && behind.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
-                    if (tryWorldTransmutation(
-                        stack,
-                        player,
-                        world,
-                        behind.blockX,
-                        behind.blockY,
-                        behind.blockZ,
-                        behind.sideHit)) {
-                        return true;
-                    }
-                }
-            }
+        // The liquid in front of the clicked block first; if it has no transmutation, the clicked block itself
+        if (!tryLiquidTransmutation(stack, player, world)) {
+            tryWorldTransmutation(stack, player, world, blockX, blockY, blockZ, sideHit);
         }
-
-        tryWorldTransmutation(stack, player, world, blockX, blockY, blockZ, sideHit);
         return true;
+    }
+
+    /**
+     * The client only calls {@link #onItemUse} when a solid block is in reach behind the liquid. Over a deep lake or
+     * the sea the click arrives here instead.
+     * <p>
+     * This also runs right after {@link #onItemUse}, because that returns false on the client. It is harmless then:
+     * either the liquid was transmuted and the trace now ends on the solid result, or it had no transmutation and
+     * still has none.
+     */
+    @Override
+    public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
+        if (!world.isRemote) {
+            tryLiquidTransmutation(stack, player, world);
+        }
+        return stack;
+    }
+
+    private boolean tryLiquidTransmutation(ItemStack stack, EntityPlayer player, World world) {
+        MovingObjectPosition trace = this.getMovingObjectPositionFromPlayer(world, player, true);
+        if (trace == null || trace.typeOfHit != MovingObjectPosition.MovingObjectType.BLOCK) {
+            return false;
+        }
+        if (!world.getBlock(trace.blockX, trace.blockY, trace.blockZ)
+            .getMaterial()
+            .isLiquid()) {
+            return false;
+        }
+        return tryWorldTransmutation(stack, player, world, trace.blockX, trace.blockY, trace.blockZ, trace.sideHit);
     }
 
     private boolean tryWorldTransmutation(ItemStack stack, EntityPlayer player, World world, int blockX, int blockY,
@@ -210,7 +215,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
         EntityPlayer player) {
         MetaBlock block = new MetaBlock(world, x, y, z);
 
-        if (block.equals(pointed) || WorldTransmutations.sameTransmutableFluid(block, pointed)) {
+        if (WorldTransmutations.matchesTarget(block, pointed)) {
             PlayerHelper.checkedReplaceBlock(((EntityPlayerMP) player), x, y, z, result.getBlock(), result.getMeta());
             if (world.rand.nextInt(8) == 0) {
                 PacketHandler.sendToAllAround(

@@ -15,9 +15,9 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.world.World;
-import net.minecraftforge.client.event.DrawBlockHighlightEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
+import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import org.lwjgl.opengl.GL11;
@@ -70,9 +70,17 @@ public class TransmutationRenderingEvent {
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
     }
 
+    /**
+     * Not {@code DrawBlockHighlightEvent}: that only fires while the crosshair is on a block, and the crosshair
+     * passes through liquids, so there would be no preview over a lake with no solid block in reach.
+     */
     @SubscribeEvent
-    public void onOverlay(DrawBlockHighlightEvent event) {
-        EntityPlayer player = Minecraft.getMinecraft().thePlayer;
+    public void onOverlay(RenderWorldLastEvent event) {
+        Minecraft mc = Minecraft.getMinecraft();
+        EntityPlayer player = mc.thePlayer;
+        if (player == null) {
+            return;
+        }
         World world = player.worldObj;
         ItemStack stack = player.getHeldItem();
 
@@ -90,7 +98,7 @@ public class TransmutationRenderingEvent {
 
         // Match server PhilosophersStone: liquid trace first so preview/AOE are not locked to the solid behind
         // water/lava.
-        MovingObjectPosition mop = event.target;
+        MovingObjectPosition mop = mc.objectMouseOver;
         MovingObjectPosition liquidTrace = PhilosophersStone.traceIncludeLiquids(stack, world, player);
         if (liquidTrace != null && liquidTrace.typeOfHit == MovingObjectType.BLOCK) {
             Block hit = world.getBlock(liquidTrace.blockX, liquidTrace.blockY, liquidTrace.blockZ);
@@ -175,6 +183,9 @@ public class TransmutationRenderingEvent {
         // Alpha test + typical GUI ref (e.g. 0.1) discards low-alpha fragments; translucent fill would not blend
         // correctly.
         boolean alphaTestWasOn = GL11.glIsEnabled(GL11.GL_ALPHA_TEST);
+        // Put these back as found; other mods draw in the same event after this
+        boolean lightingWasOn = GL11.glIsEnabled(GL11.GL_LIGHTING);
+        boolean blendWasOn = GL11.glIsEnabled(GL11.GL_BLEND);
         GL11.glDisable(GL11.GL_ALPHA_TEST);
 
         try {
@@ -240,9 +251,13 @@ public class TransmutationRenderingEvent {
 
             GL11.glDepthMask(true);
             GL11.glEnable(GL11.GL_CULL_FACE);
-            GL11.glEnable(GL11.GL_LIGHTING);
+            if (lightingWasOn) {
+                GL11.glEnable(GL11.GL_LIGHTING);
+            }
             GL11.glEnable(GL11.GL_TEXTURE_2D);
-            GL11.glDisable(GL11.GL_BLEND);
+            if (!blendWasOn) {
+                GL11.glDisable(GL11.GL_BLEND);
+            }
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         } finally {
             if (alphaTestWasOn) {
@@ -253,9 +268,7 @@ public class TransmutationRenderingEvent {
 
     private void addBlockToRenderList(World world, MetaBlock current, int x, int y, int z) {
         MetaBlock there = new MetaBlock(world, x, y, z);
-        boolean inAoe = there.equals(current) || (WorldTransmutations.fluidMapKeyOrNull(current) != null
-            && WorldTransmutations.sameTransmutableFluid(there, current));
-        if (inAoe) {
+        if (WorldTransmutations.matchesTarget(there, current)) {
             AxisAlignedBB box = AxisAlignedBB
                 .getBoundingBox(x - 0.02f, y - 0.02f, z - 0.02f, x + 1.02f, y + 1.02f, z + 1.02f);
             box = box.offset(-playerX, -playerY, -playerZ);
