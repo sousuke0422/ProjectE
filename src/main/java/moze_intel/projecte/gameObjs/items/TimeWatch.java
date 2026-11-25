@@ -50,6 +50,10 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
         "com.sci.torcherino.tile.TileTorcherino",
         "com.sci.torcherino.tile.TileCompressedTorcherino");
 
+    /** Tiles implementing one of these directly are skipped as well: every torch of Torcherino-GTNH. */
+    private static final Set<String> internalInterfaceBlacklist = Sets
+        .newHashSet("com.czqwq.Torcherino.api.interfaces.ITorcherinoTile");
+
     /** Whether a tile class is on the blacklist, so the name lookup happens once per class. */
     private static final Map<Class<?>, Boolean> blacklistCache = new ConcurrentHashMap<>();
 
@@ -201,10 +205,22 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
     private static boolean isBlacklisted(Class<?> tileClass) {
         Boolean cached = blacklistCache.get(tileClass);
         if (cached == null) {
-            cached = internalBlacklist.contains(tileClass.getName());
+            cached = internalBlacklist.contains(tileClass.getName()) || implementsBlacklistedInterface(tileClass);
             blacklistCache.put(tileClass, cached);
         }
         return cached;
+    }
+
+    /** Other tick accelerators mark their tiles with an interface rather than a fixed set of classes. */
+    private static boolean implementsBlacklistedInterface(Class<?> tileClass) {
+        for (Class<?> c = tileClass; c != null; c = c.getSuperclass()) {
+            for (Class<?> iface : c.getInterfaces()) {
+                if (internalInterfaceBlacklist.contains(iface.getName())) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     private void speedUpRandomTicks(World world, int bonusTicks, AxisAlignedBB bBox) {
@@ -382,7 +398,12 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
          */
 
         if (!world.isRemote && ProjectEConfig.enableTimeWatch) {
-            AxisAlignedBB bBox = ((DMPedestalTile) world.getTileEntity(x, y, z)).getEffectBounds();
+            DMPedestalTile pedestal = (DMPedestalTile) world.getTileEntity(x, y, z);
+            // Something speeding the pedestal itself up (a Torcherino, say) would otherwise multiply the bonus
+            if (ProjectEConfig.timeWatchOncePerTick && !pedestal.claimTimeWatchTick(world.getTotalWorldTime())) {
+                return;
+            }
+            AxisAlignedBB bBox = pedestal.getEffectBounds();
             if (ProjectEConfig.timePedBonus > 0) {
                 speedUpTileEntities(world, ProjectEConfig.timePedBonus, bBox);
                 speedUpRandomTicks(world, ProjectEConfig.timePedBonus, bBox);

@@ -21,9 +21,23 @@ public class DMPedestalTile extends TileEmc implements IInventory {
     private int particleCooldown = 10;
     private int activityCooldown = 0;
     public double centeredX, centeredY, centeredZ;
+    private long lastTimeWatchTick = Long.MIN_VALUE;
 
     public DMPedestalTile() {
         super();
+    }
+
+    /**
+     * For effects that must not stack when something else speeds this pedestal up.
+     *
+     * @return false if this was already called during the given world tick
+     */
+    public boolean claimTimeWatchTick(long worldTick) {
+        if (lastTimeWatchTick == worldTick) {
+            return false;
+        }
+        lastTimeWatchTick = worldTick;
+        return true;
     }
 
     @Override

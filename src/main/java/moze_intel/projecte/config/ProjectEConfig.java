@@ -37,6 +37,7 @@ public final class ProjectEConfig {
     public static float timePedMobSlowness;
     public static boolean timeWatchOnlyTickingTiles = true;
     public static boolean timeWatchSkipUnloadedChunks = true;
+    public static boolean timeWatchOncePerTick = true;
     public static boolean interdictionMode;
     public static boolean pickaxeAoeVeinMining;
     public static boolean harvBandGrass;
@@ -252,6 +253,11 @@ public final class ProjectEConfig {
                 "effects",
                 true,
                 "The Watch of Flowing Time only speeds up tile entities that tick on their own. Set to false for the old behaviour of also updating tile entities the game itself never updates.");
+            timeWatchOncePerTick = config.getBoolean(
+                "timeWatchOncePerTick",
+                "effects",
+                true,
+                "A Watch of Flowing Time in a pedestal acts at most once per game tick. Set to false for the old behaviour, where anything that speeds up the pedestal itself (a Torcherino, for example) multiplies the watch's bonus.");
             timeWatchSkipUnloadedChunks = config.getBoolean(
                 "timeWatchSkipUnloadedChunks",
                 "effects",
