@@ -62,6 +62,17 @@ public abstract class BlockDirection extends Block {
     }
 
     @Override
+    public void onNeighborBlockChange(World world, int x, int y, int z, Block neighbor) {
+        super.onNeighborBlockChange(world, x, y, z, neighbor);
+        if (!world.isRemote) {
+            TileEntity tile = world.getTileEntity(x, y, z);
+            if (tile instanceof TileEmc) {
+                ((TileEmc) tile).invalidateSpatialCaches();
+            }
+        }
+    }
+
+    @Override
     public void onBlockClicked(World world, int x, int y, int z, EntityPlayer player) {
         if (world.isRemote) {
             return;

@@ -15,13 +15,25 @@ public class CondenserMK2Tile extends CondenserTile {
     public CondenserMK2Tile() {
         this.inventory = new ItemStack[85];
         this.loadChecks = false;
+        initAccessibleSlots();
     }
 
     @Override
     protected void condense() {
-        while (this.hasSpace() && this.getStoredEmc() >= requiredEmc) {
-            pushStack();
-            this.removeEMC(requiredEmc);
+        boolean dirty = false;
+
+        while (this.getStoredEmc() >= requiredEmc) {
+            int slot = getSlotForStack();
+            if (slot == 0) {
+                break;
+            }
+            long affordable = (long) (this.getStoredEmc() / requiredEmc);
+            int pushed = pushStackBatchToSlot(slot, affordable);
+            if (pushed <= 0) {
+                break;
+            }
+            this.removeEMC((double) (requiredEmc * (long) pushed));
+            dirty = true;
         }
 
         if (this.hasSpace()) {
@@ -34,8 +46,13 @@ public class CondenserMK2Tile extends CondenserTile {
 
                 this.addEMC(EMCHelper.getEmcValue(stack) * stack.stackSize);
                 inventory[i] = null;
+                dirty = true;
                 break;
             }
+        }
+
+        if (dirty) {
+            this.markDirty();
         }
     }
 

@@ -8,12 +8,9 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 import moze_intel.projecte.api.tile.IEmcAcceptor;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.handlers.TileEntityHandler;
-import moze_intel.projecte.network.PacketHandler;
-import moze_intel.projecte.network.packets.CondenserSyncPKT;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
@@ -22,10 +19,13 @@ import moze_intel.projecte.utils.NBTWhitelist;
 public class CondenserTile extends TileEmcDirection implements IInventory, ISidedInventory, IEmcAcceptor {
 
     protected ItemStack[] inventory;
+    protected int[] accessibleSlots;
     private ItemStack lock;
+    protected boolean lockDupesWithNBT;
     protected boolean loadChecks;
     protected boolean isAcceptingEmc;
     private int ticksSinceSync;
+    private long lastChestTick = Long.MIN_VALUE;
     public long displayEmc;
     public float lidAngle;
     public float prevLidAngle;
@@ -35,32 +35,46 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
     public CondenserTile() {
         inventory = new ItemStack[92];
         loadChecks = false;
+        initAccessibleSlots();
     }
 
-    @Override
-    public void updateEntity() {
-        updateChest();
-
-        if (this.worldObj.isRemote) {
-            return;
+    protected void initAccessibleSlots() {
+        accessibleSlots = new int[inventory.length - 1];
+        for (int i = 1; i < inventory.length; i++) {
+            accessibleSlots[i - 1] = i;
         }
+    }
 
-        if (!loadChecks) {
+    public void ensureLoadChecks() {
+        if (!loadChecks && this.worldObj != null && !this.worldObj.isRemote) {
             TileEntityHandler.addCondenser(this);
             checkLockAndUpdate();
             loadChecks = true;
         }
+    }
 
-        displayEmc = (int) this.getStoredEmc();
+    public void refreshDisplayValues() {
+        ensureLoadChecks();
+        displayEmc = (long) this.getStoredEmc();
+    }
+
+    @Override
+    public void updateEntity() {
+        if (this.worldObj.isRemote) {
+            updateChest();
+            return;
+        }
+
+        long currentTick = this.worldObj.getTotalWorldTime();
+        if (lastChestTick != currentTick) {
+            lastChestTick = currentTick;
+            updateChest();
+        }
+
+        ensureLoadChecks();
 
         if (lock != null && requiredEmc != 0) {
             condense();
-        }
-
-        if (numPlayersUsing > 0) {
-            PacketHandler.sendToAllAround(
-                new CondenserSyncPKT(displayEmc, requiredEmc, this.xCoord, this.yCoord, this.zCoord),
-                new TargetPoint(this.worldObj.provider.dimensionId, this.xCoord, this.yCoord, this.zCoord, 8));
         }
     }
 
@@ -70,12 +84,14 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
         if (lock == null) {
             displayEmc = 0;
             requiredEmc = 0;
+            lockDupesWithNBT = false;
             this.isAcceptingEmc = false;
             return;
         }
 
         if (EMCHelper.doesItemHaveEmc(lock)) {
             long lockEmc = EMCHelper.getEmcValue(lock);
+            lockDupesWithNBT = NBTWhitelist.shouldDupeWithNBT(lock);
 
             if (requiredEmc != lockEmc) {
                 requiredEmc = lockEmc;
@@ -87,6 +103,7 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
 
             displayEmc = 0;
             requiredEmc = 0;
+            lockDupesWithNBT = false;
             this.isAcceptingEmc = false;
         }
     }
@@ -110,30 +127,57 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
             break;
         }
 
-        if (this.getStoredEmc() >= requiredEmc && this.hasSpace()) {
-            this.removeEMC(requiredEmc);
-            pushStack();
+        if (this.getStoredEmc() >= requiredEmc) {
+            int slot = getSlotForStack();
+            if (slot != 0) {
+                this.removeEMC(requiredEmc);
+                pushStackToSlot(slot, 1, true);
+            }
         }
     }
 
     protected void pushStack() {
-        int slot = getSlotForStack();
+        pushStackToSlot(getSlotForStack(), 1, true);
+    }
 
-        if (slot == 0) {
+    protected void pushStackToSlot(int slot, int count, boolean markDirty) {
+        if (slot == 0 || count <= 0 || lock == null) {
             return;
         }
         if (inventory[slot] == null) {
             ItemStack lockCopy = lock.copy();
+            lockCopy.stackSize = count;
 
-            if (lockCopy.hasTagCompound() && !NBTWhitelist.shouldDupeWithNBT(lockCopy)) {
+            if (lockCopy.hasTagCompound() && !lockDupesWithNBT) {
                 lockCopy.setTagCompound(new NBTTagCompound());
             }
 
             inventory[slot] = lockCopy;
         } else {
-            inventory[slot].stackSize += 1;
+            inventory[slot].stackSize += count;
         }
-        this.markDirty();
+        if (markDirty) {
+            this.markDirty();
+        }
+    }
+
+    protected int pushStackBatchToSlot(int slot, long maxAffordable) {
+        if (slot == 0 || maxAffordable <= 0 || lock == null) {
+            return 0;
+        }
+        int limit;
+        if (inventory[slot] == null) {
+            limit = Math.min(lock.getMaxStackSize(), this.getInventoryStackLimit());
+        } else {
+            limit = Math.min(inventory[slot].getMaxStackSize(), this.getInventoryStackLimit())
+                - inventory[slot].stackSize;
+        }
+        if (limit <= 0) {
+            return 0;
+        }
+        int count = (int) Math.min((long) limit, maxAffordable);
+        pushStackToSlot(slot, count, false);
+        return count;
     }
 
     protected int getSlotForStack() {
@@ -173,7 +217,7 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
             return false;
         }
 
-        if (NBTWhitelist.shouldDupeWithNBT(lock)) {
+        if (lockDupesWithNBT) {
             return ItemHelper.areItemStacksEqual(lock, stack);
         }
 
@@ -388,13 +432,7 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
 
     @Override
     public int[] getAccessibleSlotsFromSide(int side) {
-        int[] slots = new int[inventory.length - 1];
-
-        for (int i = 1; i < inventory.length; i++) {
-            slots[i - 1] = i;
-        }
-
-        return slots;
+        return accessibleSlots;
     }
 
     @Override

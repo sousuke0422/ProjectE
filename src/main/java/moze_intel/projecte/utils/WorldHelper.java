@@ -44,7 +44,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.IShearable;
@@ -555,15 +554,14 @@ public final class WorldHelper {
                         if (ent instanceof EntityArrow && ((EntityArrow) ent).onGround) {
                             continue;
                         }
-                        Vec3 p = Vec3.createVectorHelper(x, y, z);
-                        Vec3 t = Vec3.createVectorHelper(ent.posX, ent.posY, ent.posZ);
-                        double distance = p.distanceTo(t) + 0.1D;
+                        double dx = ent.posX - x;
+                        double dy = ent.posY - y;
+                        double dz = ent.posZ - z;
+                        double distance = Math.sqrt(dx * dx + dy * dy + dz * dz) + 0.1D;
 
-                        Vec3 r = Vec3.createVectorHelper(t.xCoord - p.xCoord, t.yCoord - p.yCoord, t.zCoord - p.zCoord);
-
-                        ent.motionX += r.xCoord / 1.5D / distance;
-                        ent.motionY += r.yCoord / 1.5D / distance;
-                        ent.motionZ += r.zCoord / 1.5D / distance;
+                        ent.motionX += dx / 1.5D / distance;
+                        ent.motionY += dy / 1.5D / distance;
+                        ent.motionZ += dz / 1.5D / distance;
                     }
                 }
             }

@@ -102,11 +102,13 @@ public final class EMCHelper {
             return false;
         }
 
+        iStack.qnty = 1;
+
         if (!stack.getHasSubtypes() && stack.getMaxDamage() != 0) {
             iStack.damage = 0;
         }
 
-        return EMCMapper.mapContains(iStack);
+        return EMCMapper.emc.containsKey(iStack);
     }
 
     public static boolean doesItemHaveEmc(Item item) {
@@ -151,13 +153,17 @@ public final class EMCHelper {
             return 0;
         }
 
-        if (!EMCMapper.mapContains(iStack) && !stack.getHasSubtypes() && stack.getMaxDamage() != 0) {
+        iStack.qnty = 1;
+        Long baseEmc = EMCMapper.emc.get(iStack);
+
+        if (baseEmc == null && !stack.getHasSubtypes() && stack.getMaxDamage() != 0) {
             // We don't have an emc value for id:metadata, so lets check if we have a value for id:0 and apply a damage
             // multiplier based on that emc value.
             iStack.damage = 0;
+            baseEmc = EMCMapper.emc.get(iStack);
 
-            if (EMCMapper.mapContains(iStack)) {
-                long emc = EMCMapper.getEmcValue(iStack);
+            if (baseEmc != null) {
+                long emc = baseEmc.longValue();
 
                 int relDamage = (stack.getMaxDamage() - stack.getItemDamage());
 
@@ -198,16 +204,18 @@ public final class EMCHelper {
 
                 return result;
             }
-        } else {
-            if (EMCMapper.mapContains(iStack)) {
-                return EMCMapper.getEmcValue(iStack) + getEnchantEmcBonus(stack) + (long) getStoredEMCBonus(stack);
-            }
+        } else if (baseEmc != null) {
+            return baseEmc.longValue() + getEnchantEmcBonus(stack) + (long) getStoredEMCBonus(stack);
         }
 
         return 0;
     }
 
     public static int getEnchantEmcBonus(ItemStack stack) {
+        if (stack == null || stack.stackTagCompound == null) {
+            return 0;
+        }
+
         int result = 0;
 
         Map<Integer, Integer> enchants = EnchantmentHelper.getEnchantments(stack);

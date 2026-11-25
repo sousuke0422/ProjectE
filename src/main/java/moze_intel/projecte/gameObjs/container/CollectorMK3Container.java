@@ -3,6 +3,7 @@ package moze_intel.projecte.gameObjs.container;
 import javax.annotation.Nonnull;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.Slot;
@@ -14,6 +15,8 @@ import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.gameObjs.container.slots.collector.SlotCollectorInv;
 import moze_intel.projecte.gameObjs.container.slots.collector.SlotCollectorLock;
 import moze_intel.projecte.gameObjs.tiles.CollectorMK3Tile;
+import moze_intel.projecte.network.PacketHandler;
+import moze_intel.projecte.network.packets.CollectorSyncPKT;
 
 public class CollectorMK3Container extends LongContainer {
 
@@ -23,6 +26,8 @@ public class CollectorMK3Container extends LongContainer {
     public double kleinChargeProgress = 0;
     public double fuelProgress = 0;
     public int kleinEmc = 0;
+    private long lastDisplayEmc = Long.MIN_VALUE;
+    private double lastItemCharge = Double.NaN;
 
     public CollectorMK3Container(InventoryPlayer invPlayer, CollectorMK3Tile collector) {
         this.tile = collector;
@@ -52,20 +57,48 @@ public class CollectorMK3Container extends LongContainer {
     @Override
     public void addCraftingToCrafters(ICrafting par1ICrafting) {
         super.addCraftingToCrafters(par1ICrafting);
+        tile.refreshDisplayValues();
         par1ICrafting.sendProgressBarUpdate(this, 0, tile.displaySunLevel);
+        if (par1ICrafting instanceof EntityPlayerMP) {
+            PacketHandler.sendTo(
+                new CollectorSyncPKT(tile.displayEmc, tile.displayItemCharge, tile.xCoord, tile.yCoord, tile.zCoord),
+                (EntityPlayerMP) par1ICrafting);
+        }
+        sunLevel = tile.displaySunLevel;
+        lastDisplayEmc = tile.displayEmc;
+        lastItemCharge = tile.displayItemCharge;
     }
 
     @Override
     public void detectAndSendChanges() {
         super.detectAndSendChanges();
+        tile.refreshDisplayValues();
 
-        for (int i = 0; i < this.crafters.size(); ++i) {
-            ICrafting icrafting = (ICrafting) this.crafters.get(i);
+        boolean sunChanged = sunLevel != tile.displaySunLevel;
+        boolean emcChanged = lastDisplayEmc != tile.displayEmc
+            || Double.compare(lastItemCharge, tile.displayItemCharge) != 0;
 
-            if (sunLevel != tile.getSunLevel()) icrafting.sendProgressBarUpdate(this, 1, tile.getSunLevel());
+        if (sunChanged || emcChanged) {
+            CollectorSyncPKT pkt = emcChanged
+                ? new CollectorSyncPKT(tile.displayEmc, tile.displayItemCharge, tile.xCoord, tile.yCoord, tile.zCoord)
+                : null;
+
+            for (int i = 0; i < this.crafters.size(); ++i) {
+                ICrafting icrafting = (ICrafting) this.crafters.get(i);
+
+                if (sunChanged) {
+                    icrafting.sendProgressBarUpdate(this, 0, tile.displaySunLevel);
+                }
+
+                if (pkt != null && icrafting instanceof EntityPlayerMP) {
+                    PacketHandler.sendTo(pkt, (EntityPlayerMP) icrafting);
+                }
+            }
+
+            sunLevel = tile.displaySunLevel;
+            lastDisplayEmc = tile.displayEmc;
+            lastItemCharge = tile.displayItemCharge;
         }
-
-        sunLevel = tile.getSunLevel();
     }
 
     @Override
@@ -74,6 +107,7 @@ public class CollectorMK3Container extends LongContainer {
         switch (id) {
             case 0:
                 sunLevel = data;
+                tile.displaySunLevel = data;
                 break;
             case 1:
                 emc = data;

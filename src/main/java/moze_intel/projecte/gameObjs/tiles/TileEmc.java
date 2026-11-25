@@ -1,20 +1,19 @@
 package moze_intel.projecte.gameObjs.tiles;
 
-import java.util.Map;
+import java.util.Arrays;
 
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
-
-import com.google.common.base.Predicates;
-import com.google.common.collect.Maps;
 
 import moze_intel.projecte.api.tile.IEmcAcceptor;
 import moze_intel.projecte.api.tile.IEmcProvider;
 import moze_intel.projecte.api.tile.TileEmcBase;
 import moze_intel.projecte.utils.Constants;
-import moze_intel.projecte.utils.WorldHelper;
 
 public abstract class TileEmc extends TileEmcBase {
+
+    private final TileEntity[] cachedNeighbors = new TileEntity[6];
+    private long neighborCacheTick = Long.MIN_VALUE;
 
     public TileEmc() {
         setMaximumEMC(Constants.TILE_MAX_EMC);
@@ -26,6 +25,64 @@ public abstract class TileEmc extends TileEmcBase {
 
     public boolean hasMaxedEmc() {
         return getStoredEmc() >= getMaximumEmc();
+    }
+
+    public void invalidateSpatialCaches() {
+        this.neighborCacheTick = Long.MIN_VALUE;
+    }
+
+    protected TileEntity[] getCachedNeighbors() {
+        if (this.worldObj == null) {
+            return this.cachedNeighbors;
+        }
+        long currentTick = this.worldObj.getTotalWorldTime();
+        if (this.neighborCacheTick != currentTick) {
+            for (int i = 0; i < 6; i++) {
+                ForgeDirection dir = ForgeDirection.VALID_DIRECTIONS[i];
+                TileEntity candidate = this.worldObj
+                    .getTileEntity(this.xCoord + dir.offsetX, this.yCoord + dir.offsetY, this.zCoord + dir.offsetZ);
+                this.cachedNeighbors[i] = (candidate != null && !candidate.isInvalid()) ? candidate : null;
+            }
+            this.neighborCacheTick = currentTick;
+        }
+        return this.cachedNeighbors;
+    }
+
+    protected TileEntity getValidNeighbor(int dirOrdinal) {
+        if (this.worldObj == null || dirOrdinal < 0 || dirOrdinal >= 6) {
+            return null;
+        }
+        TileEntity[] neighbors = getCachedNeighbors();
+        TileEntity neighbor = neighbors[dirOrdinal];
+        if (neighbor != null && neighbor.isInvalid()) {
+            ForgeDirection dir = ForgeDirection.VALID_DIRECTIONS[dirOrdinal];
+            TileEntity refreshed = this.worldObj
+                .getTileEntity(this.xCoord + dir.offsetX, this.yCoord + dir.offsetY, this.zCoord + dir.offsetZ);
+            neighbor = (refreshed != null && !refreshed.isInvalid()) ? refreshed : null;
+            neighbors[dirOrdinal] = neighbor;
+        }
+        return neighbor;
+    }
+
+    protected TileEntity getCachedNeighbor(ForgeDirection dir) {
+        if (dir == null || dir == ForgeDirection.UNKNOWN) {
+            return null;
+        }
+        return getValidNeighbor(dir.ordinal());
+    }
+
+    @Override
+    public void invalidate() {
+        super.invalidate();
+        invalidateSpatialCaches();
+        Arrays.fill(this.cachedNeighbors, null);
+    }
+
+    @Override
+    public void onChunkUnload() {
+        super.onChunkUnload();
+        invalidateSpatialCaches();
+        Arrays.fill(this.cachedNeighbors, null);
     }
 
     /**
@@ -40,20 +97,31 @@ public abstract class TileEmc extends TileEmcBase {
             throw new UnsupportedOperationException("sending without being a provider");
         }
 
-        Map<ForgeDirection, TileEntity> tiles = Maps.filterValues(
-            WorldHelper.getAdjacentTileEntitiesMapped(worldObj, this),
-            Predicates.instanceOf(IEmcAcceptor.class));
+        int acceptorCount = 0;
+        for (int i = 0; i < 6; i++) {
+            TileEntity te = getValidNeighbor(i);
+            if (te instanceof IEmcAcceptor) {
+                acceptorCount++;
+            }
+        }
 
-        double emcPer = emc / tiles.size();
-        for (Map.Entry<ForgeDirection, TileEntity> entry : tiles.entrySet()) {
-            if (this instanceof RelayMK1Tile && entry.getValue() instanceof RelayMK1Tile) {
+        if (acceptorCount == 0) {
+            return;
+        }
+
+        double emcPer = emc / acceptorCount;
+        boolean isRelay = this instanceof RelayMK1Tile;
+        for (int i = 0; i < 6; i++) {
+            TileEntity te = getValidNeighbor(i);
+            if (!(te instanceof IEmcAcceptor)) {
                 continue;
             }
-            double provide = ((IEmcProvider) this).provideEMC(
-                entry.getKey()
-                    .getOpposite(),
-                emcPer);
-            double remain = provide - ((IEmcAcceptor) entry.getValue()).acceptEMC(entry.getKey(), provide);
+            if (isRelay && te instanceof RelayMK1Tile) {
+                continue;
+            }
+            ForgeDirection dir = ForgeDirection.VALID_DIRECTIONS[i];
+            double provide = ((IEmcProvider) this).provideEMC(dir.getOpposite(), emcPer);
+            double remain = provide - ((IEmcAcceptor) te).acceptEMC(dir, provide);
             this.addEMC(remain);
         }
     }

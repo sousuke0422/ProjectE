@@ -71,11 +71,13 @@ public class DMPedestalTile extends TileEmc implements IInventory {
                 if (item instanceof IPedestalItem) {
                     ((IPedestalItem) item).updateInPedestal(worldObj, xCoord, yCoord, zCoord);
                 }
-                if (particleCooldown <= 0) {
-                    spawnParticles();
-                    particleCooldown = 10;
-                } else {
-                    particleCooldown--;
+                if (worldObj.isRemote) {
+                    if (particleCooldown <= 0) {
+                        spawnParticles();
+                        particleCooldown = 10;
+                    } else {
+                        particleCooldown--;
+                    }
                 }
             } else {
                 setActive(false);

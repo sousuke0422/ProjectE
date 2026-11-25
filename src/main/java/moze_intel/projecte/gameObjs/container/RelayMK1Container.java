@@ -1,18 +1,25 @@
 package moze_intel.projecte.gameObjs.container;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
+import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
 import moze_intel.projecte.gameObjs.container.slots.relay.SlotRelayInput;
 import moze_intel.projecte.gameObjs.container.slots.relay.SlotRelayKlein;
 import moze_intel.projecte.gameObjs.tiles.RelayMK1Tile;
+import moze_intel.projecte.network.PacketHandler;
+import moze_intel.projecte.network.packets.RelaySyncPKT;
 
 public class RelayMK1Container extends Container {
 
     private RelayMK1Tile tile;
+    private int lastDisplayEmc = Integer.MIN_VALUE;
+    private double lastChargingEmc = Double.NaN;
+    private double lastRawEmc = Double.NaN;
 
     public RelayMK1Container(InventoryPlayer invPlayer, RelayMK1Tile relay) {
         this.tile = relay;
@@ -34,6 +41,52 @@ public class RelayMK1Container extends Container {
 
         // Player Hotbar
         for (int i = 0; i < 9; i++) this.addSlotToContainer(new Slot(invPlayer, i, 8 + i * 18, 153));
+    }
+
+    @Override
+    public void addCraftingToCrafters(ICrafting crafter) {
+        super.addCraftingToCrafters(crafter);
+        tile.refreshDisplayValues();
+        if (crafter instanceof EntityPlayerMP) {
+            PacketHandler.sendTo(
+                new RelaySyncPKT(
+                    tile.displayEmc,
+                    tile.displayChargingEmc,
+                    tile.displayRawEmc,
+                    tile.xCoord,
+                    tile.yCoord,
+                    tile.zCoord),
+                (EntityPlayerMP) crafter);
+        }
+        lastDisplayEmc = tile.displayEmc;
+        lastChargingEmc = tile.displayChargingEmc;
+        lastRawEmc = tile.displayRawEmc;
+    }
+
+    @Override
+    public void detectAndSendChanges() {
+        super.detectAndSendChanges();
+        tile.refreshDisplayValues();
+
+        if (lastDisplayEmc != tile.displayEmc || Double.compare(lastChargingEmc, tile.displayChargingEmc) != 0
+            || Double.compare(lastRawEmc, tile.displayRawEmc) != 0) {
+            RelaySyncPKT pkt = new RelaySyncPKT(
+                tile.displayEmc,
+                tile.displayChargingEmc,
+                tile.displayRawEmc,
+                tile.xCoord,
+                tile.yCoord,
+                tile.zCoord);
+            for (int i = 0; i < this.crafters.size(); ++i) {
+                ICrafting crafter = (ICrafting) this.crafters.get(i);
+                if (crafter instanceof EntityPlayerMP) {
+                    PacketHandler.sendTo(pkt, (EntityPlayerMP) crafter);
+                }
+            }
+            lastDisplayEmc = tile.displayEmc;
+            lastChargingEmc = tile.displayChargingEmc;
+            lastRawEmc = tile.displayRawEmc;
+        }
     }
 
     @Override
