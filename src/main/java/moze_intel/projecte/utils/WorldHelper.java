@@ -44,6 +44,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.MathHelper;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IPlantable;
@@ -345,16 +346,52 @@ public final class WorldHelper {
     }
 
     public static List<TileEntity> getTileEntitiesWithinAABB(World world, AxisAlignedBB bBox) {
-        List<TileEntity> list = Lists.newArrayList();
+        return getTileEntitiesWithinAABB(world, bBox, false);
+    }
 
-        for (int i = (int) bBox.minX; i <= bBox.maxX; i++)
-            for (int j = (int) bBox.minY; j <= bBox.maxY; j++) for (int k = (int) bBox.minZ; k <= bBox.maxZ; k++) {
-                TileEntity tile = world.getTileEntity(i, j, k);
-                if (tile != null) {
-                    list.add(tile);
+    /**
+     * The tile entities in a box, ordered by x, then y, then z. Reads them from the chunks' own tile entity maps, so
+     * the cost follows the number of tile entities around rather than the volume of the box.
+     *
+     * @param skipUnloadedChunks leave chunks that are not loaded alone instead of loading them
+     */
+    public static List<TileEntity> getTileEntitiesWithinAABB(World world, AxisAlignedBB bBox,
+        boolean skipUnloadedChunks) {
+        List<TileEntity> list = Lists.newArrayList();
+        // The same block range the old position by position scan covered
+        int minX = (int) bBox.minX, maxX = MathHelper.floor_double(bBox.maxX);
+        int minY = (int) bBox.minY, maxY = MathHelper.floor_double(bBox.maxY);
+        int minZ = (int) bBox.minZ, maxZ = MathHelper.floor_double(bBox.maxZ);
+
+        for (int chunkX = minX >> 4; chunkX <= maxX >> 4; chunkX++) {
+            for (int chunkZ = minZ >> 4; chunkZ <= maxZ >> 4; chunkZ++) {
+                if (skipUnloadedChunks && !world.getChunkProvider()
+                    .chunkExists(chunkX, chunkZ)) {
+                    continue;
+                }
+                for (Object obj : world.getChunkFromChunkCoords(chunkX, chunkZ).chunkTileEntityMap.values()) {
+                    TileEntity tile = (TileEntity) obj;
+                    if (!tile.isInvalid() && tile.xCoord >= minX
+                        && tile.xCoord <= maxX
+                        && tile.yCoord >= minY
+                        && tile.yCoord <= maxY
+                        && tile.zCoord >= minZ
+                        && tile.zCoord <= maxZ) {
+                        list.add(tile);
+                    }
                 }
             }
+        }
 
+        Collections.sort(list, new Comparator<TileEntity>() {
+
+            @Override
+            public int compare(TileEntity a, TileEntity b) {
+                if (a.xCoord != b.xCoord) return a.xCoord < b.xCoord ? -1 : 1;
+                if (a.yCoord != b.yCoord) return a.yCoord < b.yCoord ? -1 : 1;
+                return a.zCoord < b.zCoord ? -1 : a.zCoord == b.zCoord ? 0 : 1;
+            }
+        });
         return list;
     }
 

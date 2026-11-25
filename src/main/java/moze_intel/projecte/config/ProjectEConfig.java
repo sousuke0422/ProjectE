@@ -35,6 +35,8 @@ public final class ProjectEConfig {
     public static int zeroPedCooldown;
     public static int timePedBonus;
     public static float timePedMobSlowness;
+    public static boolean timeWatchOnlyTickingTiles = true;
+    public static boolean timeWatchSkipUnloadedChunks = true;
     public static boolean interdictionMode;
     public static boolean pickaxeAoeVeinMining;
     public static boolean harvBandGrass;
@@ -245,6 +247,16 @@ public final class ProjectEConfig {
                 0.0F,
                 1.0F,
                 "Factor the Watch of Flowing Time slows down mobs by while in the pedestal. Set to 1.0 for no slowdown.");
+            timeWatchOnlyTickingTiles = config.getBoolean(
+                "timeWatchOnlyTickingTiles",
+                "effects",
+                true,
+                "The Watch of Flowing Time only speeds up tile entities that tick on their own. Set to false for the old behaviour of also updating tile entities the game itself never updates.");
+            timeWatchSkipUnloadedChunks = config.getBoolean(
+                "timeWatchSkipUnloadedChunks",
+                "effects",
+                true,
+                "The Watch of Flowing Time leaves chunks that are not loaded alone. Set to false for the old behaviour of loading every chunk its range touches.");
             interdictionMode = config.getBoolean(
                 "interdictionMode",
                 "effects",
