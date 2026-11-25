@@ -1,8 +1,6 @@
 package moze_intel.projecte.gameObjs.items;
 
 import java.util.List;
-import java.util.Map;
-import java.util.WeakHashMap;
 
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
@@ -35,14 +33,6 @@ import moze_intel.projecte.utils.WorldTransmutations;
 
 public class PhilosophersStone extends ItemMode implements IProjectileShooter, IExtraFunction {
 
-    /** World time of each player's last click on a block. Server thread only. */
-    private static final Map<EntityPlayer, Long> lastBlockClick = new WeakHashMap<>();
-    /**
-     * The two packets of one click normally land in the same tick; one tick of slack covers a tick boundary between
-     * them. The client cannot click again that fast (4 ticks between right clicks).
-     */
-    private static final long SAME_CLICK_TICKS = 1;
-
     public PhilosophersStone() {
         super(
             "philosophers_stone",
@@ -63,10 +53,10 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
     public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int blockX, int blockY, int blockZ,
         int sideHit, float px, float py, float pz) {
         if (world.isRemote) {
-            return false;
+            // Claim the click, as the server does. Returning false would make the client follow up with its
+            // use-item packet, and onItemRightClick would then turn obsidian -> lava or ice -> water straight back.
+            return true;
         }
-
-        lastBlockClick.put(player, world.getTotalWorldTime());
 
         // The liquid in front of the clicked block first; if it has no transmutation, the clicked block itself
         if (!tryLiquidTransmutation(stack, player, world)) {
@@ -79,21 +69,14 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
      * The client only calls {@link #onItemUse} when a solid block is in reach behind the liquid. Over a deep lake or
      * the sea the click arrives here instead.
      * <p>
-     * This also runs right after {@link #onItemUse}, because that returns false on the client and the client then
-     * sends its use-item packet as well. Acting again would undo obsidian to lava and ice to water: the result of
-     * the first pass is a liquid source, which this pass would turn straight back. So a click that
-     * {@link #onItemUse} has already seen is skipped here.
+     * A click on a block never gets here: {@link #onItemUse} claims it on the client, so no use-item packet
+     * follows.
      */
     @Override
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
-        if (world.isRemote) {
-            return stack;
+        if (!world.isRemote) {
+            tryLiquidTransmutation(stack, player, world);
         }
-        Long blockClick = lastBlockClick.get(player);
-        if (blockClick != null && Math.abs(world.getTotalWorldTime() - blockClick) <= SAME_CLICK_TICKS) {
-            return stack;
-        }
-        tryLiquidTransmutation(stack, player, world);
         return stack;
     }
 

@@ -78,7 +78,9 @@ public class TransmutationRenderingEvent {
     public void onOverlay(RenderWorldLastEvent event) {
         Minecraft mc = Minecraft.getMinecraft();
         EntityPlayer player = mc.thePlayer;
-        if (player == null) {
+        // Unlike the block highlight, this event also fires with the GUI hidden (F1)
+        if (player == null || mc.gameSettings.hideGUI) {
+            transmutationResult = null;
             return;
         }
         World world = player.worldObj;
