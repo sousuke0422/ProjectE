@@ -88,12 +88,13 @@ public class NEICollectorFuelHandler extends TemplateRecipeHandler {
         Minecraft.getMinecraft().fontRenderer.drawString(text, 74, 46, 0x404040);
     }
 
-    /** Every upgrade step: each fuel and the next more valuable one. The best fuel has nowhere to go. */
+    /** Every upgrade step: each fuel and what a collector turns it into. The best fuels have nowhere to go. */
     private List<CachedFuelUpgrade> allUpgrades() {
         List<CachedFuelUpgrade> upgrades = new ArrayList<>();
-        List<ItemStack> fuels = FuelMapper.getFuels();
-        for (int i = 0; i + 1 < fuels.size(); i++) {
-            upgrades.add(new CachedFuelUpgrade(fuels.get(i), fuels.get(i + 1)));
+        for (ItemStack fuel : FuelMapper.getFuels()) {
+            if (!FuelMapper.isStackMaxFuel(fuel)) {
+                upgrades.add(new CachedFuelUpgrade(fuel, FuelMapper.getFuelUpgrade(fuel)));
+            }
         }
         return upgrades;
     }

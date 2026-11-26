@@ -48,7 +48,10 @@ public final class FuelMapper {
         return true;
     }
 
-    /** @return every collector fuel from the least to the most valuable; each one upgrades into the next */
+    /**
+     * @return every collector fuel from the least to the most valuable; see {@link #getFuelUpgrade} for what each one
+     *         upgrades into
+     */
     public static synchronized List<ItemStack> getFuels() {
         List<ItemStack> fuels = Lists.newArrayListWithCapacity(FUEL_MAP.size());
         for (SimpleStack fuel : FUEL_MAP) {
@@ -95,10 +98,17 @@ public final class FuelMapper {
         return mapContains(new SimpleStack(stack));
     }
 
+    /** @return true if no fuel is worth more than this one, so there is nothing to upgrade it into */
     public static boolean isStackMaxFuel(ItemStack stack) {
-        return indexInMap(new SimpleStack(stack)) == FUEL_MAP.size() - 1;
+        int index = indexInMap(new SimpleStack(stack));
+
+        return index == FUEL_MAP.size() - 1 || (index != -1 && nextMoreValuable(index) == -1);
     }
 
+    /**
+     * @return the next fuel worth more than this one. Fuels of the same value are skipped: going from one to the
+     *         other costs nothing, and collectors only upgrade at a cost. The best fuel wraps around to the worst.
+     */
     public static ItemStack getFuelUpgrade(ItemStack stack) {
         SimpleStack fuel = new SimpleStack(stack);
 
@@ -109,10 +119,28 @@ public final class FuelMapper {
             return null;
         }
 
-        int nextIndex = index == FUEL_MAP.size() - 1 ? 0 : index + 1;
+        int nextIndex = nextMoreValuable(index);
 
-        return FUEL_MAP.get(nextIndex)
+        return FUEL_MAP.get(nextIndex == -1 ? 0 : nextIndex)
             .toItemStack();
+    }
+
+    /** @return the index of the first fuel after {@code index} that is worth more, or -1 if there is none */
+    private static int nextMoreValuable(int index) {
+        long value = EMCHelper.getEmcValue(
+            FUEL_MAP.get(index)
+                .toItemStack());
+
+        for (int i = index + 1; i < FUEL_MAP.size(); i++) {
+            if (EMCHelper.getEmcValue(
+                FUEL_MAP.get(i)
+                    .toItemStack())
+                > value) {
+                return i;
+            }
+        }
+
+        return -1;
     }
 
     private static void addToMap(SimpleStack stack) {
