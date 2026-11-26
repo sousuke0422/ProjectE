@@ -91,10 +91,8 @@ public class NEICollectorFuelHandler extends TemplateRecipeHandler {
     /** Every upgrade step: each fuel and what a collector turns it into. The best fuels have nowhere to go. */
     private List<CachedFuelUpgrade> allUpgrades() {
         List<CachedFuelUpgrade> upgrades = new ArrayList<>();
-        for (ItemStack fuel : FuelMapper.getFuels()) {
-            if (!FuelMapper.isStackMaxFuel(fuel)) {
-                upgrades.add(new CachedFuelUpgrade(fuel, FuelMapper.getFuelUpgrade(fuel)));
-            }
+        for (ItemStack[] step : FuelMapper.getUpgradeSteps()) {
+            upgrades.add(new CachedFuelUpgrade(step[0], step[1]));
         }
         return upgrades;
     }

@@ -60,6 +60,25 @@ public final class FuelMapper {
         return fuels;
     }
 
+    /**
+     * @return every upgrade a collector can make, as {from, to} pairs, from the least valuable fuel up. Built under
+     *         one lock, so it stays consistent while the map is rebuilt on another thread (the emc sync packet).
+     */
+    public static synchronized List<ItemStack[]> getUpgradeSteps() {
+        List<ItemStack[]> steps = Lists.newArrayList();
+        for (int i = 0; i < FUEL_MAP.size(); i++) {
+            int next = nextMoreValuable(i);
+            if (next != -1) {
+                steps.add(
+                    new ItemStack[] { FUEL_MAP.get(i)
+                        .toItemStack(),
+                        FUEL_MAP.get(next)
+                            .toItemStack() });
+            }
+        }
+        return steps;
+    }
+
     public static synchronized void loadMap() {
         if (!FUEL_MAP.isEmpty()) {
             FUEL_MAP.clear();
@@ -99,7 +118,7 @@ public final class FuelMapper {
     }
 
     /** @return true if no fuel is worth more than this one, so there is nothing to upgrade it into */
-    public static boolean isStackMaxFuel(ItemStack stack) {
+    public static synchronized boolean isStackMaxFuel(ItemStack stack) {
         int index = indexInMap(new SimpleStack(stack));
 
         return index == FUEL_MAP.size() - 1 || (index != -1 && nextMoreValuable(index) == -1);
@@ -109,7 +128,7 @@ public final class FuelMapper {
      * @return the next fuel worth more than this one. Fuels of the same value are skipped: going from one to the
      *         other costs nothing, and collectors only upgrade at a cost. The best fuel wraps around to the worst.
      */
-    public static ItemStack getFuelUpgrade(ItemStack stack) {
+    public static synchronized ItemStack getFuelUpgrade(ItemStack stack) {
         SimpleStack fuel = new SimpleStack(stack);
 
         int index = indexInMap(fuel);
