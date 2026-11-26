@@ -23,6 +23,7 @@ import cpw.mods.fml.common.Optional;
 import moze_intel.projecte.api.item.IExtraFunction;
 import moze_intel.projecte.api.item.IModeChanger;
 import moze_intel.projecte.api.item.IProjectileShooter;
+import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.entity.EntityFireProjectile;
 import moze_intel.projecte.gameObjs.entity.EntitySWRGProjectile;
 import moze_intel.projecte.gameObjs.items.IFireProtector;
@@ -31,12 +32,30 @@ import moze_intel.projecte.gameObjs.items.ItemPE;
 import moze_intel.projecte.utils.PlayerHelper;
 import moze_intel.projecte.utils.WorldHelper;
 
+/**
+ * The four elemental rings in one. The item damage is the mode; the ring only acts while switched on.
+ */
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
 public class Arcana extends ItemPE
     implements IBauble, IModeChanger, IFlightProvider, IFireProtector, IExtraFunction, IProjectileShooter {
 
-    private IIcon[] icons = new IIcon[4];
-    private IIcon[] iconsOn = new IIcon[4];
+    private static final int ZERO = 0;
+    private static final int IGNITION = 1;
+    private static final int HARVEST = 2;
+    private static final int SWRG = 3;
+    private static final int MODES = 4;
+
+    private static final String ACTIVE = "Active";
+    /** World time of the last row of fire, for {@link ProjectEConfig#arcanaFireRowCooldown}. */
+    private static final String LAST_FIRE_ROW = "LastFireRow";
+
+    /** The row of fire reaches this far to the player's left and right, front and back, and up and down. */
+    private static final int FIRE_ROW_LENGTH = 30;
+    private static final int FIRE_ROW_DEPTH = 3;
+    private static final int FIRE_ROW_HEIGHT = 5;
+
+    private final IIcon[] icons = new IIcon[MODES];
+    private final IIcon[] iconsOn = new IIcon[MODES];
 
     public Arcana() {
         super();
@@ -58,42 +77,68 @@ public class Arcana extends ItemPE
 
     @Override
     public void changeMode(EntityPlayer player, ItemStack stack) {
-        stack.setItemDamage((stack.getItemDamage() + 1) % 4);
+        stack.setItemDamage((stack.getItemDamage() + 1) % MODES);
     }
 
-    private void tick(ItemStack stack, World world, EntityPlayerMP player) {
-        if (stack.getTagCompound()
-            .getBoolean("Active")) {
-            switch (stack.getItemDamage()) {
-                case 0:
-                    WorldHelper.freezeInBoundingBox(world, player.boundingBox.expand(5, 5, 5), player, true);
-                    break;
-                case 1:
-                    WorldHelper.igniteNearby(world, player);
-                    break;
-                case 2:
-                    WorldHelper.growNearbyRandomly(true, world, player.posX, player.posY, player.posZ, player);
-                    break;
-                case 3:
-                    WorldHelper.repelEntitiesInAABBFromPoint(
-                        world,
-                        player.boundingBox.expand(5, 5, 5),
-                        player.posX,
-                        player.posY,
-                        player.posZ,
-                        true);
-                    break;
-            }
+    private static boolean isActive(ItemStack stack) {
+        return stack.hasTagCompound() && stack.getTagCompound()
+            .getBoolean(ACTIVE);
+    }
+
+    private static NBTTagCompound tagOf(ItemStack stack) {
+        if (!stack.hasTagCompound()) {
+            stack.setTagCompound(new NBTTagCompound());
+        }
+        return stack.getTagCompound();
+    }
+
+    @Override
+    public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
+        if (!world.isRemote) {
+            NBTTagCompound tag = tagOf(stack);
+            tag.setBoolean(ACTIVE, !tag.getBoolean(ACTIVE));
+        }
+        return stack;
+    }
+
+    /** The passive effect of the current mode, around the player. */
+    private void applyPassive(ItemStack stack, World world, EntityPlayerMP player) {
+        if (!isActive(stack)) {
+            return;
+        }
+
+        switch (stack.getItemDamage()) {
+            case ZERO:
+                WorldHelper.freezeInBoundingBox(world, player.boundingBox.expand(5, 5, 5), player, true);
+                break;
+            case IGNITION:
+                WorldHelper.igniteNearby(world, player);
+                break;
+            case HARVEST:
+                WorldHelper.growNearbyRandomly(true, world, player.posX, player.posY, player.posZ, player);
+                break;
+            case SWRG:
+                WorldHelper.repelEntitiesInAABBFromPoint(
+                    world,
+                    player.boundingBox.expand(5, 5, 5),
+                    player.posX,
+                    player.posY,
+                    player.posZ,
+                    true);
+                break;
+            default:
+                break;
         }
     }
 
     @Override
     public void onUpdate(ItemStack stack, World world, Entity entity, int slot, boolean held) {
-        if (stack.stackTagCompound == null) stack.setTagCompound(new NBTTagCompound());
+        tagOf(stack);
 
-        if (world.isRemote || slot > 8 || !(entity instanceof EntityPlayerMP)) return;
-
-        tick(stack, world, (EntityPlayerMP) entity);
+        // Only on the hotbar
+        if (!world.isRemote && slot <= 8 && entity instanceof EntityPlayerMP) {
+            applyPassive(stack, world, (EntityPlayerMP) entity);
+        }
     }
 
     @Override
@@ -105,11 +150,11 @@ public class Arcana extends ItemPE
     @Override
     @Optional.Method(modid = "Baubles")
     public void onWornTick(ItemStack stack, EntityLivingBase entity) {
-        if (stack.stackTagCompound == null) stack.setTagCompound(new NBTTagCompound());
+        tagOf(stack);
 
-        if (entity.worldObj.isRemote || !(entity instanceof EntityPlayerMP)) return;
-
-        tick(stack, entity.worldObj, (EntityPlayerMP) entity);
+        if (!entity.worldObj.isRemote && entity instanceof EntityPlayerMP) {
+            applyPassive(stack, entity.worldObj, (EntityPlayerMP) entity);
+        }
     }
 
     @Override
@@ -139,105 +184,98 @@ public class Arcana extends ItemPE
 
     @Override
     public IIcon getIconIndex(ItemStack stack) {
-        boolean active = stack.hasTagCompound() && stack.getTagCompound()
-            .getBoolean("Active");
-        return (active ? iconsOn : icons)[MathHelper.clamp_int(stack.getItemDamage(), 0, 3)];
+        int mode = MathHelper.clamp_int(stack.getItemDamage(), 0, MODES - 1);
+        return isActive(stack) ? iconsOn[mode] : icons[mode];
     }
 
     @Override
     public void registerIcons(IIconRegister register) {
-        for (int i = 0; i < 4; i++) {
-            icons[i] = register.registerIcon(this.getTexture("rings", "arcana_" + i));
+        for (int mode = 0; mode < MODES; mode++) {
+            icons[mode] = register.registerIcon(this.getTexture("rings", "arcana_" + mode));
+            iconsOn[mode] = register.registerIcon(this.getTexture("rings", "arcana_" + mode + "_on"));
         }
-
-        for (int i = 0; i < 4; i++) {
-            iconsOn[i] = register.registerIcon(this.getTexture("rings", "arcana_" + i + "_on"));
-        }
-
         itemIcon = icons[0];
     }
 
     @Override
-    public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean b) {
-        if (stack.hasTagCompound()) {
-            if (!stack.stackTagCompound.getBoolean("Active")) {
-                list.add(EnumChatFormatting.RED + StatCollector.translateToLocal("pe.arcana.inactive"));
-            } else {
-                list.add(
-                    StatCollector.translateToLocal("pe.arcana.mode") + EnumChatFormatting.AQUA
-                        + StatCollector.translateToLocal("pe.arcana.mode." + stack.getItemDamage()));
-            }
+    public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean advanced) {
+        if (!stack.hasTagCompound()) {
+            return;
+        }
+
+        if (isActive(stack)) {
+            list.add(
+                StatCollector.translateToLocal("pe.arcana.mode") + EnumChatFormatting.AQUA
+                    + StatCollector.translateToLocal("pe.arcana.mode." + stack.getItemDamage()));
+        } else {
+            list.add(EnumChatFormatting.RED + StatCollector.translateToLocal("pe.arcana.inactive"));
         }
     }
 
+    /** In ignition mode: a wide row of fire across the player's view. */
     @Override
-    public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
-        if (!world.isRemote) {
-            NBTTagCompound compound = stack.getTagCompound();
-
-            compound.setBoolean("Active", !compound.getBoolean("Active"));
-        }
-
-        return stack;
-    }
-
-    @Override
-    public void doExtraFunction(ItemStack stack, EntityPlayer player) // GIANT FIRE ROW OF DEATH
-    {
+    public void doExtraFunction(ItemStack stack, EntityPlayer player) {
         World world = player.worldObj;
 
-        if (world.isRemote) return;
-
-        switch (stack.getItemDamage()) {
-            case 1: // ignition
-                switch (MathHelper.floor_double((double) (player.rotationYaw * 4.0F / 360.0F) + 0.5) & 3) {
-                    case 0: // south, -z
-                    case 2: // north, +z
-                        for (int x = (int) (player.posX - 30); x <= player.posX + 30; x++)
-                            for (int y = (int) (player.posY - 5); y <= player.posY + 5; y++)
-                                for (int z = (int) (player.posZ - 3); z <= player.posZ + 3; z++)
-                                    if (world.isAirBlock(x, y, z)) {
-                                        PlayerHelper
-                                            .checkedPlaceBlock(((EntityPlayerMP) player), x, y, z, Blocks.fire, 0);
-                                    }
-                        break;
-                    case 1: // west, -x
-                    case 3: // east, +x
-                        for (int x = (int) (player.posX - 3); x <= player.posX + 3; x++)
-                            for (int y = (int) (player.posY - 5); y <= player.posY + 5; y++)
-                                for (int z = (int) (player.posZ - 30); z <= player.posZ + 30; z++) {
-                                    if (world.isAirBlock(x, y, z)) {
-                                        PlayerHelper
-                                            .checkedPlaceBlock(((EntityPlayerMP) player), x, y, z, Blocks.fire, 0);
-                                    }
-                                }
-                        break;
-                }
-                break;
+        if (world.isRemote || stack.getItemDamage() != IGNITION) {
+            return;
         }
+
+        int cooldown = ProjectEConfig.arcanaFireRowCooldown;
+        if (cooldown > 0) {
+            NBTTagCompound tag = tagOf(stack);
+            long now = world.getTotalWorldTime();
+            long since = now - tag.getLong(LAST_FIRE_ROW);
+            if (tag.hasKey(LAST_FIRE_ROW) && since >= 0 && since < cooldown) {
+                return;
+            }
+            tag.setLong(LAST_FIRE_ROW, now);
+        }
+
+        // Facing north or south the row runs east-west, and the other way round
+        int facing = MathHelper.floor_double(player.rotationYaw * 4.0F / 360.0F + 0.5) & 3;
+        boolean alongX = facing == 0 || facing == 2;
+        int reachX = alongX ? FIRE_ROW_LENGTH : FIRE_ROW_DEPTH;
+        int reachZ = alongX ? FIRE_ROW_DEPTH : FIRE_ROW_LENGTH;
+        int centerX = MathHelper.floor_double(player.posX);
+        int centerY = MathHelper.floor_double(player.posY);
+        int centerZ = MathHelper.floor_double(player.posZ);
+
+        for (int x = centerX - reachX; x <= centerX + reachX; x++) {
+            for (int y = centerY - FIRE_ROW_HEIGHT; y <= centerY + FIRE_ROW_HEIGHT; y++) {
+                for (int z = centerZ - reachZ; z <= centerZ + reachZ; z++) {
+                    // Fire with nothing to stand on or burn goes out the moment it is placed, so skip those
+                    if (world.isAirBlock(x, y, z) && Blocks.fire.canPlaceBlockAt(world, x, y, z)) {
+                        PlayerHelper.checkedPlaceBlock((EntityPlayerMP) player, x, y, z, Blocks.fire, 0);
+                    }
+                }
+            }
+        }
+        world.playSoundAtEntity(player, "projecte:item.pepower", 1.0F, 1.0F);
     }
 
     @Override
     public boolean shootProjectile(EntityPlayer player, ItemStack stack) {
         World world = player.worldObj;
 
-        if (world.isRemote) return false;
+        if (world.isRemote) {
+            return false;
+        }
 
         switch (stack.getItemDamage()) {
-            case 0: // zero
-                EntitySnowball snowball = new EntitySnowball(world, player);
-                world.spawnEntityInWorld(snowball);
+            case ZERO:
+                world.spawnEntityInWorld(new EntitySnowball(world, player));
                 world.playSoundAtEntity(player, "random.bow", 1.0F, 1.0F);
                 break;
-            case 1: // ignition
-                EntityFireProjectile fire = new EntityFireProjectile(world, player);
-                world.spawnEntityInWorld(fire);
+            case IGNITION:
+                world.spawnEntityInWorld(new EntityFireProjectile(world, player));
                 world.playSoundAtEntity(player, "projecte:item.pepower", 1.0F, 1.0F);
                 break;
-            case 3: // swrg
-                EntitySWRGProjectile lightning = new EntitySWRGProjectile(world, player);
-                world.spawnEntityInWorld(lightning);
-                // world.playSoundAtEntity(player, "projecte:item.pewindmagic", 1.0F, 1.0F);
+            case SWRG:
+                world.spawnEntityInWorld(new EntitySWRGProjectile(world, player));
+                break;
+            default:
+                // The harvest mode has nothing to shoot
                 break;
         }
 
