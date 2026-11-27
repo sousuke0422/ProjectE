@@ -202,7 +202,8 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
         }
     }
 
-    private static boolean isBlacklisted(Class<?> tileClass) {
+    /** Shares a lock with {@link #blacklist}, so a lookup cannot cache an answer from before a class was added. */
+    private static synchronized boolean isBlacklisted(Class<?> tileClass) {
         Boolean cached = blacklistCache.get(tileClass);
         if (cached == null) {
             cached = internalBlacklist.contains(tileClass.getName()) || implementsBlacklistedInterface(tileClass);
@@ -432,8 +433,7 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
         return list;
     }
 
-    public static void blacklist(Class<? extends TileEntity> clazz) {
-        // Add first: a lookup racing with this must not cache "not blacklisted" after the clear
+    public static synchronized void blacklist(Class<? extends TileEntity> clazz) {
         internalBlacklist.add(clazz.getName());
         blacklistCache.clear();
     }
