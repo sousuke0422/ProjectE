@@ -35,11 +35,7 @@ public class NEICollectorFuelHandler extends TemplateRecipeHandler {
             // Laid out on the furnace background: fuel on top, the collector where the furnace burns its fuel
             this.input = new PositionedStack(from, 51, 6);
             this.output = new PositionedStack(to, 111, 24);
-            List<ItemStack> machines = new ArrayList<>();
-            machines.add(new ItemStack(ObjHandler.energyCollector));
-            machines.add(new ItemStack(ObjHandler.collectorMK2));
-            machines.add(new ItemStack(ObjHandler.collectorMK3));
-            this.collectors = new PositionedStack(machines, 51, 42);
+            this.collectors = new PositionedStack(collectors(), 51, 42);
             this.cost = EMCHelper.getEmcValue(to) - EMCHelper.getEmcValue(from);
         }
 
@@ -58,6 +54,15 @@ public class NEICollectorFuelHandler extends TemplateRecipeHandler {
             collectors.setPermutationToRender((cycleticks / 20) % collectors.items.length);
             return collectors;
         }
+    }
+
+    /** The machines that do the upgrading. */
+    private static List<ItemStack> collectors() {
+        List<ItemStack> machines = new ArrayList<>();
+        machines.add(new ItemStack(ObjHandler.energyCollector));
+        machines.add(new ItemStack(ObjHandler.collectorMK2));
+        machines.add(new ItemStack(ObjHandler.collectorMK3));
+        return machines;
     }
 
     @Override
@@ -118,7 +123,7 @@ public class NEICollectorFuelHandler extends TemplateRecipeHandler {
     @Override
     public void loadUsageRecipes(ItemStack ingredient) {
         boolean isCollector = false;
-        for (ItemStack machine : new CachedFuelUpgrade(ingredient, ingredient).collectors.items) {
+        for (ItemStack machine : collectors()) {
             isCollector |= NEIServerUtils.areStacksSameTypeCrafting(machine, ingredient);
         }
         for (CachedFuelUpgrade upgrade : allUpgrades()) {
