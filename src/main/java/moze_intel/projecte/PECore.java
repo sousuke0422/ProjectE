@@ -116,6 +116,7 @@ public class PECore {
         proxy.registerKeyBinds();
         proxy.registerRenderers();
         AchievementHandler.init();
+        moze_intel.projecte.integration.NEI.NEIHandlerInfo.sendIMC();
     }
 
     @EventHandler

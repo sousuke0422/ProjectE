@@ -12,7 +12,7 @@ jobs:
   - !CommandStep
     name: build
     runInContainer: true
-    image: eclipse-temurin:8
+    image: eclipse-temurin:25
     interpreter: !DefaultInterpreter
       commands:
       - ./gradlew SetupCIWorkspace build devJar sourcesJar

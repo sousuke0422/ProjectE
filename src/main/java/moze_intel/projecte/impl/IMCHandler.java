@@ -7,6 +7,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 
 import cpw.mods.fml.common.event.FMLInterModComms;
+import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.utils.PELogger;
 
 public class IMCHandler {
@@ -25,6 +26,10 @@ public class IMCHandler {
             whitelistNBT(msg);
         } else if ("timewatchblacklist".equals(messageKey) && msg.isStringMessage()) {
             blacklistWatch(msg);
+        } else if ("collectorfuel".equals(messageKey) && msg.isItemStackMessage()) {
+            if (FuelMapper.registerFuel(msg.getItemStackValue())) {
+                PELogger.logInfo("Mod %s registered collector fuel %s", msg.getSender(), msg.getItemStackValue());
+            }
         } else {
             PELogger.logWarn("Received unknown message \"%s\" from mod %s, ignoring.", messageKey, msg.getSender());
         }

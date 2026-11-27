@@ -17,7 +17,7 @@ stages:          # List of stages for jobs, and their order of execution
   - build
 
 build-job:       # This job runs in the build stage, which runs first.
-  image: eclipse-temurin:8
+  image: eclipse-temurin:25
   stage: build
   script:
     - chmod +x ./gradlew

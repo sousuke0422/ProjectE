@@ -13,5 +13,7 @@ public class NEIInit {
         API.registerUsageHandler(new NEIKleinStarHandler());
         API.registerRecipeHandler(new NEIAlchBagHandler());
         API.registerUsageHandler(new NEIAlchBagHandler());
+        API.registerRecipeHandler(new NEICollectorFuelHandler());
+        API.registerUsageHandler(new NEICollectorFuelHandler());
     }
 }
