@@ -11,4 +11,9 @@ permissions:
 jobs:
   release-tags:
     uses: TeamBlackCrystal/GTNH-Actions-Workflows/.github/workflows/release-tags.yml@master
-    secrets: inherit
+    # "inherit" only reaches workflows of the same owner; this one lives in another organisation
+    secrets:
+      MAVEN_USER: ${{ secrets.MAVEN_USER }}
+      MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}
+      CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE_TOKEN }}
+      MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
