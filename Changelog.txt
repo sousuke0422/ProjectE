@@ -1,3 +1,12 @@
+###Version 2.4.0
+* NOTICE: This build is in no way affiliated with the official version.
+* NOTICE: Due to the effect of Long, we have observed incompatibilities with add-ons that handle EMC.
+* NOTICE: use GTNH NEI (NotEnoughItems Unofficial).
+* NEW: Other mods can register collector fuels with FuelMapper.registerFuel or the IMC message "collectorfuel".
+* NEW: NEI page that shows what an Energy Collector upgrades each fuel into, and the EMC it takes.
+* FIXED: With DragonAPI installed, Red Matter could be used in place of Dark Matter in recipes, and the Red Matter Block could not be crafted.
+* FIXED: A collector fuel worth exactly as much as another one stopped that fuel from being upgraded.
+
 ###Version 2.3.1
 * NOTICE: This build is in no way affiliated with the official version.
 * NOTICE: Due to the effect of Long, we have observed incompatibilities with add-ons that handle EMC.
