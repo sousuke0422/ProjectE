@@ -24,6 +24,10 @@ public final class FuelMapper {
      * Adds an item to the fuels that collectors can upgrade. Fuels are ordered by emc value, so the item slots in
      * between the fuels worth less and more than it. Items without an emc value are left out until they have one.
      * <p>
+     * This is the one fuel list of ProjectE, not only the collectors': a registered item is also burned from a
+     * player's inventory by items that run on fuel (see {@code EMCHelper.consumePlayerFuel}), and counts as fuel in
+     * the transmutation table.
+     * <p>
      * Call this during init on both sides, or send the IMC message {@code collectorfuel} with the item stack.
      *
      * @return false if the stack was null or already registered
@@ -113,7 +117,7 @@ public final class FuelMapper {
         }
     }
 
-    public static boolean isStackFuel(ItemStack stack) {
+    public static synchronized boolean isStackFuel(ItemStack stack) {
         return mapContains(new SimpleStack(stack));
     }
 
@@ -138,28 +142,19 @@ public final class FuelMapper {
             return null;
         }
 
-        int nextIndex = nextMoreValuable(index);
-
-        return FUEL_MAP.get(nextIndex == -1 ? 0 : nextIndex)
+        return FUEL_MAP.get(FuelOrder.upgradeTarget(FUEL_MAP.size(), FuelMapper::valueAt, index))
             .toItemStack();
     }
 
     /** @return the index of the first fuel after {@code index} that is worth more, or -1 if there is none */
     private static int nextMoreValuable(int index) {
-        long value = EMCHelper.getEmcValue(
+        return FuelOrder.nextMoreValuable(FUEL_MAP.size(), FuelMapper::valueAt, index);
+    }
+
+    private static long valueAt(int index) {
+        return EMCHelper.getEmcValue(
             FUEL_MAP.get(index)
                 .toItemStack());
-
-        for (int i = index + 1; i < FUEL_MAP.size(); i++) {
-            if (EMCHelper.getEmcValue(
-                FUEL_MAP.get(i)
-                    .toItemStack())
-                > value) {
-                return i;
-            }
-        }
-
-        return -1;
     }
 
     private static void addToMap(SimpleStack stack) {

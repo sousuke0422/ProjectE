@@ -45,6 +45,10 @@ dependencies {
 
     runtimeOnlyNonPublishable("com.github.GTNewHorizons:NotEnoughItems:2.9.15-GTNH:dev")
 
+    testImplementation(platform('org.junit:junit-bom:5.9.2'))
+    testImplementation('org.junit.jupiter:junit-jupiter')
+    testRuntimeOnly('org.junit.platform:junit-platform-launcher')
+
     // dependencies { compile fileTree(dir: 'lib', include: '*.jar') }
 
 }
