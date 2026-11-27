@@ -486,10 +486,24 @@ public class ObjHandler {
             Blocks.diamond_block,
             'A',
             new ItemStack(fuels, 1, 2));
-        GameRegistry
-            .addRecipe(new ItemStack(matter, 1, 1), "AAA", "DDD", "AAA", 'D', matter, 'A', new ItemStack(fuels, 1, 2));
-        GameRegistry
-            .addRecipe(new ItemStack(matter, 1, 1), "ADA", "ADA", "ADA", 'D', matter, 'A', new ItemStack(fuels, 1, 2));
+        GameRegistry.addRecipe(
+            new ItemStack(matter, 1, 1),
+            "AAA",
+            "DDD",
+            "AAA",
+            'D',
+            new ItemStack(matter, 1, 0),
+            'A',
+            new ItemStack(fuels, 1, 2));
+        GameRegistry.addRecipe(
+            new ItemStack(matter, 1, 1),
+            "ADA",
+            "ADA",
+            "ADA",
+            'D',
+            new ItemStack(matter, 1, 0),
+            'A',
+            new ItemStack(fuels, 1, 2));
 
         // Alchemical Chest
         GameRegistry.addRecipe(
@@ -567,7 +581,7 @@ public class ObjHandler {
             philosStone);
 
         // Matter Blocks
-        GameRegistry.addRecipe(new ItemStack(matterBlock, 1, 0), "DD", "DD", 'D', matter);
+        GameRegistry.addRecipe(new ItemStack(matterBlock, 1, 0), "DD", "DD", 'D', new ItemStack(matter, 1, 0));
         GameRegistry.addRecipe(new ItemStack(matterBlock, 1, 1), "DD", "DD", 'D', new ItemStack(matter, 1, 1));
 
         // Matter Furnaces
@@ -624,7 +638,7 @@ public class ObjHandler {
             'C',
             energyCollector,
             'D',
-            matter);
+            new ItemStack(matter, 1, 0));
         GameRegistry.addRecipe(
             new ItemStack(collectorMK3),
             "GRG",
@@ -649,8 +663,17 @@ public class ObjHandler {
             Blocks.diamond_block,
             'O',
             Blocks.obsidian);
-        GameRegistry
-            .addRecipe(new ItemStack(relayMK2), "ODO", "OAO", "OOO", 'A', relay, 'D', matter, 'O', Blocks.obsidian);
+        GameRegistry.addRecipe(
+            new ItemStack(relayMK2),
+            "ODO",
+            "OAO",
+            "OOO",
+            'A',
+            relay,
+            'D',
+            new ItemStack(matter, 1, 0),
+            'O',
+            Blocks.obsidian);
         GameRegistry.addRecipe(
             new ItemStack(relayMK3),
             "ORO",
@@ -664,13 +687,48 @@ public class ObjHandler {
             Blocks.obsidian);
 
         // DM Tools
-        GameRegistry.addRecipe(new ItemStack(dmPick), "MMM", "XDX", "XDX", 'D', Items.diamond, 'M', matter);
-        GameRegistry.addRecipe(new ItemStack(dmAxe), "MMX", "MDX", "XDX", 'D', Items.diamond, 'M', matter);
-        GameRegistry.addRecipe(new ItemStack(dmShovel), "XMX", "XDX", "XDX", 'D', Items.diamond, 'M', matter);
-        GameRegistry.addRecipe(new ItemStack(dmSword), "XMX", "XMX", "XDX", 'D', Items.diamond, 'M', matter);
-        GameRegistry.addRecipe(new ItemStack(dmHoe), "MMX", "XDX", "XDX", 'D', Items.diamond, 'M', matter);
-        GameRegistry.addRecipe(new ItemStack(dmShears), "XM", "DX", 'D', Items.diamond, 'M', matter);
-        GameRegistry.addRecipe(new ItemStack(dmHammer), "MDM", "XDX", "XDX", 'D', Items.diamond, 'M', matter);
+        GameRegistry.addRecipe(
+            new ItemStack(dmPick),
+            "MMM",
+            "XDX",
+            "XDX",
+            'D',
+            Items.diamond,
+            'M',
+            new ItemStack(matter, 1, 0));
+        GameRegistry
+            .addRecipe(new ItemStack(dmAxe), "MMX", "MDX", "XDX", 'D', Items.diamond, 'M', new ItemStack(matter, 1, 0));
+        GameRegistry.addRecipe(
+            new ItemStack(dmShovel),
+            "XMX",
+            "XDX",
+            "XDX",
+            'D',
+            Items.diamond,
+            'M',
+            new ItemStack(matter, 1, 0));
+        GameRegistry.addRecipe(
+            new ItemStack(dmSword),
+            "XMX",
+            "XMX",
+            "XDX",
+            'D',
+            Items.diamond,
+            'M',
+            new ItemStack(matter, 1, 0));
+        GameRegistry
+            .addRecipe(new ItemStack(dmHoe), "MMX", "XDX", "XDX", 'D', Items.diamond, 'M', new ItemStack(matter, 1, 0));
+        GameRegistry
+            .addRecipe(new ItemStack(dmShears), "XM", "DX", 'D', Items.diamond, 'M', new ItemStack(matter, 1, 0));
+        GameRegistry.addRecipe(
+            new ItemStack(dmHammer),
+            "MDM",
+            "XDX",
+            "XDX",
+            'D',
+            Items.diamond,
+            'M',
+            new ItemStack(matter, 1, 0));
 
         // RM Tools
         GameRegistry.addRecipe(
@@ -683,7 +741,7 @@ public class ObjHandler {
             'P',
             dmPick,
             'M',
-            matter);
+            new ItemStack(matter, 1, 0));
         GameRegistry.addRecipe(
             new ItemStack(rmAxe),
             "RRX",
@@ -694,7 +752,7 @@ public class ObjHandler {
             'A',
             dmAxe,
             'M',
-            matter);
+            new ItemStack(matter, 1, 0));
         GameRegistry.addRecipe(
             new ItemStack(rmShovel),
             "XRX",
@@ -705,7 +763,7 @@ public class ObjHandler {
             'S',
             dmShovel,
             'M',
-            matter);
+            new ItemStack(matter, 1, 0));
         GameRegistry
             .addRecipe(new ItemStack(rmSword), "XRX", "XRX", "XSX", 'R', new ItemStack(matter, 1, 1), 'S', dmSword);
         GameRegistry.addRecipe(
@@ -718,7 +776,7 @@ public class ObjHandler {
             'H',
             dmHoe,
             'M',
-            matter);
+            new ItemStack(matter, 1, 0));
         GameRegistry.addRecipe(new ItemStack(rmShears), "XR", "SX", 'R', new ItemStack(matter, 1, 1), 'S', dmShears);
         GameRegistry.addRecipe(
             new ItemStack(rmHammer),
@@ -730,7 +788,7 @@ public class ObjHandler {
             'H',
             dmHammer,
             'M',
-            matter);
+            new ItemStack(matter, 1, 0));
         GameRegistry.addRecipe(
             new ItemStack(rmKatar),
             "123",
@@ -761,10 +819,10 @@ public class ObjHandler {
             new ItemStack(matter, 1, 1));
 
         // Armor
-        GameRegistry.addRecipe(new ItemStack(dmHelmet), "MMM", "MXM", 'M', matter);
-        GameRegistry.addRecipe(new ItemStack(dmChest), "MXM", "MMM", "MMM", 'M', matter);
-        GameRegistry.addRecipe(new ItemStack(dmLegs), "MMM", "MXM", "MXM", 'M', matter);
-        GameRegistry.addRecipe(new ItemStack(dmFeet), "MXM", "MXM", 'M', matter);
+        GameRegistry.addRecipe(new ItemStack(dmHelmet), "MMM", "MXM", 'M', new ItemStack(matter, 1, 0));
+        GameRegistry.addRecipe(new ItemStack(dmChest), "MXM", "MMM", "MMM", 'M', new ItemStack(matter, 1, 0));
+        GameRegistry.addRecipe(new ItemStack(dmLegs), "MMM", "MXM", "MXM", 'M', new ItemStack(matter, 1, 0));
+        GameRegistry.addRecipe(new ItemStack(dmFeet), "MXM", "MXM", 'M', new ItemStack(matter, 1, 0));
 
         GameRegistry.addRecipe(new ItemStack(rmHelmet), "MMM", "MDM", 'M', new ItemStack(matter, 1, 1), 'D', dmHelmet);
         GameRegistry
@@ -792,9 +850,18 @@ public class ObjHandler {
                 'F',
                 Blocks.red_flower,
                 'D',
-                matter));
-        GameRegistry
-            .addRecipe(new ItemStack(swrg), "DFD", "FIF", "DFD", 'I', ironBand, 'F', Items.feather, 'D', matter);
+                new ItemStack(matter, 1, 0)));
+        GameRegistry.addRecipe(
+            new ItemStack(swrg),
+            "DFD",
+            "FIF",
+            "DFD",
+            'I',
+            ironBand,
+            'F',
+            Items.feather,
+            'D',
+            new ItemStack(matter, 1, 0));
         GameRegistry.addRecipe(
             new ItemStack(ignition),
             "FMF",
@@ -805,7 +872,7 @@ public class ObjHandler {
             'F',
             new ItemStack(Items.flint_and_steel, 1, OreDictionary.WILDCARD_VALUE),
             'D',
-            matter,
+            new ItemStack(matter, 1, 0),
             'M',
             new ItemStack(fuels, 1, 1));
         GameRegistry.addRecipe(
@@ -841,10 +908,35 @@ public class ObjHandler {
             Items.book,
             'L',
             new ItemStack(Items.dye, 1, 4));
-        GameRegistry
-            .addRecipe(new ItemStack(blackHole), "SSS", "DID", "SSS", 'I', ironBand, 'S', Items.string, 'D', matter);
-        GameRegistry.addRecipe(new ItemStack(everTide), "WWW", "DDD", "WWW", 'W', Items.water_bucket, 'D', matter);
-        GameRegistry.addRecipe(new ItemStack(volcanite), "LLL", "DDD", "LLL", 'L', Items.lava_bucket, 'D', matter);
+        GameRegistry.addRecipe(
+            new ItemStack(blackHole),
+            "SSS",
+            "DID",
+            "SSS",
+            'I',
+            ironBand,
+            'S',
+            Items.string,
+            'D',
+            new ItemStack(matter, 1, 0));
+        GameRegistry.addRecipe(
+            new ItemStack(everTide),
+            "WWW",
+            "DDD",
+            "WWW",
+            'W',
+            Items.water_bucket,
+            'D',
+            new ItemStack(matter, 1, 0));
+        GameRegistry.addRecipe(
+            new ItemStack(volcanite),
+            "LLL",
+            "DDD",
+            "LLL",
+            'L',
+            Items.lava_bucket,
+            'D',
+            new ItemStack(matter, 1, 0));
         GameRegistry.addRecipe(
             new ItemStack(eternalDensity),
             "DOD",
@@ -855,7 +947,7 @@ public class ObjHandler {
             'O',
             Blocks.obsidian,
             'M',
-            matter);
+            new ItemStack(matter, 1, 0));
         GameRegistry.addRecipe(
             new ItemStack(zero),
             "SBS",
@@ -866,7 +958,7 @@ public class ObjHandler {
             'B',
             Items.snowball,
             'M',
-            matter,
+            new ItemStack(matter, 1, 0),
             'I',
             ironBand);
         GameRegistry.addShapelessRecipe(
@@ -900,7 +992,7 @@ public class ObjHandler {
             'F',
             Items.feather,
             'M',
-            matter,
+            new ItemStack(matter, 1, 0),
             'I',
             ironBand);
 
@@ -911,7 +1003,7 @@ public class ObjHandler {
             "GCG",
             "DOD",
             'D',
-            matter,
+            new ItemStack(matter, 1, 0),
             'O',
             Blocks.obsidian,
             'G',
@@ -924,7 +1016,7 @@ public class ObjHandler {
             "OCO",
             "DGD",
             'D',
-            matter,
+            new ItemStack(matter, 1, 0),
             'O',
             Blocks.obsidian,
             'G',
@@ -933,7 +1025,15 @@ public class ObjHandler {
             Items.clock);
 
         // Divining rods
-        GameRegistry.addRecipe(new ItemStack(dRod1), "DDD", "DSD", "DDD", 'D', covalence, 'S', Items.stick);
+        GameRegistry.addRecipe(
+            new ItemStack(dRod1),
+            "DDD",
+            "DSD",
+            "DDD",
+            'D',
+            new ItemStack(covalence, 1, 0),
+            'S',
+            Items.stick);
         GameRegistry
             .addRecipe(new ItemStack(dRod2), "DDD", "DSD", "DDD", 'D', new ItemStack(covalence, 1, 1), 'S', dRod1);
         GameRegistry
@@ -959,16 +1059,34 @@ public class ObjHandler {
             'N',
             novaCatalyst,
             'M',
-            matter,
+            new ItemStack(matter, 1, 0),
             'D',
             Items.diamond);
-        GameRegistry
-            .addRecipe(new ItemStack(cataliticLens), "MMM", "HMD", "MMM", 'M', matter, 'H', hyperLens, 'D', dCatalyst);
-        GameRegistry
-            .addRecipe(new ItemStack(cataliticLens), "MMM", "DMH", "MMM", 'M', matter, 'H', hyperLens, 'D', dCatalyst);
+        GameRegistry.addRecipe(
+            new ItemStack(cataliticLens),
+            "MMM",
+            "HMD",
+            "MMM",
+            'M',
+            new ItemStack(matter, 1, 0),
+            'H',
+            hyperLens,
+            'D',
+            dCatalyst);
+        GameRegistry.addRecipe(
+            new ItemStack(cataliticLens),
+            "MMM",
+            "DMH",
+            "MMM",
+            'M',
+            new ItemStack(matter, 1, 0),
+            'H',
+            hyperLens,
+            'D',
+            dCatalyst);
 
         // Fuel Blocks
-        GameRegistry.addRecipe(new ItemStack(fuelBlock, 1, 0), "FFF", "FFF", "FFF", 'F', fuels);
+        GameRegistry.addRecipe(new ItemStack(fuelBlock, 1, 0), "FFF", "FFF", "FFF", 'F', new ItemStack(fuels, 1, 0));
         GameRegistry.addRecipe(new ItemStack(fuelBlock, 1, 1), "FFF", "FFF", "FFF", 'F', new ItemStack(fuels, 1, 1));
         GameRegistry.addRecipe(new ItemStack(fuelBlock, 1, 2), "FFF", "FFF", "FFF", 'F', new ItemStack(fuels, 1, 2));
 
