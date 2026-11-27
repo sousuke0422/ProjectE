@@ -39,6 +39,7 @@ import moze_intel.projecte.api.item.IModeChanger;
 import moze_intel.projecte.api.item.IPedestalItem;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
+import moze_intel.projecte.utils.BlockRange;
 import moze_intel.projecte.utils.WorldHelper;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
@@ -231,27 +232,27 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
         }
         // The same block range as before, but walked chunk section by chunk section the way the game itself hands out
         // random ticks: a section without any randomly ticking block is skipped as a whole.
-        int minX = (int) bBox.minX, maxX = MathHelper.floor_double(bBox.maxX);
-        int minY = Math.max((int) bBox.minY, 0), maxY = Math.min(MathHelper.floor_double(bBox.maxY), 255);
-        int minZ = (int) bBox.minZ, maxZ = MathHelper.floor_double(bBox.maxZ);
+        BlockRange range = BlockRange.ofBox(bBox.minX, bBox.minY, bBox.minZ, bBox.maxX, bBox.maxY, bBox.maxZ)
+            .clampY(0, 255);
 
-        for (int chunkX = minX >> 4; chunkX <= maxX >> 4; chunkX++) {
-            for (int chunkZ = minZ >> 4; chunkZ <= maxZ >> 4; chunkZ++) {
+        for (int chunkX = BlockRange.firstPart(range.minX); chunkX <= BlockRange.lastPart(range.maxX); chunkX++) {
+            for (int chunkZ = BlockRange.firstPart(range.minZ); chunkZ <= BlockRange.lastPart(range.maxZ); chunkZ++) {
                 if (ProjectEConfig.timeWatchSkipUnloadedChunks && !world.getChunkProvider()
                     .chunkExists(chunkX, chunkZ)) {
                     continue;
                 }
                 ExtendedBlockStorage[] sections = world.getChunkFromChunkCoords(chunkX, chunkZ)
                     .getBlockStorageArray();
-                int fromX = Math.max(minX, chunkX << 4), toX = Math.min(maxX, (chunkX << 4) + 15);
-                int fromZ = Math.max(minZ, chunkZ << 4), toZ = Math.min(maxZ, (chunkZ << 4) + 15);
+                int fromX = BlockRange.from(range.minX, chunkX), toX = BlockRange.to(range.maxX, chunkX);
+                int fromZ = BlockRange.from(range.minZ, chunkZ), toZ = BlockRange.to(range.maxZ, chunkZ);
 
-                for (int sectionY = minY >> 4; sectionY <= maxY >> 4; sectionY++) {
+                for (int sectionY = BlockRange.firstPart(range.minY); sectionY
+                    <= BlockRange.lastPart(range.maxY); sectionY++) {
                     ExtendedBlockStorage section = sections[sectionY];
                     if (section == null || !section.getNeedsRandomTick()) {
                         continue;
                     }
-                    int fromY = Math.max(minY, sectionY << 4), toY = Math.min(maxY, (sectionY << 4) + 15);
+                    int fromY = BlockRange.from(range.minY, sectionY), toY = BlockRange.to(range.maxY, sectionY);
 
                     for (int x = fromX; x <= toX; x++) {
                         for (int y = fromY; y <= toY; y++) {

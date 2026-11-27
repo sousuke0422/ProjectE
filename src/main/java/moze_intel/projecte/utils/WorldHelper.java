@@ -44,7 +44,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.MathHelper;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IPlantable;
@@ -359,24 +358,17 @@ public final class WorldHelper {
         boolean skipUnloadedChunks) {
         List<TileEntity> list = Lists.newArrayList();
         // The same block range the old position by position scan covered
-        int minX = (int) bBox.minX, maxX = MathHelper.floor_double(bBox.maxX);
-        int minY = (int) bBox.minY, maxY = MathHelper.floor_double(bBox.maxY);
-        int minZ = (int) bBox.minZ, maxZ = MathHelper.floor_double(bBox.maxZ);
+        BlockRange range = BlockRange.ofBox(bBox.minX, bBox.minY, bBox.minZ, bBox.maxX, bBox.maxY, bBox.maxZ);
 
-        for (int chunkX = minX >> 4; chunkX <= maxX >> 4; chunkX++) {
-            for (int chunkZ = minZ >> 4; chunkZ <= maxZ >> 4; chunkZ++) {
+        for (int chunkX = BlockRange.firstPart(range.minX); chunkX <= BlockRange.lastPart(range.maxX); chunkX++) {
+            for (int chunkZ = BlockRange.firstPart(range.minZ); chunkZ <= BlockRange.lastPart(range.maxZ); chunkZ++) {
                 if (skipUnloadedChunks && !world.getChunkProvider()
                     .chunkExists(chunkX, chunkZ)) {
                     continue;
                 }
                 for (Object obj : world.getChunkFromChunkCoords(chunkX, chunkZ).chunkTileEntityMap.values()) {
                     TileEntity tile = (TileEntity) obj;
-                    if (!tile.isInvalid() && tile.xCoord >= minX
-                        && tile.xCoord <= maxX
-                        && tile.yCoord >= minY
-                        && tile.yCoord <= maxY
-                        && tile.zCoord >= minZ
-                        && tile.zCoord <= maxZ) {
+                    if (!tile.isInvalid() && range.contains(tile.xCoord, tile.yCoord, tile.zCoord)) {
                         list.add(tile);
                     }
                 }
