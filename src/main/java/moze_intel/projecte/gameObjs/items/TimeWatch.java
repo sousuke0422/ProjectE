@@ -433,7 +433,8 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
     }
 
     public static void blacklist(Class<? extends TileEntity> clazz) {
-        blacklistCache.clear();
+        // Add first: a lookup racing with this must not cache "not blacklisted" after the clear
         internalBlacklist.add(clazz.getName());
+        blacklistCache.clear();
     }
 }
