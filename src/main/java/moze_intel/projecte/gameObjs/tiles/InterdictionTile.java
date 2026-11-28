@@ -8,8 +8,16 @@ import moze_intel.projecte.utils.WorldHelper;
 public class InterdictionTile extends TileEntity {
 
     private AxisAlignedBB effectBounds = null;
+    private long lastRepelTick = Long.MIN_VALUE;
 
     public void updateEntity() {
+        if (!worldObj.isRemote) {
+            long currentTick = worldObj.getTotalWorldTime();
+            if (lastRepelTick == currentTick) {
+                return;
+            }
+            lastRepelTick = currentTick;
+        }
         if (effectBounds == null) {
             effectBounds = AxisAlignedBB
                 .getBoundingBox(xCoord - 8, yCoord - 8, zCoord - 8, xCoord + 8, yCoord + 8, zCoord + 8);

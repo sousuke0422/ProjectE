@@ -12,6 +12,11 @@ import moze_intel.projecte.api.item.IItemEmc;
 
 public class DMFurnaceTile extends RMFurnaceTile implements IInventory, ISidedInventory {
 
+    private static final int[] DM_SLOTS_BOTTOM = new int[] { 11, 12, 13, 14, 15, 16, 17, 18 };
+    private static final int[] DM_SLOTS_TOP = new int[] { 2, 3, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18 };
+    private static final int[] DM_SLOTS_SIDES = new int[] { 0, 11, 12, 13, 14, 15, 16, 17, 18 };
+    private static final int[] DM_SLOTS_EMPTY = new int[] {};
+
     public DMFurnaceTile() {
         this.inventory = new ItemStack[19];
         this.ticksBeforeSmelt = 10;
@@ -51,17 +56,16 @@ public class DMFurnaceTile extends RMFurnaceTile implements IInventory, ISidedIn
     public int[] getAccessibleSlotsFromSide(int side) {
         switch (side) {
             case 0:
-                return new int[] { 11, 12, 13, 14, 15, 16, 17, 18 }; // Outputs accessible from bottom
+                return DM_SLOTS_BOTTOM; // Outputs accessible from bottom
             case 1:
-                return new int[] { 2, 3, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18 }; // Inputs accessible from
-                                                                                             // top
+                return DM_SLOTS_TOP; // Inputs accessible from top
             case 2: // Fall through
             case 3:
             case 4:
             case 5:
-                return new int[] { 0, 11, 12, 13, 14, 15, 16, 17, 18 }; // Fuel and output accessible from all sides
+                return DM_SLOTS_SIDES; // Fuel and output accessible from all sides
             default:
-                return new int[] {};
+                return DM_SLOTS_EMPTY;
         }
     }
 

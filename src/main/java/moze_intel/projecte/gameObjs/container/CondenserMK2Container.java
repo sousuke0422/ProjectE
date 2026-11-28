@@ -1,8 +1,10 @@
 package moze_intel.projecte.gameObjs.container;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
+import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
@@ -10,11 +12,15 @@ import moze_intel.projecte.gameObjs.container.slots.condenser.SlotCondenserInput
 import moze_intel.projecte.gameObjs.container.slots.condenser.SlotCondenserMK2Lock;
 import moze_intel.projecte.gameObjs.container.slots.condenser.SlotCondenserMK2Output;
 import moze_intel.projecte.gameObjs.tiles.CondenserMK2Tile;
+import moze_intel.projecte.network.PacketHandler;
+import moze_intel.projecte.network.packets.CondenserSyncPKT;
 import moze_intel.projecte.utils.EMCHelper;
 
 public class CondenserMK2Container extends Container {
 
     public CondenserMK2Tile tile;
+    private long lastDisplayEmc = Long.MIN_VALUE;
+    private long lastRequiredEmc = Long.MIN_VALUE;
 
     public CondenserMK2Container(InventoryPlayer invPlayer, CondenserMK2Tile condenser) {
         tile = condenser;
@@ -38,6 +44,42 @@ public class CondenserMK2Container extends Container {
 
         // Player Hotbar
         for (int i = 0; i < 9; i++) this.addSlotToContainer(new Slot(invPlayer, i, 48 + i * 18, 212));
+    }
+
+    @Override
+    public void addCraftingToCrafters(ICrafting crafter) {
+        super.addCraftingToCrafters(crafter);
+        tile.refreshDisplayValues();
+        if (crafter instanceof EntityPlayerMP) {
+            PacketHandler.sendTo(
+                new CondenserSyncPKT(tile.displayEmc, tile.requiredEmc, tile.xCoord, tile.yCoord, tile.zCoord),
+                (EntityPlayerMP) crafter);
+        }
+        lastDisplayEmc = tile.displayEmc;
+        lastRequiredEmc = tile.requiredEmc;
+    }
+
+    @Override
+    public void detectAndSendChanges() {
+        super.detectAndSendChanges();
+        tile.refreshDisplayValues();
+
+        if (lastDisplayEmc != tile.displayEmc || lastRequiredEmc != tile.requiredEmc) {
+            CondenserSyncPKT pkt = new CondenserSyncPKT(
+                tile.displayEmc,
+                tile.requiredEmc,
+                tile.xCoord,
+                tile.yCoord,
+                tile.zCoord);
+            for (int i = 0; i < this.crafters.size(); ++i) {
+                ICrafting crafter = (ICrafting) this.crafters.get(i);
+                if (crafter instanceof EntityPlayerMP) {
+                    PacketHandler.sendTo(pkt, (EntityPlayerMP) crafter);
+                }
+            }
+            lastDisplayEmc = tile.displayEmc;
+            lastRequiredEmc = tile.requiredEmc;
+        }
     }
 
     @Override

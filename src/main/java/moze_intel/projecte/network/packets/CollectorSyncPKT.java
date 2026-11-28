@@ -50,14 +50,23 @@ public class CollectorSyncPKT implements IMessage {
 
         @Override
         public IMessage onMessage(CollectorSyncPKT pkt, MessageContext ctx) {
+            if (Minecraft.getMinecraft().theWorld == null) {
+                return null;
+            }
+
             TileEntity tile = Minecraft.getMinecraft().theWorld.getTileEntity(pkt.x, pkt.y, pkt.z);
 
-            if (tile == null) {
-                PELogger.logFatal("NULL tile entity reference in Collector sync packet! Please report to dev!");
-            } else {
+            if (tile instanceof CollectorMK1Tile) {
                 CollectorMK1Tile collector = (CollectorMK1Tile) tile;
                 collector.displayEmc = pkt.displayEmc;
                 collector.displayItemCharge = pkt.displayKleinCharge;
+            } else {
+                PELogger.logDebug(
+                    String.format(
+                        "Ignoring Collector sync packet for missing or mismatched tile at %d, %d, %d",
+                        pkt.x,
+                        pkt.y,
+                        pkt.z));
             }
 
             return null;

@@ -28,7 +28,11 @@ public final class ItemHelper {
      * @return True if the only aspect these stacks differ by is stack size, false if item, meta, or nbt differ.
      */
     public static boolean areItemStacksEqual(ItemStack stack1, ItemStack stack2) {
-        return ItemStack.areItemStacksEqual(getNormalizedStack(stack1), getNormalizedStack(stack2));
+        if (stack1 == null || stack2 == null) {
+            return stack1 == stack2;
+        }
+        return stack1.getItem() == stack2.getItem() && stack1.getItemDamage() == stack2.getItemDamage()
+            && ItemStack.areItemStackTagsEqual(stack1, stack2);
     }
 
     public static boolean areItemStacksEqualIgnoreNBT(ItemStack stack1, ItemStack stack2) {

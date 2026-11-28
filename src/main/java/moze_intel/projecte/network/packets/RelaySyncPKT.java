@@ -54,15 +54,24 @@ public class RelaySyncPKT implements IMessage {
 
         @Override
         public IMessage onMessage(final RelaySyncPKT pkt, MessageContext ctx) {
+            if (Minecraft.getMinecraft().theWorld == null) {
+                return null;
+            }
+
             TileEntity tile = Minecraft.getMinecraft().theWorld.getTileEntity(pkt.x, pkt.y, pkt.z);
 
-            if (tile == null) {
-                PELogger.logFatal("NULL tile entity reference in Relay sync packet! Please report to dev!");
-            } else {
+            if (tile instanceof RelayMK1Tile) {
                 RelayMK1Tile relay = (RelayMK1Tile) tile;
                 relay.displayEmc = pkt.displayEmc;
                 relay.displayChargingEmc = pkt.displayKleinEmc;
                 relay.displayRawEmc = pkt.displayRawEmc;
+            } else {
+                PELogger.logDebug(
+                    String.format(
+                        "Ignoring Relay sync packet for missing or mismatched tile at %d, %d, %d",
+                        pkt.x,
+                        pkt.y,
+                        pkt.z));
             }
 
             return null;

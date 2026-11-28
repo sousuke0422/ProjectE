@@ -16,6 +16,7 @@ public class AlchChestTile extends TileEmcDirection implements IInventory {
     public float prevLidAngle;
     public int numPlayersUsing;
     private int ticksSinceSync;
+    private long lastChestTick = Long.MIN_VALUE;
 
     public AlchChestTile() {
         super();
@@ -129,6 +130,34 @@ public class AlchChestTile extends TileEmcDirection implements IInventory {
     public void updateEntity() {
         super.updateEntity();
 
+        if (worldObj.isRemote) {
+            updateChest();
+        } else {
+            long currentTick = worldObj.getTotalWorldTime();
+            if (lastChestTick != currentTick) {
+                lastChestTick = currentTick;
+                updateChest();
+            }
+        }
+
+        if (worldObj.isRemote) {
+            if (worldObj.getChunkFromBlockCoords(xCoord, zCoord)
+                .isEmpty()) {
+                // Handle condition where this method is called even after the clientside chunk has unloaded.
+                // This will make IAlchChestItems below crash with an NPE since the TE they get back is null
+                // Don't you love vanilla???
+                return;
+            }
+        }
+
+        for (ItemStack stack : inventory) {
+            if (stack != null && stack.getItem() instanceof IAlchChestItem) {
+                ((IAlchChestItem) stack.getItem()).updateInAlchChest(worldObj, xCoord, yCoord, zCoord, stack);
+            }
+        }
+    }
+
+    private void updateChest() {
         if (++ticksSinceSync % 20 * 4 == 0) {
             worldObj.addBlockEvent(xCoord, yCoord, zCoord, ObjHandler.alchChest, 1, numPlayersUsing);
         }
@@ -176,22 +205,6 @@ public class AlchChestTile extends TileEmcDirection implements IInventory {
 
             if (lidAngle < 0.0F) {
                 lidAngle = 0.0F;
-            }
-        }
-
-        if (worldObj.isRemote) {
-            if (worldObj.getChunkFromBlockCoords(xCoord, zCoord)
-                .isEmpty()) {
-                // Handle condition where this method is called even after the clientside chunk has unloaded.
-                // This will make IAlchChestItems below crash with an NPE since the TE they get back is null
-                // Don't you love vanilla???
-                return;
-            }
-        }
-
-        for (ItemStack stack : inventory) {
-            if (stack != null && stack.getItem() instanceof IAlchChestItem) {
-                ((IAlchChestItem) stack.getItem()).updateInAlchChest(worldObj, xCoord, yCoord, zCoord, stack);
             }
         }
     }

@@ -1,7 +1,5 @@
 package moze_intel.projecte.gameObjs.tiles;
 
-import java.util.Map;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
@@ -11,33 +9,31 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 import moze_intel.projecte.api.item.IItemEmc;
 import moze_intel.projecte.api.tile.IEmcProvider;
 import moze_intel.projecte.emc.FuelMapper;
 import moze_intel.projecte.gameObjs.items.ItemPE;
-import moze_intel.projecte.network.PacketHandler;
-import moze_intel.projecte.network.packets.CollectorSyncPKT;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
-import moze_intel.projecte.utils.WorldHelper;
 
 public class CollectorMK1Tile extends TileEmc implements IInventory, ISidedInventory, IEmcProvider {
 
     private ItemStack[] inventory;
     private int[] accessibleSlots;
+    private final int[] upgradedSlotArray;
     private final int invBufferSize;
     private final int emcGen;
     private final int lockSlot;
     private final int upgradedSlot;
     private boolean hasChargeableItem;
     private boolean hasFuel;
+    private long sunLevelCacheTick = Long.MIN_VALUE;
+    private int cachedSunLevel;
     public double storedFuelEmc;
     public long displayEmc;
     public int displaySunLevel;
     public double displayItemCharge;
-    private int numUsing;
 
     public CollectorMK1Tile() {
         super(Constants.COLLECTOR_MK1_MAX);
@@ -52,6 +48,7 @@ public class CollectorMK1Tile extends TileEmc implements IInventory, ISidedInven
 
         emcGen = Constants.COLLECTOR_MK1_GEN;
         upgradedSlot = 9;
+        upgradedSlotArray = new int[] { upgradedSlot };
         lockSlot = 10;
     }
 
@@ -68,7 +65,20 @@ public class CollectorMK1Tile extends TileEmc implements IInventory, ISidedInven
 
         this.emcGen = emcGen;
         this.upgradedSlot = upgradedSlot;
+        this.upgradedSlotArray = new int[] { upgradedSlot };
         this.lockSlot = lockSlot;
+    }
+
+    @Override
+    public void invalidateSpatialCaches() {
+        super.invalidateSpatialCaches();
+        this.sunLevelCacheTick = Long.MIN_VALUE;
+    }
+
+    public void refreshDisplayValues() {
+        displayEmc = (long) this.getStoredEmc();
+        displaySunLevel = getSunLevel();
+        displayItemCharge = getItemCharge();
     }
 
     @Override
@@ -91,16 +101,6 @@ public class CollectorMK1Tile extends TileEmc implements IInventory, ISidedInven
         }
 
         updateEmc();
-
-        displayEmc = (long) this.getStoredEmc();
-        displaySunLevel = getSunLevel();
-        displayItemCharge = getItemCharge();
-
-        if (numUsing > 0) {
-            PacketHandler.sendToAllAround(
-                new CollectorSyncPKT(displayEmc, displayItemCharge, this.xCoord, this.yCoord, this.zCoord),
-                new TargetPoint(this.worldObj.provider.dimensionId, this.xCoord, this.yCoord, this.zCoord, 8));
-        }
     }
 
     private void sortInventory() {
@@ -144,8 +144,8 @@ public class CollectorMK1Tile extends TileEmc implements IInventory, ISidedInven
                 decrStackSize(i, current.stackSize);
 
                 continue;
-            } else if (ItemHelper.areItemStacksEqual(current, following)
-                && following.stackSize < following.getMaxStackSize()) {
+            } else if (following.stackSize < following.getMaxStackSize()
+                && ItemHelper.areItemStacksEqual(current, following)) {
                     int missingForFullStack = following.getMaxStackSize() - following.stackSize;
 
                     if (current.stackSize <= missingForFullStack) {
@@ -192,23 +192,25 @@ public class CollectorMK1Tile extends TileEmc implements IInventory, ISidedInven
             ItemPE.addEmcToStack(inventory[0], toSend);
             this.removeEMC(toSend);
         } else if (hasFuel) {
-            if (FuelMapper.getFuelUpgrade(inventory[0]) == null) {
+            ItemStack fuelUpgrade = FuelMapper.getFuelUpgrade(inventory[0]);
+            if (fuelUpgrade == null) {
                 this.setInventorySlotContents(0, null);
+                return;
             }
 
-            ItemStack result = inventory[lockSlot] == null ? FuelMapper.getFuelUpgrade(inventory[0])
-                : inventory[lockSlot].copy();
-
-            long upgradeCost = EMCHelper.getEmcValue(result) - EMCHelper.getEmcValue(inventory[0]);
+            ItemStack targetTemplate = inventory[lockSlot] == null ? fuelUpgrade : inventory[lockSlot];
+            long upgradeCost = EMCHelper.getEmcValue(targetTemplate) - EMCHelper.getEmcValue(inventory[0]);
 
             if (upgradeCost > 0 && this.getStoredEmc() >= upgradeCost) {
                 ItemStack upgrade = inventory[upgradedSlot];
 
-                if (inventory[upgradedSlot] == null) {
+                if (upgrade == null) {
                     this.removeEMC(upgradeCost);
+                    ItemStack result = targetTemplate.copy();
+                    result.stackSize = 1;
                     this.setInventorySlotContents(upgradedSlot, result);
                     this.decrStackSize(0, 1);
-                } else if (ItemHelper.basicAreStacksEqual(result, upgrade)
+                } else if (ItemHelper.basicAreStacksEqual(targetTemplate, upgrade)
                     && upgrade.stackSize < upgrade.getMaxStackSize()) {
                         this.removeEMC(upgradeCost);
                         inventory[upgradedSlot].stackSize++;
@@ -247,7 +249,7 @@ public class CollectorMK1Tile extends TileEmc implements IInventory, ISidedInven
     }
 
     public int getKleinStarChargeScaled(int i) {
-        if (inventory[0] == null || displayItemCharge <= 0) {
+        if (inventory[0] == null || displayItemCharge <= 0 || !(inventory[0].getItem() instanceof IItemEmc)) {
             return 0;
         }
 
@@ -258,6 +260,14 @@ public class CollectorMK1Tile extends TileEmc implements IInventory, ISidedInven
     public int getSunLevel() {
         if (worldObj.provider.isHellWorld) {
             return 16;
+        }
+        if (!worldObj.isRemote) {
+            long currentTick = worldObj.getTotalWorldTime();
+            if (sunLevelCacheTick != currentTick) {
+                cachedSunLevel = worldObj.getBlockLightValue(xCoord, yCoord + 1, zCoord) + 1;
+                sunLevelCacheTick = currentTick;
+            }
+            return cachedSunLevel;
         }
         return worldObj.getBlockLightValue(xCoord, yCoord + 1, zCoord) + 1;
     }
@@ -408,14 +418,10 @@ public class CollectorMK1Tile extends TileEmc implements IInventory, ISidedInven
     }
 
     @Override
-    public void openInventory() {
-        numUsing++;
-    }
+    public void openInventory() {}
 
     @Override
-    public void closeInventory() {
-        numUsing--;
-    }
+    public void closeInventory() {}
 
     @Override
     public boolean isItemValidForSlot(int slot, ItemStack stack) {
@@ -425,7 +431,7 @@ public class CollectorMK1Tile extends TileEmc implements IInventory, ISidedInven
     @Override
     public int[] getAccessibleSlotsFromSide(int side) {
         if (side == 0 || side == 1) {
-            return new int[] { upgradedSlot };
+            return upgradedSlotArray;
         }
 
         return accessibleSlots;
@@ -450,10 +456,12 @@ public class CollectorMK1Tile extends TileEmc implements IInventory, ISidedInven
     }
 
     private void sendRelayBonus() {
-        for (Map.Entry<ForgeDirection, TileEntity> entry : WorldHelper.getAdjacentTileEntitiesMapped(worldObj, this)
-            .entrySet()) {
-            ForgeDirection dir = entry.getKey();
-            TileEntity tile = entry.getValue();
+        for (int i = 0; i < 6; i++) {
+            TileEntity tile = getValidNeighbor(i);
+            if (tile == null) {
+                continue;
+            }
+            ForgeDirection dir = ForgeDirection.VALID_DIRECTIONS[i];
 
             if (tile instanceof RelayMK3Tile) {
                 ((RelayMK3Tile) tile).acceptEMC(dir, 0.5);

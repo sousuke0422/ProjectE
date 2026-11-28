@@ -9,12 +9,9 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.MathHelper;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 import moze_intel.projecte.api.item.IItemEmc;
 import moze_intel.projecte.api.tile.IEmcAcceptor;
 import moze_intel.projecte.api.tile.IEmcProvider;
-import moze_intel.projecte.network.PacketHandler;
-import moze_intel.projecte.network.packets.RelaySyncPKT;
 import moze_intel.projecte.utils.Constants;
 import moze_intel.projecte.utils.EMCHelper;
 import moze_intel.projecte.utils.ItemHelper;
@@ -22,18 +19,19 @@ import moze_intel.projecte.utils.ItemHelper;
 public class RelayMK1Tile extends TileEmc implements IInventory, ISidedInventory, IEmcAcceptor, IEmcProvider {
 
     private ItemStack[] inventory;
+    private final int[] accessibleSlots;
     private int invBufferSize;
     private final int chargeRate;
     public int displayEmc;
     public double displayChargingEmc;
     public double displayRawEmc;
-    private int numUsing;
 
     public RelayMK1Tile() {
         super(Constants.RELAY_MK1_MAX);
         chargeRate = Constants.RELAY_MK1_OUTPUT;
         inventory = new ItemStack[8];
         invBufferSize = 6;
+        accessibleSlots = buildAccessibleSlots(inventory.length);
     }
 
     public RelayMK1Tile(int sizeInv, int maxEmc, int chargeRate) {
@@ -41,6 +39,21 @@ public class RelayMK1Tile extends TileEmc implements IInventory, ISidedInventory
         this.chargeRate = chargeRate;
         inventory = new ItemStack[sizeInv + 2];
         invBufferSize = sizeInv;
+        accessibleSlots = buildAccessibleSlots(inventory.length);
+    }
+
+    private static int[] buildAccessibleSlots(int invLength) {
+        int[] indexes = new int[invLength - 2];
+        for (int i = 0; i < indexes.length; i++) {
+            indexes[i] = i + 1;
+        }
+        return indexes;
+    }
+
+    public void refreshDisplayValues() {
+        displayEmc = (int) this.getStoredEmc();
+        displayChargingEmc = getChargingEMC();
+        displayRawEmc = getRawEmc();
     }
 
     @Override
@@ -54,7 +67,7 @@ public class RelayMK1Tile extends TileEmc implements IInventory, ISidedInventory
 
         ItemStack stack = inventory[0];
 
-        if (stack != null) {
+        if (stack != null && !this.hasMaxedEmc()) {
             if (stack.getItem() instanceof IItemEmc) {
                 IItemEmc itemEmc = ((IItemEmc) stack.getItem());
                 double emcVal = itemEmc.getStoredEmc(stack);
@@ -81,16 +94,6 @@ public class RelayMK1Tile extends TileEmc implements IInventory, ISidedInventory
 
         if (chargeable != null && this.getStoredEmc() > 0 && chargeable.getItem() instanceof IItemEmc) {
             chargeItem(chargeable);
-        }
-
-        displayEmc = (int) this.getStoredEmc();
-        displayChargingEmc = getChargingEMC();
-        displayRawEmc = getRawEmc();
-
-        if (numUsing > 0) {
-            PacketHandler.sendToAllAround(
-                new RelaySyncPKT(displayEmc, displayChargingEmc, displayRawEmc, this.xCoord, this.yCoord, this.zCoord),
-                new TargetPoint(this.worldObj.provider.dimensionId, this.xCoord, this.yCoord, this.zCoord, 8));
         }
     }
 
@@ -119,8 +122,8 @@ public class RelayMK1Tile extends TileEmc implements IInventory, ISidedInventory
             if (following == null) {
                 inventory[nextIndex] = current;
                 decrStackSize(i, current.stackSize);
-            } else if (ItemHelper.areItemStacksEqual(current, following)
-                && following.stackSize < following.getMaxStackSize()) {
+            } else if (following.stackSize < following.getMaxStackSize()
+                && ItemHelper.areItemStacksEqual(current, following)) {
                     int missingForFullStack = following.getMaxStackSize() - following.stackSize;
 
                     if (current.stackSize <= missingForFullStack) {
@@ -292,14 +295,10 @@ public class RelayMK1Tile extends TileEmc implements IInventory, ISidedInventory
     }
 
     @Override
-    public void openInventory() {
-        numUsing++;
-    }
+    public void openInventory() {}
 
     @Override
-    public void closeInventory() {
-        numUsing--;
-    }
+    public void closeInventory() {}
 
     @Override
     public boolean isItemValidForSlot(int slot, ItemStack stack) {
@@ -308,15 +307,7 @@ public class RelayMK1Tile extends TileEmc implements IInventory, ISidedInventory
 
     @Override
     public int[] getAccessibleSlotsFromSide(int side) {
-        int indexes[] = new int[inventory.length - 2];
-        byte counter = 0;
-
-        for (int i = 1; i < inventory.length - 1; i++) {
-            indexes[counter] = i;
-            counter++;
-        }
-
-        return indexes;
+        return accessibleSlots;
     }
 
     @Override
@@ -331,10 +322,7 @@ public class RelayMK1Tile extends TileEmc implements IInventory, ISidedInventory
 
     @Override
     public double acceptEMC(ForgeDirection side, double toAccept) {
-        if (worldObj.getTileEntity(
-            xCoord + side.offsetX,
-            yCoord + side.offsetY,
-            zCoord + side.offsetZ) instanceof RelayMK1Tile) {
+        if (side == null || side == ForgeDirection.UNKNOWN || getCachedNeighbor(side) instanceof RelayMK1Tile) {
             return 0; // Do not accept from other relays - avoid infinite loop / thrashing
         } else {
             double toAdd = Math.min(maximumEMC - currentEMC, toAccept);
