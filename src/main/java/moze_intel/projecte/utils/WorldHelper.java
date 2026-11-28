@@ -345,16 +345,45 @@ public final class WorldHelper {
     }
 
     public static List<TileEntity> getTileEntitiesWithinAABB(World world, AxisAlignedBB bBox) {
-        List<TileEntity> list = Lists.newArrayList();
+        return getTileEntitiesWithinAABB(world, bBox, false);
+    }
 
-        for (int i = (int) bBox.minX; i <= bBox.maxX; i++)
-            for (int j = (int) bBox.minY; j <= bBox.maxY; j++) for (int k = (int) bBox.minZ; k <= bBox.maxZ; k++) {
-                TileEntity tile = world.getTileEntity(i, j, k);
-                if (tile != null) {
-                    list.add(tile);
+    /**
+     * The tile entities in a box, ordered by x, then y, then z. Reads them from the chunks' own tile entity maps, so
+     * the cost follows the number of tile entities around rather than the volume of the box.
+     *
+     * @param skipUnloadedChunks leave chunks that are not loaded alone instead of loading them
+     */
+    public static List<TileEntity> getTileEntitiesWithinAABB(World world, AxisAlignedBB bBox,
+        boolean skipUnloadedChunks) {
+        List<TileEntity> list = Lists.newArrayList();
+        // The same block range the old position by position scan covered
+        BlockRange range = BlockRange.ofBox(bBox.minX, bBox.minY, bBox.minZ, bBox.maxX, bBox.maxY, bBox.maxZ);
+
+        for (int chunkX = BlockRange.firstPart(range.minX); chunkX <= BlockRange.lastPart(range.maxX); chunkX++) {
+            for (int chunkZ = BlockRange.firstPart(range.minZ); chunkZ <= BlockRange.lastPart(range.maxZ); chunkZ++) {
+                if (skipUnloadedChunks && !world.getChunkProvider()
+                    .chunkExists(chunkX, chunkZ)) {
+                    continue;
+                }
+                for (Object obj : world.getChunkFromChunkCoords(chunkX, chunkZ).chunkTileEntityMap.values()) {
+                    TileEntity tile = (TileEntity) obj;
+                    if (!tile.isInvalid() && range.contains(tile.xCoord, tile.yCoord, tile.zCoord)) {
+                        list.add(tile);
+                    }
                 }
             }
+        }
 
+        Collections.sort(list, new Comparator<TileEntity>() {
+
+            @Override
+            public int compare(TileEntity a, TileEntity b) {
+                if (a.xCoord != b.xCoord) return a.xCoord < b.xCoord ? -1 : 1;
+                if (a.yCoord != b.yCoord) return a.yCoord < b.yCoord ? -1 : 1;
+                return a.zCoord < b.zCoord ? -1 : a.zCoord == b.zCoord ? 0 : 1;
+            }
+        });
         return list;
     }
 

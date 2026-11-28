@@ -1,7 +1,9 @@
 package moze_intel.projecte.gameObjs.items;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
@@ -21,6 +23,7 @@ import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
+import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.fluids.BlockFluidBase;
 
@@ -36,6 +39,7 @@ import moze_intel.projecte.api.item.IModeChanger;
 import moze_intel.projecte.api.item.IPedestalItem;
 import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.tiles.DMPedestalTile;
+import moze_intel.projecte.utils.BlockRange;
 import moze_intel.projecte.utils.WorldHelper;
 
 @Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
@@ -46,6 +50,13 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
         "Reika.ChromatiCraft.TileEntity.AOE.TileEntityAccelerator",
         "com.sci.torcherino.tile.TileTorcherino",
         "com.sci.torcherino.tile.TileCompressedTorcherino");
+
+    /** Tiles implementing one of these directly are skipped as well: every torch of Torcherino-GTNH. */
+    private static final Set<String> internalInterfaceBlacklist = Sets
+        .newHashSet("com.czqwq.Torcherino.api.interfaces.ITorcherinoTile");
+
+    /** Whether a tile class is on the blacklist, so the name lookup happens once per class. */
+    private static final Map<Class<?>, Boolean> blacklistCache = new ConcurrentHashMap<>();
 
     @SideOnly(Side.CLIENT)
     private IIcon ringOff;
@@ -171,16 +182,47 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
         {
             return;
         }
-        List<TileEntity> list = WorldHelper.getTileEntitiesWithinAABB(world, bBox);
+        // Decide once which tiles get the bonus, instead of for every tile on every bonus tick
+        List<TileEntity> list = Lists.newArrayList();
+        for (TileEntity tile : WorldHelper
+            .getTileEntitiesWithinAABB(world, bBox, ProjectEConfig.timeWatchSkipUnloadedChunks)) {
+            if (isBlacklisted(tile.getClass())) {
+                continue;
+            }
+            if (ProjectEConfig.timeWatchOnlyTickingTiles && !tile.canUpdate()) {
+                continue;
+            }
+            list.add(tile);
+        }
         for (int i = 0; i < bonusTicks; i++) {
             for (TileEntity tile : list) {
-                if (!tile.isInvalid() && !internalBlacklist.contains(
-                    tile.getClass()
-                        .getName())) {
+                if (!tile.isInvalid()) {
                     tile.updateEntity();
                 }
             }
         }
+    }
+
+    /** Shares a lock with {@link #blacklist}, so a lookup cannot cache an answer from before a class was added. */
+    private static synchronized boolean isBlacklisted(Class<?> tileClass) {
+        Boolean cached = blacklistCache.get(tileClass);
+        if (cached == null) {
+            cached = internalBlacklist.contains(tileClass.getName()) || implementsBlacklistedInterface(tileClass);
+            blacklistCache.put(tileClass, cached);
+        }
+        return cached;
+    }
+
+    /** Other tick accelerators mark their tiles with an interface rather than a fixed set of classes. */
+    private static boolean implementsBlacklistedInterface(Class<?> tileClass) {
+        for (Class<?> c = tileClass; c != null; c = c.getSuperclass()) {
+            for (Class<?> iface : c.getInterfaces()) {
+                if (internalInterfaceBlacklist.contains(iface.getName())) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     private void speedUpRandomTicks(World world, int bonusTicks, AxisAlignedBB bBox) {
@@ -188,25 +230,52 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
         {
             return;
         }
-        for (int x = (int) bBox.minX; x <= bBox.maxX; x++) {
-            for (int y = (int) bBox.minY; y <= bBox.maxY; y++) {
-                for (int z = (int) bBox.minZ; z <= bBox.maxZ; z++) {
-                    Block block = world.getBlock(x, y, z);
+        // The same block range as before, but walked chunk section by chunk section the way the game itself hands out
+        // random ticks: a section without any randomly ticking block is skipped as a whole.
+        BlockRange range = BlockRange.ofBox(bBox.minX, bBox.minY, bBox.minZ, bBox.maxX, bBox.maxY, bBox.maxZ)
+            .clampY(0, 255);
 
-                    if (block.getTickRandomly() && !(block instanceof BlockLiquid) // Don't speed vanilla non-source
-                                                                                   // blocks - dupe issues
-                        && !(block instanceof BlockFluidBase) // Don't speed Forge fluids - just in case of dupes as
-                                                              // well
-                        && !(block instanceof IGrowable)
-                        && !(block instanceof IPlantable) // All plants should be sped using Harvest Goddess
-                    ) {
-                        for (int i = 0; i < bonusTicks; i++) {
-                            block.updateTick(world, x, y, z, itemRand);
+        for (int chunkX = BlockRange.firstPart(range.minX); chunkX <= BlockRange.lastPart(range.maxX); chunkX++) {
+            for (int chunkZ = BlockRange.firstPart(range.minZ); chunkZ <= BlockRange.lastPart(range.maxZ); chunkZ++) {
+                if (ProjectEConfig.timeWatchSkipUnloadedChunks && !world.getChunkProvider()
+                    .chunkExists(chunkX, chunkZ)) {
+                    continue;
+                }
+                ExtendedBlockStorage[] sections = world.getChunkFromChunkCoords(chunkX, chunkZ)
+                    .getBlockStorageArray();
+                int fromX = BlockRange.from(range.minX, chunkX), toX = BlockRange.to(range.maxX, chunkX);
+                int fromZ = BlockRange.from(range.minZ, chunkZ), toZ = BlockRange.to(range.maxZ, chunkZ);
+
+                for (int sectionY = BlockRange.firstPart(range.minY); sectionY
+                    <= BlockRange.lastPart(range.maxY); sectionY++) {
+                    ExtendedBlockStorage section = sections[sectionY];
+                    if (section == null || !section.getNeedsRandomTick()) {
+                        continue;
+                    }
+                    int fromY = BlockRange.from(range.minY, sectionY), toY = BlockRange.to(range.maxY, sectionY);
+
+                    for (int x = fromX; x <= toX; x++) {
+                        for (int y = fromY; y <= toY; y++) {
+                            for (int z = fromZ; z <= toZ; z++) {
+                                Block block = section.getBlockByExtId(x & 15, y & 15, z & 15);
+
+                                if (block.getTickRandomly() && !(block instanceof BlockLiquid) // Don't speed vanilla
+                                                                                               // non-source blocks -
+                                                                                               // dupe issues
+                                    && !(block instanceof BlockFluidBase) // Don't speed Forge fluids - just in case of
+                                                                          // dupes as well
+                                    && !(block instanceof IGrowable)
+                                    && !(block instanceof IPlantable) // All plants should be sped using Harvest Goddess
+                                ) {
+                                    for (int i = 0; i < bonusTicks; i++) {
+                                        block.updateTick(world, x, y, z, itemRand);
+                                    }
+                                }
+                            }
                         }
                     }
                 }
             }
-
         }
     }
 
@@ -331,7 +400,12 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
          */
 
         if (!world.isRemote && ProjectEConfig.enableTimeWatch) {
-            AxisAlignedBB bBox = ((DMPedestalTile) world.getTileEntity(x, y, z)).getEffectBounds();
+            DMPedestalTile pedestal = (DMPedestalTile) world.getTileEntity(x, y, z);
+            // Something speeding the pedestal itself up (a Torcherino, say) would otherwise multiply the bonus
+            if (ProjectEConfig.timeWatchOncePerTick && !pedestal.claimTimeWatchTick(world.getTotalWorldTime())) {
+                return;
+            }
+            AxisAlignedBB bBox = pedestal.getEffectBounds();
             if (ProjectEConfig.timePedBonus > 0) {
                 speedUpTileEntities(world, ProjectEConfig.timePedBonus, bBox);
                 speedUpRandomTicks(world, ProjectEConfig.timePedBonus, bBox);
@@ -360,7 +434,8 @@ public class TimeWatch extends ItemCharge implements IModeChanger, IBauble, IPed
         return list;
     }
 
-    public static void blacklist(Class<? extends TileEntity> clazz) {
+    public static synchronized void blacklist(Class<? extends TileEntity> clazz) {
         internalBlacklist.add(clazz.getName());
+        blacklistCache.clear();
     }
 }
