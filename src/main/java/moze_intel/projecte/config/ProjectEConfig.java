@@ -50,6 +50,7 @@ public final class ProjectEConfig {
     public static int projectileCooldown;
     public static boolean disableAllRadiusMining;
     public static int gemChestCooldown;
+    public static int arcanaFireRowCooldown = 20;
 
     public static double covalenceLoss;
 
@@ -107,6 +108,13 @@ public final class ProjectEConfig {
                 0,
                 Integer.MAX_VALUE,
                 "A cooldown (in ticks) for Gem Chestplate explosion");
+            arcanaFireRowCooldown = config.getInt(
+                "arcanaFireRowCooldown",
+                "misc",
+                20,
+                0,
+                Integer.MAX_VALUE,
+                "A cooldown (in ticks) for the Ring of Arcana's row of fire. It checks several thousand blocks per use. Set to 0 for the old behaviour of no cooldown.");
 
             enableTimeWatch = config.getBoolean("enableTimeWatch", "items", true, "Enable Watch of Flowing Time");
 
