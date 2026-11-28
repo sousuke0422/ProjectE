@@ -102,7 +102,8 @@ public class TransmutationRenderingEvent {
         // water/lava.
         MovingObjectPosition mop = mc.objectMouseOver;
         MovingObjectPosition liquidTrace = PhilosophersStone.traceIncludeLiquids(stack, world, player);
-        if (liquidTrace != null && liquidTrace.typeOfHit == MovingObjectType.BLOCK) {
+        if (liquidTrace != null && liquidTrace.typeOfHit == MovingObjectType.BLOCK
+            && !PhilosophersStone.isAtEyes(world, player, liquidTrace)) {
             Block hit = world.getBlock(liquidTrace.blockX, liquidTrace.blockY, liquidTrace.blockZ);
             if (hit.getMaterial()
                 .isLiquid()) {

@@ -90,7 +90,23 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
             .isLiquid()) {
             return false;
         }
+        if (isAtEyes(world, player, trace)) {
+            return false;
+        }
         return tryWorldTransmutation(stack, player, world, trace.blockX, trace.blockY, trace.blockZ, trace.sideHit);
+    }
+
+    /**
+     * Whether the trace hit the block the player's eyes are in. A trace that includes liquids starts by hitting the
+     * source block it begins in, so a submerged player would only ever target the water around their own head, and
+     * never the block they are looking at.
+     */
+    public static boolean isAtEyes(World world, EntityPlayer player, MovingObjectPosition trace) {
+        // The start of Item#getMovingObjectPositionFromPlayer: on the client posY is already at eye level
+        double eyeY = player.posY
+            + (world.isRemote ? player.getEyeHeight() - player.getDefaultEyeHeight() : player.getEyeHeight());
+        return trace.blockX == MathHelper.floor_double(player.posX) && trace.blockY == MathHelper.floor_double(eyeY)
+            && trace.blockZ == MathHelper.floor_double(player.posZ);
     }
 
     private boolean tryWorldTransmutation(ItemStack stack, EntityPlayer player, World world, int blockX, int blockY,
