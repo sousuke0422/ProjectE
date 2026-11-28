@@ -25,7 +25,6 @@ public class RelayMK1Tile extends TileEmc implements IInventory, ISidedInventory
     public int displayEmc;
     public double displayChargingEmc;
     public double displayRawEmc;
-    private int numUsing;
 
     public RelayMK1Tile() {
         super(Constants.RELAY_MK1_MAX);
@@ -296,14 +295,10 @@ public class RelayMK1Tile extends TileEmc implements IInventory, ISidedInventory
     }
 
     @Override
-    public void openInventory() {
-        numUsing++;
-    }
+    public void openInventory() {}
 
     @Override
-    public void closeInventory() {
-        numUsing--;
-    }
+    public void closeInventory() {}
 
     @Override
     public boolean isItemValidForSlot(int slot, ItemStack stack) {

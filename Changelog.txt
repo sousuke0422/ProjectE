@@ -1,3 +1,8 @@
+###Version Unreleased
+* CHANGED: Dark/Red Matter Furnaces now hold up to 1024 EMC (up from 64) and accept EMC up to their capacity so tick acceleration does not starve them on a single 1.6 EMC smelting tick. Controlled by the new `effects.matterFurnaceEmcBuffer` config (default: true; set to false for the old capacity of 64 and 1.6 EMC intake cap).
+* IMPROVED: Optimized Collector, Relay, Condenser, Alchemical Chest, Dark/Red Matter Furnace, Pedestal, and Interdiction Torch tick handling and moved GUI sync packets to containers to avoid lag and stuttering under tick acceleration.
+* FIXED: Collector MK2/MK3 sun-level GUI sync ID mismatch, Condenser display EMC int truncation above 2^31-1, and missing type checks in sync packet handlers.
+
 ###Version 2.4.0
 * NOTICE: This build is in no way affiliated with the official version.
 * NOTICE: Due to the effect of Long, we have observed incompatibilities with add-ons that handle EMC.

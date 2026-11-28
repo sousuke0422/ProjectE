@@ -34,7 +34,6 @@ public class CollectorMK1Tile extends TileEmc implements IInventory, ISidedInven
     public long displayEmc;
     public int displaySunLevel;
     public double displayItemCharge;
-    private int numUsing;
 
     public CollectorMK1Tile() {
         super(Constants.COLLECTOR_MK1_MAX);
@@ -419,14 +418,10 @@ public class CollectorMK1Tile extends TileEmc implements IInventory, ISidedInven
     }
 
     @Override
-    public void openInventory() {
-        numUsing++;
-    }
+    public void openInventory() {}
 
     @Override
-    public void closeInventory() {
-        numUsing--;
-    }
+    public void closeInventory() {}
 
     @Override
     public boolean isItemValidForSlot(int slot, ItemStack stack) {

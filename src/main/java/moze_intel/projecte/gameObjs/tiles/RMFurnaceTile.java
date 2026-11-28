@@ -17,12 +17,15 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import moze_intel.projecte.api.item.IItemEmc;
 import moze_intel.projecte.api.tile.IEmcAcceptor;
+import moze_intel.projecte.config.ProjectEConfig;
 import moze_intel.projecte.gameObjs.ObjHandler;
 import moze_intel.projecte.gameObjs.blocks.MatterFurnace;
 import moze_intel.projecte.utils.ItemHelper;
 
 public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventory, IEmcAcceptor {
 
+    private static final int LEGACY_MAX_EMC = 64;
+    private static final int BUFFERED_MAX_EMC = 1024;
     private static final int[] SLOTS_BOTTOM = new int[] { 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26 };
     private static final int[] SLOTS_TOP = new int[] { 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15, 16, 17, 18, 19, 20,
         21, 22, 23, 24, 25, 26 };
@@ -39,12 +42,10 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
     public int furnaceBurnTime;
     public int currentItemBurnTime;
     public int furnaceCookTime;
-    private long lastActiveTick = Long.MIN_VALUE;
-    private boolean pendingExtinguish = false;
-    private boolean blockStateChecked = false;
+    private final FurnaceBlockState blockState = new FurnaceBlockState();
 
     public RMFurnaceTile() {
-        super(1024);
+        super(ProjectEConfig.matterFurnaceEmcBuffer ? BUFFERED_MAX_EMC : LEGACY_MAX_EMC);
     }
 
     @Override
@@ -59,14 +60,13 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
         if (!this.worldObj.isRemote) {
             long currentTick = this.worldObj.getTotalWorldTime();
 
-            if (!blockStateChecked) {
-                blockStateChecked = true;
+            if (!blockState.isInitialized()) {
+                boolean blockIsLit = false;
                 if (furnaceBurnTime == 0 && !flag) {
                     Block currentBlock = worldObj.getBlock(xCoord, yCoord, zCoord);
-                    if (currentBlock == ObjHandler.rmFurnaceOn || currentBlock == ObjHandler.dmFurnaceOn) {
-                        pendingExtinguish = true;
-                    }
+                    blockIsLit = currentBlock == ObjHandler.rmFurnaceOn || currentBlock == ObjHandler.dmFurnaceOn;
                 }
+                blockState.initialize(furnaceBurnTime > 0, flag, blockIsLit);
             }
 
             pullFromInventories();
@@ -115,21 +115,14 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
                 }
             }
 
-            boolean isBurningNow = furnaceBurnTime > 0;
-            if (isBurningNow) {
-                lastActiveTick = currentTick;
-                pendingExtinguish = false;
-                if (!flag) {
-                    Block block = worldObj.getBlock(xCoord, yCoord, zCoord);
-                    if (block == ObjHandler.rmFurnaceOff || block == ObjHandler.dmFurnaceOff) {
-                        flag1 = true;
-                        ((MatterFurnace) block).updateFurnaceBlockState(true, worldObj, xCoord, yCoord, zCoord);
-                    }
+            FurnaceBlockState.Transition transition = blockState.update(currentTick, flag, furnaceBurnTime > 0);
+            if (transition == FurnaceBlockState.Transition.TURN_ON) {
+                Block block = worldObj.getBlock(xCoord, yCoord, zCoord);
+                if (block == ObjHandler.rmFurnaceOff || block == ObjHandler.dmFurnaceOff) {
+                    flag1 = true;
+                    ((MatterFurnace) block).updateFurnaceBlockState(true, worldObj, xCoord, yCoord, zCoord);
                 }
-            } else if (flag && lastActiveTick == currentTick) {
-                pendingExtinguish = true;
-            } else if ((flag || pendingExtinguish) && lastActiveTick != currentTick) {
-                pendingExtinguish = false;
+            } else if (transition == FurnaceBlockState.Transition.TURN_OFF) {
                 Block block = worldObj.getBlock(xCoord, yCoord, zCoord);
                 if (block instanceof MatterFurnace) {
                     flag1 = true;
@@ -664,8 +657,9 @@ public class RMFurnaceTile extends TileEmc implements IInventory, ISidedInventor
 
     @Override
     public double acceptEMC(ForgeDirection side, double toAccept) {
-        if (this.getStoredEmc() < this.getMaximumEmc()) {
-            double needed = this.getMaximumEmc() - this.getStoredEmc();
+        double cap = ProjectEConfig.matterFurnaceEmcBuffer ? this.getMaximumEmc() : EMC_CONSUMPTION;
+        if (this.getStoredEmc() < cap) {
+            double needed = cap - this.getStoredEmc();
             double accept = Math.min(needed, toAccept);
             this.addEMC(accept);
             return accept;

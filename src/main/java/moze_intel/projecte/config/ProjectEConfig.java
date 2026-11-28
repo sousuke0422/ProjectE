@@ -38,6 +38,7 @@ public final class ProjectEConfig {
     public static boolean timeWatchOnlyTickingTiles = true;
     public static boolean timeWatchSkipUnloadedChunks = true;
     public static boolean timeWatchOncePerTick = true;
+    public static boolean matterFurnaceEmcBuffer = true;
     public static boolean interdictionMode;
     public static boolean pickaxeAoeVeinMining;
     public static boolean harvBandGrass;
@@ -263,6 +264,11 @@ public final class ProjectEConfig {
                 "effects",
                 true,
                 "The Watch of Flowing Time leaves chunks that are not loaded alone. Set to false for the old behaviour of loading every chunk its range touches.");
+            matterFurnaceEmcBuffer = config.getBoolean(
+                "matterFurnaceEmcBuffer",
+                "effects",
+                true,
+                "Raise Dark/Red Matter Furnace internal EMC capacity from 64 to 1024 and accept EMC up to that capacity so tick acceleration does not starve the furnace. Set to false for the old behaviour (capacity 64, accepting only up to one smelting tick of 1.6 EMC).");
             interdictionMode = config.getBoolean(
                 "interdictionMode",
                 "effects",

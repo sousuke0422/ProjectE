@@ -136,10 +136,6 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
         }
     }
 
-    protected void pushStack() {
-        pushStackToSlot(getSlotForStack(), 1, true);
-    }
-
     protected void pushStackToSlot(int slot, int count, boolean markDirty) {
         if (slot == 0 || count <= 0 || lock == null) {
             return;
@@ -161,21 +157,17 @@ public class CondenserTile extends TileEmcDirection implements IInventory, ISide
         }
     }
 
-    protected int pushStackBatchToSlot(int slot, long maxAffordable) {
-        if (slot == 0 || maxAffordable <= 0 || lock == null) {
+    protected int pushStackBatchToSlot(int slot, double storedEmc, long requiredEmc) {
+        if (slot == 0 || lock == null) {
             return 0;
         }
-        int limit;
-        if (inventory[slot] == null) {
-            limit = Math.min(lock.getMaxStackSize(), this.getInventoryStackLimit());
-        } else {
-            limit = Math.min(inventory[slot].getMaxStackSize(), this.getInventoryStackLimit())
-                - inventory[slot].stackSize;
-        }
-        if (limit <= 0) {
+        int currentSize = inventory[slot] == null ? 0 : inventory[slot].stackSize;
+        int stackMaxSize = inventory[slot] == null ? lock.getMaxStackSize() : inventory[slot].getMaxStackSize();
+        int count = CondenserBatch
+            .countForSlot(currentSize, stackMaxSize, this.getInventoryStackLimit(), storedEmc, requiredEmc);
+        if (count <= 0) {
             return 0;
         }
-        int count = (int) Math.min((long) limit, maxAffordable);
         pushStackToSlot(slot, count, false);
         return count;
     }

@@ -27,12 +27,11 @@ public class CondenserMK2Tile extends CondenserTile {
             if (slot == 0) {
                 break;
             }
-            long affordable = (long) (this.getStoredEmc() / requiredEmc);
-            int pushed = pushStackBatchToSlot(slot, affordable);
+            int pushed = pushStackBatchToSlot(slot, this.getStoredEmc(), requiredEmc);
             if (pushed <= 0) {
                 break;
             }
-            this.removeEMC((double) (requiredEmc * (long) pushed));
+            this.removeEMC(CondenserBatch.totalCost(requiredEmc, pushed));
             dirty = true;
         }
 
