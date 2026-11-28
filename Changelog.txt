@@ -13,6 +13,13 @@
 * CHANGED: Dark/Red Matter Furnaces now hold up to 1024 EMC (up from 64) and accept EMC up to their capacity so tick acceleration does not starve them on a single 1.6 EMC smelting tick. Controlled by the new `effects.matterFurnaceEmcBuffer` config (default: true; set to false for the old capacity of 64 and 1.6 EMC intake cap).
 * IMPROVED: Optimized Collector, Relay, Condenser, Alchemical Chest, Dark/Red Matter Furnace, Pedestal, and Interdiction Torch tick handling and moved GUI sync packets to containers to avoid lag and stuttering under tick acceleration.
 * FIXED: Collector MK2/MK3 sun-level GUI sync ID mismatch, Condenser display EMC int truncation above 2^31-1, and missing type checks in sync packet handlers.
+* IMPROVED: Watch of Flowing Time scans its range by chunk and skips chunk sections without randomly ticking blocks, so an active watch or pedestal costs far less per tick.
+* CHANGED: Watch of Flowing Time only gives bonus ticks to tile entities the game itself updates (`effects.timeWatchOnlyTickingTiles`), leaves chunks that are not loaded alone (`effects.timeWatchSkipUnloadedChunks`), and in a pedestal acts once per game tick even when a tick accelerator updates the pedestal (`effects.timeWatchOncePerTick`). All default to true; set to false for the old behaviour.
+* CHANGED: Watch of Flowing Time no longer speeds up the torches of Torcherino-GTNH.
+* IMPROVED: Random freezing and igniting of the rings, amulets and pedestals pick random positions instead of visiting every block in range; growing skips air.
+* CHANGED: Ring of Arcana fire row has a cooldown (`misc.arcanaFireRowCooldown`, default 20 ticks; 0 for the old behaviour) and only places fire where it can stay.
+* FIXED: Ring of Arcana crashed on right-click when its stack had no NBT yet (fresh from creative or /give).
+* FIXED: Ring and amulet area effects were shifted by one block at negative coordinates.
 
 ###Version 2.4.0
 * NOTICE: This build is in no way affiliated with the official version.
