@@ -8,6 +8,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 import net.minecraft.util.MathHelper;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -52,9 +53,64 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
     public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int blockX, int blockY, int blockZ,
         int sideHit, float px, float py, float pz) {
         if (world.isRemote) {
-            return false;
+            // Claim the click, as the server does. Returning false would make the client follow up with its
+            // use-item packet, and onItemRightClick would then turn obsidian -> lava or ice -> water straight back.
+            return true;
         }
 
+        // The liquid in front of the clicked block first; if it has no transmutation, the clicked block itself
+        if (!tryLiquidTransmutation(stack, player, world)) {
+            tryWorldTransmutation(stack, player, world, blockX, blockY, blockZ, sideHit);
+        }
+        return true;
+    }
+
+    /**
+     * The client only calls {@link #onItemUse} when a solid block is in reach behind the liquid. Over a deep lake or
+     * the sea the click arrives here instead.
+     * <p>
+     * A click on a block never gets here: {@link #onItemUse} claims it on the client, so no use-item packet
+     * follows.
+     */
+    @Override
+    public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
+        if (!world.isRemote) {
+            tryLiquidTransmutation(stack, player, world);
+        }
+        return stack;
+    }
+
+    private boolean tryLiquidTransmutation(ItemStack stack, EntityPlayer player, World world) {
+        MovingObjectPosition trace = this.getMovingObjectPositionFromPlayer(world, player, true);
+        if (trace == null || trace.typeOfHit != MovingObjectPosition.MovingObjectType.BLOCK) {
+            return false;
+        }
+        if (!world.getBlock(trace.blockX, trace.blockY, trace.blockZ)
+            .getMaterial()
+            .isLiquid()) {
+            return false;
+        }
+        if (isAtEyes(world, player, trace)) {
+            return false;
+        }
+        return tryWorldTransmutation(stack, player, world, trace.blockX, trace.blockY, trace.blockZ, trace.sideHit);
+    }
+
+    /**
+     * Whether the trace hit the block the player's eyes are in. A trace that includes liquids starts by hitting the
+     * source block it begins in, so a submerged player would only ever target the water around their own head, and
+     * never the block they are looking at.
+     */
+    public static boolean isAtEyes(World world, EntityPlayer player, MovingObjectPosition trace) {
+        // The start of Item#getMovingObjectPositionFromPlayer: on the client posY is already at eye level
+        double eyeY = player.posY
+            + (world.isRemote ? player.getEyeHeight() - player.getDefaultEyeHeight() : player.getEyeHeight());
+        return trace.blockX == MathHelper.floor_double(player.posX) && trace.blockY == MathHelper.floor_double(eyeY)
+            && trace.blockZ == MathHelper.floor_double(player.posZ);
+    }
+
+    private boolean tryWorldTransmutation(ItemStack stack, EntityPlayer player, World world, int blockX, int blockY,
+        int blockZ, int sideHit) {
         MetaBlock mBlock = new MetaBlock(world, blockX, blockY, blockZ);
 
         MetaBlock result = WorldTransmutations
@@ -77,9 +133,21 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
             world.playSoundAtEntity(player, "projecte:item.petransmute", 1.0F, 1.0F);
 
             PlayerHelper.swingItem(player);
+            return true;
         }
 
-        return true;
+        return false;
+    }
+
+    /**
+     * Ray trace that hits liquids first. Exposed for client overlay; {@link Item#getMovingObjectPositionFromPlayer} is
+     * protected.
+     */
+    public static MovingObjectPosition traceIncludeLiquids(ItemStack stack, World world, EntityPlayer player) {
+        if (stack == null || !(stack.getItem() instanceof PhilosophersStone)) {
+            return null;
+        }
+        return ((PhilosophersStone) stack.getItem()).getMovingObjectPositionFromPlayer(world, player, true);
     }
 
     private void getAxisOrientedPanel(ForgeDirection direction, int charge, MetaBlock pointed, MetaBlock result,
@@ -164,7 +232,7 @@ public class PhilosophersStone extends ItemMode implements IProjectileShooter, I
         EntityPlayer player) {
         MetaBlock block = new MetaBlock(world, x, y, z);
 
-        if (block.equals(pointed)) {
+        if (WorldTransmutations.matchesTarget(block, pointed)) {
             PlayerHelper.checkedReplaceBlock(((EntityPlayerMP) player), x, y, z, result.getBlock(), result.getMeta());
             if (world.rand.nextInt(8) == 0) {
                 PacketHandler.sendToAllAround(
