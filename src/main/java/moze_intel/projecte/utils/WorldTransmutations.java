@@ -87,19 +87,64 @@ public final class WorldTransmutations {
             new MetaBlock[] { new MetaBlock(Blocks.wool, 0), new MetaBlock(Blocks.wool, 14) });
     }
 
-    public static MetaBlock getWorldTransmutation(World world, int x, int y, int z, boolean isSneaking) {
-        MetaBlock block = new MetaBlock(world, x, y, z);
+    private static boolean isVanillaFluid(Block b) {
+        return b == Blocks.lava || b == Blocks.flowing_lava || b == Blocks.water || b == Blocks.flowing_water;
+    }
 
-        if (MAP.containsKey(block)) {
-            return MAP.get(block)[isSneaking ? 1 : 0];
+    /**
+     * Lava/water still vs flowing share one MAP entry (still block key). Used for lookup and overlay matching.
+     * Only source blocks (meta 0) have a key: a flowing cell comes back for free as long as its source stands, so
+     * transmuting it would hand out endless obsidian.
+     */
+    public static MetaBlock fluidMapKeyOrNull(MetaBlock fromWorld) {
+        if (fromWorld.getMeta() != 0) {
+            return null;
         }
-
+        Block b = fromWorld.getBlock();
+        if (b == Blocks.flowing_lava || b == Blocks.lava) {
+            return new MetaBlock(Blocks.lava);
+        }
+        if (b == Blocks.flowing_water || b == Blocks.water) {
+            return new MetaBlock(Blocks.water);
+        }
         return null;
     }
 
+    public static boolean sameTransmutableFluid(MetaBlock a, MetaBlock b) {
+        MetaBlock ka = fluidMapKeyOrNull(a);
+        MetaBlock kb = fluidMapKeyOrNull(b);
+        if (ka == null || kb == null) {
+            return false;
+        }
+        return ka.equals(kb);
+    }
+
+    /**
+     * Whether a block in the charge area counts as the pointed block. Lava and water are compared as sources only;
+     * {@link MetaBlock#equals} alone would let every flow level through, since liquids all drop damage 0.
+     */
+    public static boolean matchesTarget(MetaBlock there, MetaBlock pointed) {
+        if (isVanillaFluid(there.getBlock()) || isVanillaFluid(pointed.getBlock())) {
+            return sameTransmutableFluid(there, pointed);
+        }
+        return there.equals(pointed);
+    }
+
+    public static MetaBlock getWorldTransmutation(World world, int x, int y, int z, boolean isSneaking) {
+        return getWorldTransmutation(new MetaBlock(world, x, y, z), isSneaking);
+    }
+
     public static MetaBlock getWorldTransmutation(MetaBlock block, boolean isSneaking) {
-        if (MAP.containsKey(block)) {
-            return MAP.get(block)[isSneaking ? 1 : 0];
+        MetaBlock key = block;
+        if (isVanillaFluid(block.getBlock())) {
+            key = fluidMapKeyOrNull(block);
+            if (key == null) {
+                return null;
+            }
+        }
+
+        if (MAP.containsKey(key)) {
+            return MAP.get(key)[isSneaking ? 1 : 0];
         }
 
         return null;

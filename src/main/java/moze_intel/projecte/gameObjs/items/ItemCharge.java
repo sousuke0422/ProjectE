@@ -47,11 +47,17 @@ public class ItemCharge extends ItemPE implements IItemCharge {
 
     @Override
     public byte getCharge(ItemStack stack) {
+        if (!stack.hasTagCompound()) {
+            return 0;
+        }
         return stack.stackTagCompound.getByte("Charge");
     }
 
     @Override
     public void changeCharge(EntityPlayer player, ItemStack stack) {
+        if (!stack.hasTagCompound()) {
+            stack.stackTagCompound = new NBTTagCompound();
+        }
         byte currentCharge = getCharge(stack);
 
         if (player.isSneaking()) {
